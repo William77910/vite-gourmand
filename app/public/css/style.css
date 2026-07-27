@@ -181,10 +181,10 @@ label.vg-label {
 /* ------------------------------------------------------------
    Photos rondes (chefs, avatars avis)
    ------------------------------------------------------------ */
-.vg-photo-ronde {
+.vg-photo-ovale {
   width: 150px;
-  height: 150px;
-  border-radius: 50%;
+  height: 200px;
+  border-radius: 50% / 30%;
   object-fit: cover;
 }
 
@@ -193,15 +193,6 @@ label.vg-label {
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-/* ------------------------------------------------------------
-   Bandeau photo pleine largeur
-   ------------------------------------------------------------ */
-.vg-bandeau-photo {
-  min-height: 320px;
-  background-size: cover;
-  background-position: center;
 }
 
 /* ------------------------------------------------------------
