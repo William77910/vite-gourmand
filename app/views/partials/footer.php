@@ -1,6 +1,6 @@
 <footer class="vg-footer py-4 mt-5">
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-center text-center text-md-center">
             <div class="col-md-4 mb-3">
                 <h3>Nos horaires</h3>
                 <p class="vg-text-secondary mb-0">
