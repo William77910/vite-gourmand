@@ -37,11 +37,12 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="col-md-2 text-center mb-3">
             <img src="/images/chef-jose.jpg" alt="Jose, cofondateur" class="vg-photo-ovale">
         </div>
-        <div class="col-md-8 text-center vg-texte-presentation">
+        <div class="col-md-8 text-center vg-texte-presentation mb-3">
             <p>
                 Depuis plus de 25 ans, Vite & Gourmand régale Bordeaux et ses environs avec des menus raffinés et évolutifs.
                 Fondée par Julie et José, cette entreprise familiale met son savoir-faire au service de tous vos événements,
-                qu’il s’agisse d’un simple repas entre amis ou d’une célébration comme Noël ou Pâques.</p>
+                qu’il s’agisse d’un simple repas entre amis ou d’une célébration comme Noël ou Pâques.
+            </p>
             <p>
                 Animés par la passion du goût et le respect des produits, Julie et José imaginent des menus en constante
                 évolution, mêlant tradition et créativité.

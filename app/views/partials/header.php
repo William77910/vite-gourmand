@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Header commun à toutes les pages.
  * Variable attendue (optionnelle) : $current_page (string) pour
@@ -17,7 +16,6 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,27 +28,32 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
 
-    <header class="vg-header py-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a href="/index.php" class="vg-logo d-flex align-items-center gap-2">
-                <img src="/images/logo.png" alt="Logo Vite et Gourmand" height="80">
-                Vite et Gourmand
-            </a>
+<nav class="navbar navbar-expand-lg vg-header py-3">
+    <div class="container">
+        <a href="/index.php" class="navbar-brand vg-logo d-flex align-items-center gap-2">
+            <img src="/images/logo.png" alt="Logo Vite &amp; Gourmand" height="48">
+            Vite &amp; Gourmand
+        </a>
 
-            <nav class="vg-nav d-none d-md-flex">
-                <a href="/index.php" class="<?= $current_page === 'accueil' ? 'active' : '' ?>">Accueil</a>
-                <a href="/menus.php" class="<?= $current_page === 'menus' ? 'active' : '' ?>">Nos menus</a>
-                <a href="/a-propos.php" class="<?= $current_page === 'a-propos' ? 'active' : '' ?>">A propos</a>
-                <a href="/contact.php" class="<?= $current_page === 'contact' ? 'active' : '' ?>">Contact</a>
-                <a href="/compte.php" class="<?= $current_page === 'compte' ? 'active' : '' ?>">Mon compte</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vgNavCollapse" aria-controls="vgNavCollapse" aria-expanded="false" aria-label="Ouvrir le menu de navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="vgNavCollapse">
+            <ul class="navbar-nav ms-auto vg-nav">
+                <li class="nav-item"><a href="/index.php" class="nav-link <?= $current_page === 'accueil' ? 'active' : '' ?>">Accueil</a></li>
+                <li class="nav-item"><a href="/menus.php" class="nav-link <?= $current_page === 'menus' ? 'active' : '' ?>">Nos menus</a></li>
+                <li class="nav-item"><a href="/a-propos.php" class="nav-link <?= $current_page === 'a-propos' ? 'active' : '' ?>">A propos</a></li>
+                <li class="nav-item"><a href="/contact.php" class="nav-link <?= $current_page === 'contact' ? 'active' : '' ?>">Contact</a></li>
+                <li class="nav-item"><a href="/compte.php" class="nav-link <?= $current_page === 'compte' ? 'active' : '' ?>">Mon compte</a></li>
                 <?php if ($est_connecte): ?>
-                    <a href="/deconnexion.php">Déconnexion</a>
+                    <li class="nav-item"><a href="/deconnexion.php" class="nav-link">Déconnexion</a></li>
                 <?php else: ?>
-                    <a href="/connexion.php" class="<?= $current_page === 'connexion' ? 'active' : '' ?>">Connexion</a>
+                    <li class="nav-item"><a href="/connexion.php" class="nav-link <?= $current_page === 'connexion' ? 'active' : '' ?>">Connexion</a></li>
                 <?php endif; ?>
-            </nav>
+            </ul>
         </div>
-    </header>
+    </div>
+</nav>
