@@ -105,7 +105,7 @@ small,
   border-color: var(--vg-rouge);
 }
 
-label.vg-label {
+.vg-label {
   color: var(--vg-gris-chaud);
   font-size: 14px;
   margin-bottom: 4px;
@@ -255,6 +255,65 @@ label.vg-label {
   padding: 24px 32px;
   text-align: justify;
 }
+
+/* ------------------------------------------------------------
+   Cartes de la page "Nos menus"
+   ------------------------------------------------------------ */
+.vg-menu-card {
+  background-color: var(--vg-blanc);
+  border: 1px solid var(--vg-gris-clair);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.vg-menu-card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.vg-menu-card-body {
+  padding: 16px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vg-menu-card-titre {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--vg-vert-fonce);
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+/* ------------------------------------------------------------
+   Boutons de filtre (modale "Nos menus")
+   ------------------------------------------------------------ */
+.btn-vg-filtre {
+  font-family: var(--vg-font-paragraphes);
+  background-color: var(--vg-blanc);
+  color: var(--vg-vert-fonce);
+  border: 1px solid var(--vg-vert-fonce);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+}
+
+.btn-vg-filtre:hover {
+  background-color: var(--vg-beige-clair);
+}
+
+.btn-vg-filtre.active {
+  background-color: var(--vg-vert-fonce);
+  color: var(--vg-blanc);
+}
+
 .badge-vg-warning {
   background-color: var(--vg-orange);
   color: var(--vg-blanc);
