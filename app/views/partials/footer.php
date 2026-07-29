@@ -4,8 +4,8 @@
       <div class="col-md-4 mb-3">
         <h3>Nos horaires</h3>
         <p class="vg-text-secondary mb-0">
-          Du mardi au samedi : 12h00-14h00 et 18h00-23h00<br>
-          Le dimanche : 12h00-14h00
+          Du lundi au samedi : 12h00-14h00 et 18h00-23h00<br>
+          Le dimanche : sur demande
         </p>
       </div>
 

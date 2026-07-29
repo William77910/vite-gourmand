@@ -10,8 +10,8 @@ USE vite_gourmand;
 -- Mardi à samedi : 12h-14h et 18h-23h / Dimanche : 12h-14h / Lundi fermé
 -- ------------------------------------------------------------
 INSERT INTO horaire (jour_semaine, service, heure_ouverture, heure_fermeture, ouvert) VALUES
-('lundi',    'midi', NULL,      NULL,      0),
-('lundi',    'soir', NULL,      NULL,      0),
+('lundi',    'midi', '12:00:00','14:00:00',1),
+('lundi',    'soir', '18:00:00','23:00:00',1),
 ('mardi',    'midi', '12:00:00','14:00:00',1),
 ('mardi',    'soir', '18:00:00','23:00:00',1),
 ('mercredi', 'midi', '12:00:00','14:00:00',1),
@@ -22,7 +22,7 @@ INSERT INTO horaire (jour_semaine, service, heure_ouverture, heure_fermeture, ou
 ('vendredi', 'soir', '18:00:00','23:00:00',1),
 ('samedi',   'midi', '12:00:00','14:00:00',1),
 ('samedi',   'soir', '18:00:00','23:00:00',1),
-('dimanche', 'midi', '12:00:00','14:00:00',1),
+('dimanche', 'midi', NULL,      NULL,      0),
 ('dimanche', 'soir', NULL,      NULL,      0);
 
 -- ------------------------------------------------------------
