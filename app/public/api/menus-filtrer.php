@@ -28,6 +28,7 @@ if (!empty($_GET['personnes_min']) && ctype_digit((string) $_GET['personnes_min'
     $filtres['personnes_min'] = (int) $_GET['personnes_min'];
 }
 
+// On récupère les menus filtrés et on les renvoie en JSON
 try {
     $menus = Menu::getFiltered($filtres);
     echo json_encode(['success' => true, 'menus' => $menus]);

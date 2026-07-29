@@ -57,6 +57,7 @@ class Menu
       $params[':personnes_min'] = $filtres['personnes_min'];
     }
 
+    // Construction de la requête SQL avec les conditions dynamiques
     $sql = "SELECT m.*,
                        (SELECT url_image FROM image_menu im
                         WHERE im.id_menu = m.id_menu
