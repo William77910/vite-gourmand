@@ -285,7 +285,7 @@ small,
 }
 
 .vg-menu-card-titre {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-style: italic;
   color: var(--vg-vert-fonce);
   font-size: 20px;
@@ -322,4 +322,16 @@ small,
 .badge-vg-error {
   background-color: var(--vg-rouge);
   color: var(--vg-blanc);
+}
+
+/* ------------------------------------------------------------
+   Images agrandissables (lightbox)
+   ------------------------------------------------------------ */
+.vg-zoomable {
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.vg-zoomable:hover {
+  opacity: 50%;
 }

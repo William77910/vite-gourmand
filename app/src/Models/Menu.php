@@ -3,13 +3,13 @@
 require_once __DIR__ . '/../../config/database.php';
 
 /**
- * Modèle Menu : centralise les requêtes SQL liées aux menus.
- * Utilise des requêtes préparées PDO partout (sécurité anti-injection).
+ * Modele Menu : centralise les requetes SQL liees aux menus.
+ * Utilise des requetes preparees PDO partout (securite anti-injection).
  */
 class Menu
 {
     /**
-     * Récupère tous les menus avec leur image principale.
+     * Recupere tous les menus avec leur image principale.
      */
     public static function getAll(): array
     {
@@ -27,7 +27,7 @@ class Menu
     }
 
     /**
-     * Récupère les menus selon des filtres optionnels.
+     * Recupere les menus selon des filtres optionnels.
      * $filtres peut contenir : theme, regime, prix_max, personnes_min
      */
     public static function getFiltered(array $filtres): array
@@ -75,7 +75,7 @@ class Menu
     }
 
     /**
-     * Récupère un menu précis par son identifiant.
+     * Recupere un menu precis par son identifiant.
      */
     public static function getById(int $id): ?array
     {
@@ -84,5 +84,39 @@ class Menu
         $stmt->execute([':id' => $id]);
         $menu = $stmt->fetch();
         return $menu ?: null;
+    }
+
+    /**
+     * Recupere toutes les images d'un menu, dans l'ordre d'affichage prevu.
+     */
+    public static function getImages(int $idMenu): array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare(
+            'SELECT url_image FROM image_menu WHERE id_menu = :id ORDER BY ordre_affichage'
+        );
+        $stmt->execute([':id' => $idMenu]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Recupere les plats composant un menu, avec la liste de leurs
+     * allergenes regroupes en une seule chaine (GROUP_CONCAT).
+     */
+    public static function getPlatsAvecAllergenes(int $idMenu): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "SELECT p.id_plat, p.nom, p.description, p.type_plat, p.photo,
+                       GROUP_CONCAT(a.nom SEPARATOR ', ') AS allergenes
+                FROM plat p
+                JOIN menu_plat mp ON mp.id_plat = p.id_plat
+                LEFT JOIN plat_allergene pa ON pa.id_plat = p.id_plat
+                LEFT JOIN allergene a ON a.id_allergene = pa.id_allergene
+                WHERE mp.id_menu = :id
+                GROUP BY p.id_plat
+                ORDER BY FIELD(p.type_plat, 'entree', 'plat', 'dessert')";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':id' => $idMenu]);
+        return $stmt->fetchAll();
     }
 }

@@ -11,10 +11,12 @@ use MongoDB\Database;
  */
 class MongoConnection
 {
+    // Instance unique de Client MongoDB
     private static ?Client $client = null;
-
+    // Récupère l'instance Client MongoDB
     public static function getClient(): Client
     {
+        // Si l'instance n'existe pas encore, on la crée
         if (self::$client === null) {
             $host = getenv('MONGO_HOST');
             $port = getenv('MONGO_PORT');
