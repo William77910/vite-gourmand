@@ -285,7 +285,7 @@ small,
 }
 
 .vg-menu-card-titre {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-style: italic;
   color: var(--vg-vert-fonce);
   font-size: 20px;
@@ -333,5 +333,5 @@ small,
 }
 
 .vg-zoomable:hover {
-  opacity: 0.85;
+  opacity: 50%;
 }
