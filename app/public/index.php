@@ -51,7 +51,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </p>
     </div>
     <div class="col-md-2 text-center mb-3">
-      <img src="/images/chef-julie.png" alt="Julie, cofondatrice" class="vg-photo-ovale">
+      <img src="/images/chef-julie.jpg" alt="Julie, cofondatrice" class="vg-photo-ovale">
     </div>
   </div>
 

@@ -323,3 +323,15 @@ small,
   background-color: var(--vg-rouge);
   color: var(--vg-blanc);
 }
+
+/* ------------------------------------------------------------
+   Images agrandissables (lightbox)
+   ------------------------------------------------------------ */
+.vg-zoomable {
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.vg-zoomable:hover {
+  opacity: 50%;
+}

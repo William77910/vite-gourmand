@@ -5,7 +5,7 @@
         <h3>Nos horaires</h3>
         <p class="vg-text-secondary mb-0">
           Du lundi au samedi : 12h00-14h00 et 18h00-23h00<br>
-          Le dimanche : sur demande
+          Le dimanche : <a href="/contact.php">nous contacter</a>
         </p>
       </div>
 

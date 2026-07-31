@@ -41,7 +41,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
                 <div class="carousel-inner rounded">
                     <?php foreach ($images as $index => $url): ?>
                         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                            <img src="<?= htmlspecialchars($url) ?>" class="d-block w-100" alt="<?= htmlspecialchars($menu['titre']) ?>" style="height:400px; object-fit:cover;">
+                            <img src="<?= htmlspecialchars($url) ?>" class="d-block w-100 vg-zoomable" alt="<?= htmlspecialchars($menu['titre']) ?>" style="height:400px; object-fit:cover;">
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -54,6 +54,9 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
                     </button>
                 <?php endif; ?>
             </div>
+            <p class="text-center vg-text-secondary small mt-2 mb-0">
+                <i class="bi bi-zoom-in"></i> Cliquez sur une photo pour l'agrandir
+            </p>
         </div>
 
         <div class="col-lg-6">
@@ -74,7 +77,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
             <?php foreach ($plats as $plat): ?>
                 <div class="vg-texte-presentation mb-3 d-flex gap-3 align-items-start">
                     <?php if (!empty($plat['photo'])): ?>
-                        <img src="<?= htmlspecialchars($plat['photo']) ?>" alt="<?= htmlspecialchars($plat['nom']) ?>"
+                        <img src="<?= htmlspecialchars($plat['photo']) ?>" alt="<?= htmlspecialchars($plat['nom']) ?>" class="vg-zoomable"
                              style="width:90px; height:90px; object-fit:cover; border-radius:8px; flex-shrink:0;">
                     <?php endif; ?>
                     <div>
@@ -132,6 +135,17 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
     <?php endif; ?>
 </div>
 
+<!-- Modale d'agrandissement d'image (lightbox) -->
+<div class="modal fade" id="modalImageAgrandie" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <button type="button" class="btn-close btn-close-white ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            <img src="" alt="" id="imageAgrandie" class="w-100 rounded">
+        </div>
+    </div>
+</div>
+
+<script src="/js/lightbox.js"></script>
 <script src="/js/menu-detail.js"></script>
 
 <?php
