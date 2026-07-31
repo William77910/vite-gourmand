@@ -124,7 +124,7 @@ small,
   font-weight: 400;
   font-style: normal;
   color: var(--vg-vert-fonce);
-  font-size: 40px;
+  font-size: 70px;
   text-decoration: none;
 }
 
@@ -210,7 +210,7 @@ small,
 }
 
 /* ------------------------------------------------------------
-   Photos rondes (chefs, avatars avis)
+   Photos ovales (chefs), avatars avis clients
    ------------------------------------------------------------ */
 .vg-photo-ovale {
   width: 150px;
@@ -285,7 +285,7 @@ small,
 }
 
 .vg-menu-card-titre {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-style: italic;
   color: var(--vg-vert-fonce);
   font-size: 20px;
@@ -333,5 +333,5 @@ small,
 }
 
 .vg-zoomable:hover {
-  opacity: 0.85;
+  opacity: 50%;
 }

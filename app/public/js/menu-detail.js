@@ -5,10 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnPlus = document.getElementById("btnPlus");
   const lienCommander = document.getElementById("lienCommander");
 
+  // Si l'élément n'existe pas, on ne fait rien
   if (!spanNb) {
     return;
   }
-
+  // Récupération des données depuis les attributs data-*
   const minimum = parseInt(spanNb.dataset.min, 10);
   const prixUnitaire = parseFloat(spanNb.dataset.prix);
   let nb = minimum;
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "/commande.php?menu=" + getMenuIdDepuisUrl() + "&personnes=" + nb;
     }
   }
-
+  // Récupère l'ID du menu depuis l'URL
   function getMenuIdDepuisUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get("id") || "";
