@@ -31,7 +31,7 @@ require_once __DIR__ . '/../views/partials/header.php';
     <div class="col-lg-5">
       <div class="vg-texte-presentation text-start">
         <p class="mb-1"><strong>Menu :</strong> <?= htmlspecialchars($commande['titre_menu']) ?></p>
-        <p class="mb-1"><strong>Nombre de personnes :</strong> <?= (int) $commande['nb_personnes'] ?></p>
+        <p class="mb-1"><strong>Nombre de personnes :</strong> echo htmlentities((int) $commande['nb_personnes']);</p>
         <p class="mb-1"><strong>Date :</strong> <?= htmlspecialchars($commande['date_prestation']) ?> à echo htmlentities(substr($commande['heure_prestation'], 0, 5));</p>
         <p class="mb-1"><strong>Adresse :</strong> <?= htmlspecialchars($commande['adresse_livraison']) ?>, <?= htmlspecialchars($commande['ville_livraison']) ?></p>
         <p class="mb-0"><strong>Total payé :</strong> <?= number_format((float) $commande['prix_total'], 2, ',', ' ') ?> €</p>
