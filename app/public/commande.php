@@ -157,7 +157,7 @@ $fraisAffiches = $estimationLivraison['frais'];
                 echo htmlentities($estimationLivraison['distance_km'] !== null ? '(' . number_format($estimationLivraison['distance_km'], 1, ',', ' ') . ' km)' : '');
               </span>
             </p>
-            <p class="mb-0">Total = <strong id="ligneTotal"><?= number_format($sousTotalAffiche + $fraisAffiches, 2, ',', ' ') ?> €</strong></p>
+            <p class="mb-0">Total = <strong id="ligneTotal">echo htmlentities(number_format($sousTotalAffiche + $fraisAffiches, 2, ',', ' ')); €</strong></p>
           </div>
         </div>
       </div>
