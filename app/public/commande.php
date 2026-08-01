@@ -148,7 +148,7 @@ $fraisAffiches = $estimationLivraison['frais'];
             <label for="nb_personnes" class="vg-label">Quantité (personnes)</label>
             <input type="number" class="form-control vg-input mb-2" id="nb_personnes" name="nb_personnes"
               min="<?= (int) $menu['nb_personnes_min'] ?>" value="<?= $valeurs['nb_personnes'] ?>"
-              data-prix="<?= (float) $menu['prix_personne'] ?>" data-min="<?= (int) $menu['nb_personnes_min'] ?>">
+              data-prix="<?= (float) $menu['prix_personne'] ?>" data-min="echo htmlentities((int) $menu['nb_personnes_min']);">
 
             <p class="mb-1" id="ligneSousTotal">Sous-total : <strong id="valeurSousTotal">echo htmlentities(number_format($sousTotalAffiche, 2, ',', ' ')); €</strong></p>
             <p class="mb-1" id="ligneFrais">
