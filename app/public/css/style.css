@@ -105,7 +105,7 @@ small,
   border-color: var(--vg-rouge);
 }
 
-label.vg-label {
+.vg-label {
   color: var(--vg-gris-chaud);
   font-size: 14px;
   margin-bottom: 4px;
@@ -124,22 +124,53 @@ label.vg-label {
   font-weight: 400;
   font-style: normal;
   color: var(--vg-vert-fonce);
-  font-size: 40px;
+  font-size: 70px;
   text-decoration: none;
 }
 
-.vg-nav a {
+.navbar.vg-header .vg-nav .nav-link {
   font-family: var(--vg-font-paragraphes);
-  color: #1f1f1f;
+  color: var(--vg-vert-sauge);
   text-decoration: none;
   margin-left: 24px;
   font-size: 15px;
+  display: inline-block;
 }
 
-.vg-nav a:hover,
-.vg-nav a.active {
+.navbar.vg-header .vg-nav .nav-link:hover,
+.navbar.vg-header .vg-nav .nav-link.active {
   color: var(--vg-vert-fonce);
   font-weight: 600;
+}
+
+/* En mobile (menu déplié), les liens passent en colonne et sans marge gauche */
+@media (max-width: 991.98px) {
+  .vg-nav {
+    padding-top: 12px;
+  }
+  .vg-nav .nav-link {
+    margin-left: 0;
+    padding: 8px 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   Bouton hamburger (mobile) - couleurs de la charte
+   ------------------------------------------------------------ */
+.navbar-toggler {
+  border-color: var(--vg-vert-fonce);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(79, 127, 95, 0.25);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%234F7F5F' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar-toggler:hover .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%237BAF8B' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 .vg-footer a {
@@ -179,13 +210,21 @@ label.vg-label {
 }
 
 /* ------------------------------------------------------------
-   Photos rondes (chefs, avatars avis)
+   Photos ovales (chefs), avatars avis clients
    ------------------------------------------------------------ */
-.vg-photo-ronde {
+.vg-photo-ovale {
   width: 150px;
-  height: 150px;
-  border-radius: 50%;
+  height: 200px;
+  max-width: 100%;
+  border-radius: 50% / 30%;
   object-fit: cover;
+}
+
+@media (max-width: 991.98px) {
+  .vg-photo-ovale {
+    width: 110px;
+    height: 150px;
+  }
 }
 
 .vg-avatar {
@@ -193,15 +232,6 @@ label.vg-label {
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-/* ------------------------------------------------------------
-   Bandeau photo pleine largeur
-   ------------------------------------------------------------ */
-.vg-bandeau-photo {
-  min-height: 320px;
-  background-size: cover;
-  background-position: center;
 }
 
 /* ------------------------------------------------------------
@@ -225,6 +255,65 @@ label.vg-label {
   padding: 24px 32px;
   text-align: justify;
 }
+
+/* ------------------------------------------------------------
+   Cartes de la page "Nos menus"
+   ------------------------------------------------------------ */
+.vg-menu-card {
+  background-color: var(--vg-blanc);
+  border: 1px solid var(--vg-gris-clair);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.vg-menu-card img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.vg-menu-card-body {
+  padding: 16px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vg-menu-card-titre {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  color: var(--vg-vert-fonce);
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+/* ------------------------------------------------------------
+   Boutons de filtre (modale "Nos menus")
+   ------------------------------------------------------------ */
+.btn-vg-filtre {
+  font-family: var(--vg-font-paragraphes);
+  background-color: var(--vg-blanc);
+  color: var(--vg-vert-fonce);
+  border: 1px solid var(--vg-vert-fonce);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+}
+
+.btn-vg-filtre:hover {
+  background-color: var(--vg-beige-clair);
+}
+
+.btn-vg-filtre.active {
+  background-color: var(--vg-vert-fonce);
+  color: var(--vg-blanc);
+}
+
 .badge-vg-warning {
   background-color: var(--vg-orange);
   color: var(--vg-blanc);
@@ -233,4 +322,16 @@ label.vg-label {
 .badge-vg-error {
   background-color: var(--vg-rouge);
   color: var(--vg-blanc);
+}
+
+/* ------------------------------------------------------------
+   Images agrandissables (lightbox)
+   ------------------------------------------------------------ */
+.vg-zoomable {
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.vg-zoomable:hover {
+  opacity: 50%;
 }
