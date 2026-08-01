@@ -150,7 +150,7 @@ $fraisAffiches = $estimationLivraison['frais'];
               min="<?= (int) $menu['nb_personnes_min'] ?>" value="<?= $valeurs['nb_personnes'] ?>"
               data-prix="<?= (float) $menu['prix_personne'] ?>" data-min="<?= (int) $menu['nb_personnes_min'] ?>">
 
-            <p class="mb-1" id="ligneSousTotal">Sous-total : <strong id="valeurSousTotal"><?= number_format($sousTotalAffiche, 2, ',', ' ') ?> €</strong></p>
+            <p class="mb-1" id="ligneSousTotal">Sous-total : <strong id="valeurSousTotal">echo htmlentities(number_format($sousTotalAffiche, 2, ',', ' ')); €</strong></p>
             <p class="mb-1" id="ligneFrais">
               Frais de livraison : <strong id="valeurFrais"><?= number_format($fraisAffiches, 2, ',', ' ') ?> €</strong>
               <span id="valeurDistance" class="vg-text-secondary">
