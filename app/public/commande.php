@@ -148,16 +148,16 @@ $fraisAffiches = $estimationLivraison['frais'];
             <label for="nb_personnes" class="vg-label">Quantité (personnes)</label>
             <input type="number" class="form-control vg-input mb-2" id="nb_personnes" name="nb_personnes"
               min="<?= (int) $menu['nb_personnes_min'] ?>" value="<?= $valeurs['nb_personnes'] ?>"
-              data-prix="<?= (float) $menu['prix_personne'] ?>" data-min="echo htmlentities((int) $menu['nb_personnes_min']);">
+              data-prix="<?= (float) $menu['prix_personne'] ?>" data-min="<?= (int) $menu['nb_personnes_min'] ?>">
 
-            <p class="mb-1" id="ligneSousTotal">Sous-total : <strong id="valeurSousTotal">echo htmlentities(number_format($sousTotalAffiche, 2, ',', ' ')); €</strong></p>
+            <p class="mb-1" id="ligneSousTotal">Sous-total : <strong id="valeurSousTotal"><?= htmlspecialchars(number_format($sousTotalAffiche, 2, ',', ' ') . ' €') ?></strong></p>
             <p class="mb-1" id="ligneFrais">
-              Frais de livraison : <strong id="valeurFrais">echo htmlentities(number_format($fraisAffiches, 2, ',', ' ')); €</strong>
+              Frais de livraison : <strong id="valeurFrais"><?= htmlspecialchars(number_format($fraisAffiches, 2, ',', ' ') . ' €') ?></strong>
               <span id="valeurDistance" class="vg-text-secondary">
-                echo htmlentities($estimationLivraison['distance_km'] !== null ? '(' . number_format($estimationLivraison['distance_km'], 1, ',', ' ') . ' km)' : '');
+                <?= htmlspecialchars($estimationLivraison['distance_km'] !== null ? '(' . number_format($estimationLivraison['distance_km'], 1, ',', ' ') . ' km)' : '') ?>
               </span>
             </p>
-            <p class="mb-0">Total = <strong id="ligneTotal">echo htmlentities(number_format($sousTotalAffiche + $fraisAffiches, 2, ',', ' ')); €</strong></p>
+            <p class="mb-0">Total = <strong id="ligneTotal"><?= htmlspecialchars(number_format($sousTotalAffiche + $fraisAffiches, 2, ',', ' ') . ' €') ?></strong></p>
           </div>
         </div>
       </div>

@@ -15,4 +15,4 @@ if ($ville === '') {
 
 $resultat = calculer_frais_livraison($adresse, $codePostal, $ville);
 
-echo htmlentities(json_encode(['success' => true] + $resultat));
+echo json_encode(['success' => true] + $resultat);
