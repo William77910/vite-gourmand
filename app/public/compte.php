@@ -39,6 +39,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        if ($action === 'maj_email') {
+            $nouvelEmail = trim($_POST['nouvel_email'] ?? '');
+            $motDePasseActuel = $_POST['mot_de_passe_actuel'] ?? '';
+            $utilisateurActuel = Utilisateur::findById($idUtilisateur);
+
+            if (!filter_var($nouvelEmail, FILTER_VALIDATE_EMAIL)) {
+                $messages['erreurs'][] = "L'adresse email n'est pas valide.";
+            } elseif (!password_verify($motDePasseActuel, $utilisateurActuel['mot_de_passe'])) {
+                $messages['erreurs'][] = "Mot de passe incorrect.";
+            } elseif ($nouvelEmail !== $utilisateurActuel['email'] && Utilisateur::findByEmail($nouvelEmail)) {
+                $messages['erreurs'][] = "Cette adresse email est déjà utilisée par un autre compte.";
+            } else {
+                Utilisateur::updateEmail($idUtilisateur, $nouvelEmail);
+                $messages['succes'][] = "Votre adresse email a été mise à jour.";
+            }
+        }
+
         if ($action === 'annuler_commande') {
             $idCommande = (int) ($_POST['id_commande'] ?? 0);
             if (Commande::annuler($idCommande, $idUtilisateur)) {
@@ -121,12 +138,6 @@ require_once __DIR__ . '/../views/partials/header.php';
                         </div>
 
                         <div class="mb-3">
-                            <label class="vg-label">Adresse email</label>
-                            <input type="email" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['email']) ?>" disabled>
-                            <small class="vg-text-secondary">L'email ne peut pas être modifié depuis cette page.</small>
-                        </div>
-
-                        <div class="mb-3">
                             <label class="vg-label">Téléphone</label>
                             <input type="tel" class="form-control vg-input" name="telephone"
                                    value="<?= htmlspecialchars($utilisateur['telephone'] ?? '') ?>">
@@ -153,6 +164,27 @@ require_once __DIR__ . '/../views/partials/header.php';
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-vg-primary">Enregistrer les modifications</button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <h2 class="mb-3">Changer mon adresse email</h2>
+                    <form method="post" action="/compte.php">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+                        <input type="hidden" name="action" value="maj_email">
+
+                        <div class="mb-3">
+                            <label class="vg-label">Nouvelle adresse email*</label>
+                            <input type="email" class="form-control vg-input" name="nouvel_email" required
+                                   value="<?= htmlspecialchars($utilisateur['email']) ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="vg-label">Mot de passe actuel (confirmation)*</label>
+                            <input type="password" class="form-control vg-input" name="mot_de_passe_actuel" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-vg-secondary">Changer mon email</button>
                         </div>
                     </form>
                 </div>
