@@ -77,4 +77,16 @@ class Utilisateur
             ':id' => $id,
         ]);
     }
+
+    /**
+     * Met à jour l'adresse email d'un utilisateur.
+     * L'unicité et la vérification du mot de passe sont contrôlées
+     * en amont, dans la page appelante.
+     */
+    public static function updateEmail(int $id, string $nouvelEmail): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare('UPDATE utilisateur SET email = :email WHERE id_utilisateur = :id');
+        $stmt->execute([':email' => $nouvelEmail, ':id' => $id]);
+    }
 }
