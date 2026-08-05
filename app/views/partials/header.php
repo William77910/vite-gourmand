@@ -34,7 +34,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
 <body>
 
   <nav class="navbar navbar-expand-lg vg-header py-3">
-    <div class="container-fluid">
+    <div class="container-fluid px-4 px-lg-5">
       <a href="/index.php" class="navbar-brand vg-logo d-flex align-items-center gap-2">
         <img src="/images/logo.png" alt="Logo Vite &amp; Gourmand" height="100">
         Vite &amp; Gourmand
@@ -51,6 +51,9 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
           <li class="nav-item"><a href="/a-propos.php" class="nav-link <?= $current_page === 'a-propos' ? 'active' : '' ?>">A propos</a></li>
           <li class="nav-item"><a href="/contact.php" class="nav-link <?= $current_page === 'contact' ? 'active' : '' ?>">Contact</a></li>
           <li class="nav-item"><a href="/compte.php" class="nav-link <?= $current_page === 'compte' ? 'active' : '' ?>">Mon compte</a></li>
+          <?php if (in_array($_SESSION['role'] ?? '', ['employe', 'administrateur'], true)): ?>
+            <li class="nav-item"><a href="/employe-commandes.php" class="nav-link">Espace employé</a></li>
+          <?php endif; ?>
           <?php if ($est_connecte): ?>
             <li class="nav-item"><a href="/deconnexion.php" class="nav-link">Déconnexion</a></li>
           <?php else: ?>
