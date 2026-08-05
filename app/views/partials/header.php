@@ -52,7 +52,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
           <li class="nav-item"><a href="/contact.php" class="nav-link <?= $current_page === 'contact' ? 'active' : '' ?>">Contact</a></li>
           <li class="nav-item"><a href="/compte.php" class="nav-link <?= $current_page === 'compte' ? 'active' : '' ?>">Mon compte</a></li>
           <?php if (in_array($_SESSION['role'] ?? '', ['employe', 'administrateur'], true)): ?>
-            <li class="nav-item"><a href="/employe-commandes.php" class="nav-link">Espace employé</a></li>
+            <li class="nav-item"><a href="/espace-employe.php" class="nav-link">Espace employé</a></li>
           <?php endif; ?>
           <?php if ($est_connecte): ?>
             <li class="nav-item"><a href="/deconnexion.php" class="nav-link">Déconnexion</a></li>
