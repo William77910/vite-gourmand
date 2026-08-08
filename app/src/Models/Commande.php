@@ -104,7 +104,7 @@ class Commande
   }
 
   /**
-   * Liste des commandes pour l'espace employe, avec filtres optionnels
+   * Liste des commandes pour l'espace employé, avec filtres optionnels
    * par statut et/ou par client (nom, prenom, email).
    */
   public static function getAll(array $filtres = []): array
@@ -143,10 +143,11 @@ class Commande
   }
 
   /**
-   * Transitions de statut autorisees, dans l'ordre du cahier des charges.
+   * Transitions de statut autorisées, dans l'ordre du cahier des charges.
    */
-  public static function transitionsAutorisees(string $statutActuel): array
+  public static function transitionsAutorisees(?string $statutActuel): array
   {
+
     $transitions = [
       'en_attente'                 => ['accepte', 'annulee'],
       'accepte'                    => ['en_preparation', 'annulee'],
@@ -163,7 +164,7 @@ class Commande
 
   /**
    * Fait avancer le statut d'une commande (employe/admin uniquement).
-   * Verifie que la transition demandee est bien autorisee.
+   * Vérifie que la transition demandée est bien autorisée.
    */
   public static function changerStatut(int $idCommande, string $nouveauStatut, int $idEmploye): bool
   {
@@ -188,7 +189,7 @@ class Commande
 
   /**
    * Annulation par un employe : motif et mode de contact obligatoires
-   * (exigence du cahier des charges - le client doit avoir été prevenu).
+   * (exigence du cahier des charges - le client doit avoir été prévenu).
    */
   public static function annulerParEmploye(int $idCommande, int $idEmploye, string $motif, string $modeContact): void
   {
@@ -204,8 +205,11 @@ class Commande
       ':mode' => $modeContact,
     ]);
   }
-  /* et que son statut est encore "en_attente").
-     */
+
+  /**
+   * Annule une commande (uniquement si elle appartient bien à l'utilisateur
+   * et que son statut est encore "en_attente").
+   */
   public static function annuler(int $idCommande, int $idUtilisateur): bool
   {
     $commande = self::getById($idCommande);
@@ -221,7 +225,7 @@ class Commande
     $statutActuel = $stmtStatut->fetchColumn();
 
     if ($statutActuel !== 'en_attente') {
-      return false; // trop tard : la commande a deja ete acceptee
+      return false; // trop tard : la commande a déjà été acceptée
     }
 
     $stmt = $pdo->prepare("INSERT INTO historique_statut (id_commande, statut) VALUES (:id, 'annulee')");
@@ -231,7 +235,7 @@ class Commande
 
   /**
    * Modifie une commande existante (jamais le menu choisi), uniquement si
-   * elle appartient à l'utilisateur et n'a pas encore ete acceptee.
+   * elle appartient à l'utilisateur et n'a pas encore été acceptée.
    */
   public static function modifier(int $idCommande, int $idUtilisateur, array $data): bool
   {

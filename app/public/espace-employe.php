@@ -5,7 +5,7 @@ exiger_role(['employe', 'administrateur']);
 require_once __DIR__ . '/../src/Models/Avis.php';
 $nbAvisEnAttente = count(Avis::getEnAttente());
 
-$current_page = '';
+$current_page = 'employe';
 $page_title = 'Espace employé';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>

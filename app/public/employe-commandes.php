@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../src/Helpers/auth.php';
-// Vérifie que l'utilisateur connecté a le rôle "employe" ou "administrateur".
 exiger_role(['employe', 'administrateur']);
 
 require_once __DIR__ . '/../src/Helpers/csrf.php';
@@ -19,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $nouveauStatut = $_POST['nouveau_statut'] ?? '';
       if (Commande::changerStatut($idCommande, $nouveauStatut, $_SESSION['id_utilisateur'])) {
         $messages['succes'][] = "Statut de la commande #$idCommande mis à jour.";
-        // NOTE : email au client a prevoir ici à chaque changement de
+        // NOTE : email au client à prevoir ici à chaque changement de
         // statut, notamment pour "en_attente_retour_materiel"
         // (delai 10 jours ouvres, penalite 600 euros - cf CGV).
       } else {
@@ -46,7 +45,6 @@ $filtres = [
 ];
 $commandes = Commande::getAll(array_filter($filtres));
 
-// Labels pour les statuts de commande (pour affichage)
 $labels_statut = [
   'en_attente' => 'En attente',
   'accepte' => 'Acceptée',
@@ -58,7 +56,7 @@ $labels_statut = [
   'annulee' => 'Annulée',
 ];
 
-$current_page = '';
+$current_page = 'employe';
 $page_title = 'Gestion des commandes';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
@@ -121,7 +119,6 @@ require_once __DIR__ . '/../views/partials/header.php';
           Gérer cette commande
         </button>
 
-        <!-- Modal pour changer le statut ou annuler la commande -->
         <div class="modal fade" id="modalStatut<?= (int) $commande['id_commande'] ?>" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -136,7 +133,6 @@ require_once __DIR__ . '/../views/partials/header.php';
                   <input type="hidden" name="action" value="changer_statut">
                   <input type="hidden" name="id_commande" value="<?= (int) $commande['id_commande'] ?>">
 
-                  <!-- Sélecteur de nouveau statut, avec bouton de validation -->
                   <label class="vg-label">Faire avancer le statut</label>
                   <div class="d-flex gap-2">
                     <select name="nouveau_statut" class="form-select vg-input">
