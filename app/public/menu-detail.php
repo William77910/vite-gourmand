@@ -7,6 +7,7 @@ require_once __DIR__ . '/../src/Models/Avis.php';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $menu = $id > 0 ? Menu::getById($id) : null;
 
+//
 if (!$menu) {
   echo '<div class="container my-5 text-center">';
   echo '<h1>Menu introuvable</h1>';
@@ -16,9 +17,9 @@ if (!$menu) {
   require_once __DIR__ . '/../views/partials/footer.php';
   exit;
 }
-
+// Récupération des informations pour l'affichage
 $page_title = htmlspecialchars($menu['titre']);
-$images = Menu::getImages($id);
+$images = Menu::getGalerieComplete($id);
 if (empty($images)) {
   $images = ['/images/menus/placeholder.jpg'];
 }
@@ -34,6 +35,7 @@ $labels_theme = [
 $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dessert'];
 ?>
 
+<!-- Affichage du menu -->
 <div class="container my-5">
   <a href="/menus.php" class="vg-text-secondary d-inline-block mb-3">&larr; Retour aux menus</a>
 
@@ -62,6 +64,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
       </p>
     </div>
 
+    <!-- Informations sur le menu et les plats -->
     <div class="col-lg-6">
       <div class="vg-menu-card-titre" style="font-size:28px;"><?= htmlspecialchars($menu['titre']) ?></div>
       <p class="vg-text-secondary"><?= htmlspecialchars($menu['description']) ?></p>
@@ -96,6 +99,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
         </div>
       <?php endforeach; ?>
 
+      <!-- Sélecteur du nombre de personnes et bouton de commande -->
       <div class="d-flex align-items-center gap-3 my-3">
         <span class="vg-label mb-0">Nombre de personnes :</span>
         <button type="button" class="btn btn-vg-secondary" id="btnMoins">−</button>
@@ -119,8 +123,10 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
     </div>
   </div>
 
+  <!-- Section des avis -->
   <hr class="my-5">
 
+  <!-- Affichage des avis -->
   <h2 class="text-center mb-4">Avis de nos clients pour ce menu</h2>
   <?php if (empty($avis)): ?>
     <p class="text-center vg-text-secondary">Aucun avis pour ce menu pour le moment.</p>
