@@ -2,12 +2,7 @@
 
 /**
  * Header commun à toutes les pages.
- * Variable attendue (optionnelle) : $current_page (string) pour
- * mettre en surbrillance le lien de navigation actif.
- *
- * La vérification de connexion est volontairement simple pour
- * l'instant (session basique) : elle sera reliée au système
- * d'authentification complet à l'étape suivante.
+
  */
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
@@ -34,7 +29,7 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
 <body>
 
   <nav class="navbar navbar-expand-lg vg-header py-3">
-    <div class="container-fluid">
+    <div class="container-fluid px-4 px-lg-5">
       <a href="/index.php" class="navbar-brand vg-logo d-flex align-items-center gap-2">
         <img src="/images/logo.png" alt="Logo Vite &amp; Gourmand" height="100">
         Vite &amp; Gourmand
@@ -51,6 +46,9 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
           <li class="nav-item"><a href="/a-propos.php" class="nav-link <?= $current_page === 'a-propos' ? 'active' : '' ?>">A propos</a></li>
           <li class="nav-item"><a href="/contact.php" class="nav-link <?= $current_page === 'contact' ? 'active' : '' ?>">Contact</a></li>
           <li class="nav-item"><a href="/compte.php" class="nav-link <?= $current_page === 'compte' ? 'active' : '' ?>">Mon compte</a></li>
+          <?php if (in_array($_SESSION['role'] ?? '', ['employe', 'administrateur'], true)): ?>
+            <li class="nav-item"><a href="/espace-employe.php" class="nav-link <?= $current_page === 'employe' ? 'active' : '' ?>">Espace employé</a></li>
+          <?php endif; ?>
           <?php if ($est_connecte): ?>
             <li class="nav-item"><a href="/deconnexion.php" class="nav-link">Déconnexion</a></li>
           <?php else: ?>
