@@ -97,6 +97,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'mode_paiement'         => $valeurs['mode_paiement'],
       ]);
 
+      // --- AJOUT POUR LES STATISTIQUES (ECF POINT 2.4) ---
+      require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+
+      // On prépare les données pour le Helper
+      $infosStats = [
+        'id_commande'  => $idCommande,
+        'id_menu'      => $idMenu,
+        'prix_total'   => $prixTotal,
+        'nb_personnes' => $valeurs['nb_personnes'],
+        'date_creation' => date('Y-m-d H:i:s')
+      ];
+
+      enregistrer_statistique_commande($infosStats, $menu['titre']);
+      // ----------------------------------------------------
+
       header('Location: /commande-confirmee.php?id=' . $idCommande);
       exit;
     }

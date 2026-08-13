@@ -2,12 +2,7 @@
 
 /**
  * Header commun à toutes les pages.
- * Variable attendue (optionnelle) : $current_page (string) pour
- * mettre en surbrillance le lien de navigation actif.
- *
- * La vérification de connexion est volontairement simple pour
- * l'instant (session basique) : elle sera reliée au système
- * d'authentification complet à l'étape suivante.
+
  */
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
