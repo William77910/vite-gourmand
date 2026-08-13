@@ -17,10 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'changer_statut') {
       $nouveauStatut = $_POST['nouveau_statut'] ?? '';
       if (Commande::changerStatut($idCommande, $nouveauStatut, $_SESSION['id_utilisateur'])) {
+
+        // --- SYNCHRONISATION MONGODB (ECF) ---
+        require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+        mettre_a_jour_statut_mongo($idCommande, $nouveauStatut);
+        // -------------------------------------
+
         $messages['succes'][] = "Statut de la commande #$idCommande mis à jour.";
-        // NOTE : email au client à prevoir ici à chaque changement de
-        // statut, notamment pour "en_attente_retour_materiel"
-        // (delai 10 jours ouvres, penalite 600 euros - cf CGV).
       } else {
         $messages['erreurs'][] = "Transition de statut non autorisée.";
       }

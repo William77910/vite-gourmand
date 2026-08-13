@@ -127,3 +127,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .join("");
   }
 });
+
+// Fonction pour trier un tableau par date
+const trierParDate = (tableau, cleDate) => {
+  // Vérifie si le tableau existe et n'est pas vide
+  if (!Array.isArray(tableau) || tableau.length === 0) {
+    return [];
+  }
+
+  // Trie le tableau par la date spécifiée dans la clé 'cleDate'
+  return tableau.sort((a, b) => new Date(a[cleDate]) - new Date(b[cleDate]));
+};
