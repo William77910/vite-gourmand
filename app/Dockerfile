@@ -20,6 +20,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # depuis le navigateur. config/, src/ restent invisibles depuis une URL.
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 
+# Augmente les limites d'upload par defaut de PHP (2M -> 10M), trop
+# basses pour des photos de menus/plats
+COPY php-uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www/html
 
 # Le code source est monté en volume depuis docker-compose.yml
