@@ -31,7 +31,8 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
   <nav class="navbar navbar-expand-xl vg-header py-3">
     <div class="container-fluid px-4 px-lg-5">
       <a href="/index.php" class="navbar-brand vg-logo">
-        <img src="/images/logo.png" alt="Logo" height="80" class="me-2">
+        <!-- On retire l'attribut height="80" pour laisser le CSS gérer la taille -->
+        <img src="/images/logo.png" alt="Logo Vite & Gourmand">
         <span>Vite &amp; Gourmand</span>
       </a>
 
