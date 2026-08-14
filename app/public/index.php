@@ -59,40 +59,42 @@ require_once __DIR__ . '/../views/partials/header.php';
     <a href="#avis" class="btn btn-vg-primary">Nos clients vous en parlent</a>
   </div>
 
-  <!-- Avis clients -->
-  <div id="avis" class="row g-3 mb-5">
-    <div class="col-md-4">
-      <div class="vg-avis-card d-flex align-items-start gap-3">
-        <img src="/images/avatar-clara.png" alt="Clara R." class="vg-avatar">
-        <div>
-          <strong>Clara R.</strong>
-          <div class="vg-avis-etoiles">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="vg-text-secondary mb-0">"Super service et menus parfait !"</p>
+  <!-- Section Avis Clients Dynamiques -->
+  <h2 class="text-center mb-4">L'avis de nos gourmets</h2>
+  <div id="avis" class="row g-4 mb-5">
+    <?php
+    require_once __DIR__ . '/../src/Models/Avis.php';
+    $avisValides = Avis::getDerniersAvisValides(3);
+
+    if (empty($avisValides)): ?>
+      <p class="text-center text-muted fst-italic">Pas encore d'avis pour le moment. Soyez le premier à commander !</p>
+    <?php else: ?>
+      <?php foreach ($avisValides as $a): ?>
+        <div class="col-md-4">
+          <div class="vg-avis-card d-flex flex-column h-100 p-4 shadow-sm border-0 bg-white rounded-3">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <!-- Avatar générique basé sur l'initiale -->
+              <div class="rounded-circle bg-vg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px; flex-shrink:0;">
+                <?= substr(htmlspecialchars($a['prenom']), 0, 1) ?>
+              </div>
+              <div>
+                <strong class="d-block text-dark"><?= htmlspecialchars($a['prenom']) ?> <?= substr(htmlspecialchars($a['nom']), 0, 1) ?>.</strong>
+                <span class="small text-muted">Sur le <?= htmlspecialchars($a['titre_menu']) ?></span>
+              </div>
+            </div>
+            <div class="vg-avis-etoiles mb-2" style="color: #f1c40f;">
+              <?= str_repeat('★', (int)$a['note']) ?><?= str_repeat('☆', 5 - (int)$a['note']) ?>
+            </div>
+            <p class="vg-text-secondary mb-0 flex-grow-1">"<?= htmlspecialchars($a['commentaire']) ?>"</p>
+            <small class="text-muted mt-3" style="font-size: 0.7rem;">
+              Publié le <?= date('d/m/Y', strtotime($a['date_creation'])) ?>
+            </small>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="vg-avis-card d-flex align-items-start gap-3">
-        <img src="/images/avatar-marc.png" alt="Marc L." class="vg-avatar">
-        <div>
-          <strong>Marc L.</strong>
-          <div class="vg-avis-etoiles">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="vg-text-secondary mb-0">"Repas au top ! Super ambiance."</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="vg-avis-card d-flex align-items-start gap-3">
-        <img src="/images/avatar-sophie.png" alt="Sophie T." class="vg-avatar">
-        <div>
-          <strong>Sophie T.</strong>
-          <div class="vg-avis-etoiles">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-          <p class="vg-text-secondary mb-0">"Livraison rapide et soignee."</p>
-        </div>
-      </div>
-    </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
   </div>
-  <!-- NOTE : avis codes en dur pour l'instant, seront charges depuis la table "avis" (valide = 1) -->
+
 </div>
 
 <?php

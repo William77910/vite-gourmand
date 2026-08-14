@@ -422,3 +422,19 @@ small,
 .vg-zoomable:hover {
   opacity: 0.5;
 }
+
+/* Limiter la taille de l'image d'illustration "Histoire" */
+.vg-img-history {
+  max-width: 280px; /* On impose une largeur max réelle */
+  max-height: 350px; /* On évite qu'elle ne soit trop longue verticalement */
+  object-fit: cover; /* On garde les proportions sans déformer */
+  width: 100%; /* Elle reste fluide dans sa limite de 280px */
+}
+
+/* Sur mobile, on peut la laisser un peu plus large pour la lisibilité */
+@media (max-width: 991px) {
+  .vg-img-history {
+    max-width: 220px;
+    margin-top: 20px;
+  }
+}

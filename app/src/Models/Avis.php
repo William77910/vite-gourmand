@@ -128,4 +128,25 @@ class Avis
     $stmt = $pdo->prepare('UPDATE avis SET valide = 0 WHERE id_avis = :id');
     $stmt->execute([':id' => $idAvis]);
   }
+
+  /**
+   * Récupère les 3 derniers avis validés pour la page d'accueil.
+   */
+  public static function getDerniersAvisValides(int $limite = 3): array
+  {
+    $pdo = Database::getConnection();
+    $sql = "SELECT av.*, u.prenom, u.nom, m.titre as titre_menu
+                FROM avis av
+                JOIN commande c ON c.id_commande = av.id_commande
+                JOIN utilisateur u ON u.id_utilisateur = c.id_utilisateur
+                JOIN menu m ON m.id_menu = c.id_menu
+                WHERE av.valide = 1
+                ORDER BY av.date_creation DESC
+                LIMIT :limite";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+  }
 }
