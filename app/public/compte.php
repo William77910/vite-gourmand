@@ -61,10 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'annuler_commande') {
       $idCommande = (int) ($_POST['id_commande'] ?? 0);
-      if (Commande::annuler($idCommande, $idUtilisateur)) {
+      if (Commande::annulerParClient($idCommande, $idUtilisateur)) {
+        // --- SYNCHRONISATION MONGODB (POINT 2.4 DU PDF) ---
+        require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+        mettre_a_jour_statut_mongo($idCommande, 'annulee');
+        // --------------------------------------------------
         $messages['succes'][] = "Votre commande a bien été annulée.";
       } else {
-        $messages['erreurs'][] = "Cette commande ne peut plus être annulée (déjà acceptée ou introuvable).";
+        $messages['erreurs'][] = "Cette commande ne peut plus être annulée (déjà acceptée, en cours de préparation ou introuvable).";
       }
     }
 
@@ -230,11 +234,11 @@ require_once __DIR__ . '/../views/partials/header.php';
           <?php if ($commande['statut_actuel'] === 'en_attente'): ?>
             <div class="mt-3 d-flex gap-2 flex-wrap">
               <a href="/commande-modifier.php?id=<?= (int) $commande['id_commande'] ?>" class="btn btn-vg-secondary">Modifier</a>
-              <form method="post" action="/compte.php" onsubmit="return confirm('Confirmez-vous l\'annulation de cette commande ?');">
+              <form method="post" action="/compte.php" onsubmit="return confirm('Confirmez-vous l\'annulation de cette commande ?');" class="d-inline">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
                 <input type="hidden" name="action" value="annuler_commande">
                 <input type="hidden" name="id_commande" value="<?= (int) $commande['id_commande'] ?>">
-                <button type="submit" class="btn btn-vg-secondary">Annuler la commande</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger">Annuler la commande</button>
               </form>
             </div>
           <?php elseif (in_array($commande['statut_actuel'], ['accepte', 'en_preparation', 'en_cours_de_livraison', 'livre', 'en_attente_retour_materiel'], true)): ?>

@@ -42,7 +42,7 @@ function enregistrer_statistique_commande(array $dataCommande, string $titreMenu
 }
 
 /**
- * Récupère le volume de commandes par menu avec filtres de dates.
+ * Récupère le volume de commandes par menu (uniquement celles non annulées) avec filtres de dates.
  */
 function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $dateFin = null): array
 {
@@ -52,16 +52,18 @@ function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $da
 
     $pipeline = [];
 
-    // 1. Filtre par durée (Identique au CA pour la cohérence)
+    // 1. Filtre par date
     if ($dateDebut || $dateFin) {
       $filtreDate = [];
       if ($dateDebut) $filtreDate['$gte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateDebut) * 1000);
       if ($dateFin)   $filtreDate['$lte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateFin . " 23:59:59") * 1000);
-
       $pipeline[] = ['$match' => ['date_commande' => $filtreDate]];
     }
 
-    // 2. Groupement pour compter les documents
+    // 2. IMPORTANT : On exclut les commandes annulées du volume
+    $pipeline[] = ['$match' => ['statut' => ['$ne' => 'annulee']]];
+
+    // 3. Groupement
     $pipeline[] = ['$group' => [
       '_id' => '$titre_menu',
       'total_commandes' => ['$sum' => 1]

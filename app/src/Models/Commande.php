@@ -207,30 +207,35 @@ class Commande
   }
 
   /**
-   * Annule une commande (uniquement si elle appartient bien à l'utilisateur
-   * et que son statut est encore "en_attente").
+   * Annule une commande si elle est encore en attente.
+   * Utilisé par le client depuis son espace compte.
    */
-  public static function annuler(int $idCommande, int $idUtilisateur): bool
+  public static function annulerParClient(int $idCommande, int $idUtilisateur): bool
   {
-    $commande = self::getById($idCommande);
-    if (!$commande || $commande['id_utilisateur'] !== $idUtilisateur) {
-      return false;
-    }
-
     $pdo = Database::getConnection();
-    $stmtStatut = $pdo->prepare(
-      'SELECT statut FROM historique_statut WHERE id_commande = :id ORDER BY date_modification DESC LIMIT 1'
-    );
-    $stmtStatut->execute([':id' => $idCommande]);
-    $statutActuel = $stmtStatut->fetchColumn();
 
-    if ($statutActuel !== 'en_attente') {
-      return false; // trop tard : la commande a déjà été acceptée
+    // 1. Vérification stricte : la commande appartient-elle à l'utilisateur ET quel est son dernier statut ?
+    $sql = "SELECT 
+                    (SELECT statut FROM historique_statut h 
+                     WHERE h.id_commande = c.id_commande 
+                     ORDER BY h.date_modification DESC LIMIT 1) as dernier_statut
+                 FROM commande c
+                 WHERE c.id_commande = :id_commande AND c.id_utilisateur = :id_user";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id_commande' => $idCommande, ':id_user' => $idUtilisateur]);
+    $res = $stmt->fetch();
+
+    // Règle métier : Annulation possible UNIQUEMENT si 'en_attente'
+    if ($res && $res['dernier_statut'] === 'en_attente') {
+      // 2. On insère le nouveau statut dans l'historique MySQL
+      $sqlInsert = "INSERT INTO historique_statut (id_commande, statut, date_modification) 
+                          VALUES (:id, 'annulee', NOW())";
+      $stmtInsert = $pdo->prepare($sqlInsert);
+      return $stmtInsert->execute([':id' => $idCommande]);
     }
 
-    $stmt = $pdo->prepare("INSERT INTO historique_statut (id_commande, statut) VALUES (:id, 'annulee')");
-    $stmt->execute([':id' => $idCommande]);
-    return true;
+    return false;
   }
 
   /**
