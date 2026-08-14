@@ -88,6 +88,17 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
+    <!-- GESTION DES CONTACTS -->
+    <div class="col-md-4 col-lg-3">
+      <a href="/employe-contact.php" class="text-decoration-none">
+        <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
+          <i class="bi bi-envelope-paper fs-1" style="color: var(--vg-vert-sauge);"></i>
+          <h3 class="mt-2 text-dark h5">Messages</h3>
+          <p class="vg-text-secondary mb-0 small">Consulter et traiter les demandes clients.</p>
+        </div>
+      </a>
+    </div>
+
   </div>
 
   <!-- Lien de retour spécifique pour les employés/admins -->
