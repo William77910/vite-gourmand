@@ -148,13 +148,23 @@ require_once __DIR__ . '/../views/partials/header.php';
         </div>
 
         <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="mot_de_passe" class="vg-label">Mot de passe*</label>
-            <input type="password" class="form-control vg-input" id="mot_de_passe" name="mot_de_passe" required>
+          <div class="mb-3">
+            <label class="vg-label">Mot de passe*</label>
+            <div class="input-group">
+              <input type="password" class="form-control vg-input input-password" name="mot_de_passe" required>
+              <button class="btn btn-outline-secondary toggle-password" type="button">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label for="confirmation_mot_de_passe" class="vg-label">Confirmation du mot de passe*</label>
-            <input type="password" class="form-control vg-input" id="confirmation_mot_de_passe" name="confirmation_mot_de_passe" required>
+            <div class="input-group">
+              <input type="password" class="form-control vg-input" id="confirmation_mot_de_passe" name="confirmation_mot_de_passe" required>
+              <button class="btn btn-outline-secondary toggle-password" type="button">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
           </div>
         </div>
 

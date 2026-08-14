@@ -28,11 +28,11 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
 
 <body>
 
-  <nav class="navbar navbar-expand-lg vg-header py-3">
+  <nav class="navbar navbar-expand-xl vg-header py-3">
     <div class="container-fluid px-4 px-lg-5">
-      <a href="/index.php" class="navbar-brand vg-logo d-flex align-items-center gap-2">
-        <img src="/images/logo.png" alt="Logo Vite &amp; Gourmand" height="100">
-        Vite &amp; Gourmand
+      <a href="/index.php" class="navbar-brand vg-logo">
+        <img src="/images/logo.png" alt="Logo" height="80" class="me-2">
+        <span>Vite &amp; Gourmand</span>
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#vgNavCollapse" aria-controls="vgNavCollapse" aria-expanded="false" aria-label="Ouvrir le menu de navigation">

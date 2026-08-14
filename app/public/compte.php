@@ -190,7 +190,12 @@ require_once __DIR__ . '/../views/partials/header.php';
             </div>
             <div class="mb-3">
               <label class="vg-label">Mot de passe actuel (confirmation)*</label>
-              <input type="password" class="form-control vg-input" name="mot_de_passe_actuel" required>
+              <div class="input-group">
+                <input type="password" class="form-control vg-input" name="mot_de_passe_actuel" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
             </div>
             <div class="text-center">
               <button type="submit" class="btn btn-vg-secondary">Changer mon email</button>

@@ -66,8 +66,13 @@ require_once __DIR__ . '/../views/partials/header.php';
         </div>
 
         <div class="mb-3">
-          <label for="mot_de_passe" class="vg-label">Mot de passe*</label>
-          <input type="password" class="form-control vg-input" id="mot_de_passe" name="mot_de_passe" required>
+          <label class="vg-label">Mot de passe*</label>
+          <div class="input-group">
+            <input type="password" class="form-control vg-input input-password" name="mot_de_passe" required>
+            <button class="btn btn-outline-secondary toggle-password" type="button">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
         </div>
 
         <div class="text-center">

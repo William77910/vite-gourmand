@@ -13,49 +13,6 @@ function formaterHeure(?string $heure): string
 }
 ?>
 
-<style>
-  .vg-horaires-container {
-    max-width: 450px;
-    margin: 0 auto;
-  }
-
-  .vg-horaire-row {
-    display: grid;
-    /* Colonne 1 (Jour) : 100px */
-    /* Colonne 2 (Midi) : 130px */
-    /* Colonne 3 (Séparateur) : 20px */
-    /* Colonne 4 (Soir) : 130px */
-    grid-template-columns: 100px 130px 20px 130px;
-    align-items: center;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 0.9rem;
-  }
-
-  .vg-horaire-jour {
-    font-weight: bold;
-    color: var(--vg-vert-fonce);
-    text-align: left;
-  }
-
-  .vg-horaire-service {
-    text-align: center;
-    color: #666;
-  }
-
-  .vg-horaire-separateur {
-    text-align: center;
-    color: #ccc;
-    font-weight: 300;
-  }
-
-  .vg-ferme-message {
-    font-style: italic;
-    font-size: 0.85rem;
-    color: #999;
-  }
-</style>
-
 <footer class="vg-footer py-4 mt-5">
   <div class="container">
     <div class="row justify-content-center text-center">
@@ -112,6 +69,8 @@ function formaterHeure(?string $heure): string
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/js/ui-utils.js"></script>
 </body>
 
 </html>

@@ -119,13 +119,60 @@ small,
   background-color: var(--vg-beige-clair);
 }
 
+/* Style du Brand (Logo + Nom) */
+/* --- Bloc Logo & Titre (Version Desktop) --- */
 .vg-logo {
-  font-family: "Italianno", cursive;
-  font-weight: 400;
-  font-style: normal;
-  color: var(--vg-vert-fonce);
-  font-size: 70px;
+  display: flex;
+  align-items: center;
   text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.vg-logo img {
+  height: 75px; /* Taille fixe pour le logo sur desktop */
+  width: auto;
+}
+
+.vg-logo span {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 2.8rem; /* Taille ajustée pour l'équilibre */
+  margin-left: 15px;
+  white-space: nowrap; /* EMPÊCHE le passage à la ligne sur grand écran */
+  line-height: 1;
+}
+
+/* --- Ajustements pour les écrans moyens (Tablettes / Petits Laptops) --- */
+/* --- Optimisation de l'espace pour éviter le wrap entre 1200px et 1400px --- */
+@media (min-width: 1200px) and (max-width: 1400px) {
+  /* 1. On réduit la taille du logo et du texte du site */
+  .vg-logo img {
+    height: 60px !important;
+  }
+  .vg-logo span {
+    font-size: 2.2rem !important;
+    margin-left: 10px !important;
+  }
+
+  /* 2. On réduit l'espace entre les liens du menu */
+  .vg-nav .nav-link {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    font-size: 0.85rem !important; /* Texte un peu plus petit */
+  }
+
+  /* 3. On réduit l'espacement global de la navbar */
+  .vg-header .container-fluid {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+/* On s'assure que sur desktop le texte ne passe JAMAIS à la ligne */
+@media (min-width: 1200px) {
+  .vg-logo span {
+    white-space: nowrap !important;
+  }
 }
 
 .navbar.vg-header .vg-nav .nav-link {
@@ -182,6 +229,46 @@ small,
   text-decoration: underline;
 }
 
+.vg-horaires-container {
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.vg-horaire-row {
+  display: grid;
+  /* Colonne 1 (Jour) : 100px */
+  /* Colonne 2 (Midi) : 130px */
+  /* Colonne 3 (Séparateur) : 20px */
+  /* Colonne 4 (Soir) : 130px */
+  grid-template-columns: 100px 130px 20px 130px;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+}
+
+.vg-horaire-jour {
+  font-weight: bold;
+  color: var(--vg-vert-fonce);
+  text-align: left;
+}
+
+.vg-horaire-service {
+  text-align: center;
+  color: #666;
+}
+
+.vg-horaire-separateur {
+  text-align: center;
+  color: #ccc;
+  font-weight: 300;
+}
+
+.vg-ferme-message {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: #999;
+}
 /* ------------------------------------------------------------
    Bannière hero (photo + titre en forme ovale)
    ------------------------------------------------------------ */
