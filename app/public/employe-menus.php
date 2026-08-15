@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/Models/Menu.php';
 
 $messages = ['succes' => [], 'erreurs' => []];
 
-// TRAITEMENT DE LA SUPPRESSION
+// TRAITEMENT DE LA SUPPRESSION (Soft Delete)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'supprimer_menu') {
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
     $messages['erreurs'][] = "Votre session a expiré.";
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'suppr
     $idASupprimer = (int)($_POST['id_menu'] ?? 0);
     if ($idASupprimer > 0) {
       Menu::delete($idASupprimer);
-      $messages['succes'][] = "Le menu a été supprimé avec succès.";
+      $messages['succes'][] = "Le menu a été archivé avec succès.";
     }
   }
 }
@@ -36,37 +36,50 @@ require_once __DIR__ . '/../views/partials/header.php';
   <?php foreach ($messages['succes'] as $m): ?>
     <div class="alert alert-success"><?= htmlspecialchars($m) ?></div>
   <?php endforeach; ?>
-  <?php foreach ($messages['erreurs'] as $m): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($m) ?></div>
-  <?php endforeach; ?>
 
   <div class="row g-4">
     <?php if (empty($menus)): ?>
-      <p class="text-center vg-text-secondary">Aucun menu enregistré.</p>
+      <p class="text-center vg-text-secondary">Aucun menu actif enregistré.</p>
     <?php endif; ?>
 
     <?php foreach ($menus as $menu): ?>
       <div class="col-md-4">
-        <div class="vg-menu-card h-100 d-flex flex-column">
+        <div class="vg-menu-card h-100 d-flex flex-column shadow-sm">
           <img src="<?= htmlspecialchars($menu['image_principale'] ?? '/images/menus/placeholder.jpg') ?>"
             alt="<?= htmlspecialchars($menu['titre']) ?>"
-            style="height:200px; object-fit:cover;">
+            style="height:180px; object-fit:cover;">
+
           <div class="vg-menu-card-body d-flex flex-column flex-grow-1">
-            <div class="vg-menu-card-titre"><?= htmlspecialchars($menu['titre']) ?></div>
-            <p class="mb-3"><?= number_format((float)$menu['prix_personne'], 2, ',', ' ') ?> € / personne</p>
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="vg-menu-card-titre h5 mb-0"><?= htmlspecialchars($menu['titre']) ?></div>
+
+              <!-- AFFICHAGE DU STOCK (NOUVEAU) -->
+              <?php
+              $stock = (int)$menu['stock_disponible'];
+              $badgeClass = 'bg-success';
+              if ($stock <= 0) $badgeClass = 'bg-danger';
+              elseif ($stock <= 5) $badgeClass = 'bg-warning text-dark';
+              ?>
+              <span class="badge <?= $badgeClass ?>" title="Quantité restante">
+                Stock : <?= $stock ?>
+              </span>
+            </div>
+
+            <p class="mb-3 text-vg-primary fw-bold">
+              <?= number_format((float)$menu['prix_personne'], 2, ',', ' ') ?> € / pers.
+            </p>
 
             <div class="mt-auto d-flex gap-2">
               <a href="/employe-menu-form.php?id=<?= (int)$menu['id_menu'] ?>"
-                class="btn btn-vg-secondary flex-grow-1">Modifier</a>
+                class="btn btn-sm btn-vg-secondary flex-grow-1">Modifier</a>
 
-              <!-- Formulaire de suppression -->
               <form method="post" action="/employe-menus.php"
-                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce menu ? Cette action est irréversible.');">
+                onsubmit="return confirm('Archiver ce menu ? Il ne sera plus visible par les clients.');">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
                 <input type="hidden" name="id_menu" value="<?= (int)$menu['id_menu'] ?>">
                 <input type="hidden" name="action" value="supprimer_menu">
-                <button type="submit" class="btn btn-outline-danger">
-                  <i class="bi bi-trash"></i>
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-archive"></i>
                 </button>
               </form>
             </div>

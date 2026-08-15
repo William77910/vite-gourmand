@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Sécurité : Redirige vers la page de connexion si l'utilisateur n'est pas connecté
 if (!isset($_SESSION['id_utilisateur'])) {
   header('Location: /connexion.php');
   exit;
@@ -13,20 +12,20 @@ require_once __DIR__ . '/../src/Models/Menu.php';
 require_once __DIR__ . '/../src/Models/Utilisateur.php';
 require_once __DIR__ . '/../src/Models/Commande.php';
 
-// Récupère le menu à partir de l'ID passé en GET ou POST
 $idMenu = isset($_GET['menu']) ? (int) $_GET['menu'] : (int) ($_POST['id_menu'] ?? 0);
 $menu = $idMenu > 0 ? Menu::getById($idMenu) : null;
 
+// Redirection si le menu n'existe pas
 if (!$menu) {
   header('Location: /menus.php');
   exit;
 }
 
-// Récupère les informations de l'utilisateur connecté
+// Récupération des informations de l'utilisateur connecté
 $utilisateur = Utilisateur::findById($_SESSION['id_utilisateur']);
 $erreurs = [];
 
-// Gestion du nombre de personnes (minimum imposé par le menu)
+// Détermination du nombre de personnes à partir de l'URL ou du minimum requis
 $nbPersonnes = isset($_GET['personnes']) ? (int) $_GET['personnes'] : (int) $menu['nb_personnes_min'];
 if ($nbPersonnes < (int) $menu['nb_personnes_min']) {
   $nbPersonnes = (int) $menu['nb_personnes_min'];
@@ -43,19 +42,17 @@ $valeurs = [
   'mode_paiement'     => '',
 ];
 
-// TRAITEMENT DE LA COMMANDE (POST)
+// Traitement du formulaire de commande
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
     $erreurs[] = "Votre session a expiré, veuillez réessayer.";
   } else {
-    // Collecte des données
     foreach (['date_prestation', 'heure_prestation', 'adresse_livraison', 'ville_livraison', 'commentaires', 'mode_paiement', 'code_postal'] as $champ) {
       $valeurs[$champ] = trim($_POST[$champ] ?? '');
     }
 
     $valeurs['nb_personnes'] = max((int) ($_POST['nb_personnes'] ?? $nbPersonnes), (int) $menu['nb_personnes_min']);
 
-    // Validations de base
     if ($valeurs['date_prestation'] === '' || $valeurs['heure_prestation'] === '') {
       $erreurs[] = "La date et l'heure de prestation sont obligatoires.";
     }
@@ -67,67 +64,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($erreurs)) {
-      // CALCUL DU PRIX (Côté serveur pour la sécurité)
       $reductionAppliquee = $valeurs['nb_personnes'] >= ((int) $menu['nb_personnes_min'] + 5);
       $sousTotal = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * ($reductionAppliquee ? 0.9 : 1);
 
-      // Calcul des frais de livraison (Helper de géolocalisation)
-      $resultatLivraison = calculer_frais_livraison(
-        $valeurs['adresse_livraison'],
-        $valeurs['code_postal'],
-        $valeurs['ville_livraison']
-      );
+      $resultatLivraison = calculer_frais_livraison($valeurs['adresse_livraison'], $valeurs['code_postal'], $valeurs['ville_livraison']);
       $fraisLivraison = $resultatLivraison['frais'];
       $prixTotal = $sousTotal + $fraisLivraison;
 
-      // Création en BDD
-      $idCommande = Commande::create([
-        'id_utilisateur'        => $_SESSION['id_utilisateur'],
-        'id_menu'               => $idMenu,
-        'nb_personnes'          => $valeurs['nb_personnes'],
-        'date_prestation'       => $valeurs['date_prestation'],
-        'heure_prestation'      => $valeurs['heure_prestation'],
-        'adresse_livraison'     => $valeurs['adresse_livraison'],
-        'ville_livraison'       => $valeurs['ville_livraison'],
-        'code_postal_livraison' => $valeurs['code_postal'],
-        'frais_livraison'       => $fraisLivraison,
-        'reduction_appliquee'   => $reductionAppliquee,
-        'prix_total'            => $prixTotal,
-        'commentaires'          => $valeurs['commentaires'] !== '' ? $valeurs['commentaires'] : null,
-        'mode_paiement'         => $valeurs['mode_paiement'],
-      ]);
+      try {
+        $idCommande = Commande::create([
+          'id_utilisateur'        => $_SESSION['id_utilisateur'],
+          'id_menu'               => $idMenu,
+          'nb_personnes'          => $valeurs['nb_personnes'],
+          'date_prestation'       => $valeurs['date_prestation'],
+          'heure_prestation'      => $valeurs['heure_prestation'],
+          'adresse_livraison'     => $valeurs['adresse_livraison'],
+          'ville_livraison'       => $valeurs['ville_livraison'],
+          'code_postal_livraison' => $valeurs['code_postal'],
+          'frais_livraison'       => $fraisLivraison,
+          'reduction_appliquee'   => $reductionAppliquee,
+          'prix_total'            => $prixTotal,
+          'commentaires'          => $valeurs['commentaires'] !== '' ? $valeurs['commentaires'] : null,
+          'mode_paiement'         => $valeurs['mode_paiement'],
+        ]);
 
-      // --- AJOUT POUR LES STATISTIQUES (ECF POINT 2.4) ---
-      require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+        // --- SYNCHRONISATION MONGODB ---
+        require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+        $infosStats = [
+          'id_commande'  => $idCommande,
+          'id_menu'      => $idMenu,
+          'prix_total'   => $prixTotal,
+          'nb_personnes' => $valeurs['nb_personnes'],
+          'date_creation' => date('Y-m-d H:i:s')
+        ];
+        enregistrer_statistique_commande($infosStats, $menu['titre']);
 
-      // On prépare les données pour le Helper
-      $infosStats = [
-        'id_commande'  => $idCommande,
-        'id_menu'      => $idMenu,
-        'prix_total'   => $prixTotal,
-        'nb_personnes' => $valeurs['nb_personnes'],
-        'date_creation' => date('Y-m-d H:i:s')
-      ];
-
-      enregistrer_statistique_commande($infosStats, $menu['titre']);
-      // ----------------------------------------------------
-
-      header('Location: /commande-confirmee.php?id=' . $idCommande);
-      exit;
+        header('Location: /commande-confirmee.php?id=' . $idCommande);
+        exit;
+      } catch (Exception $e) {
+        $erreurs[] = $e->getMessage(); // Affiche "Désolé, ce menu n'est plus disponible..."
+      }
     }
   }
 }
 
-// AFFICHAGE DE LA PAGE
 $current_page = 'menus';
 $page_title = 'Votre commande';
 require_once __DIR__ . '/../views/partials/header.php';
 
-// Récupération de la première image disponible pour le menu
 $images = Menu::getGalerieComplete($idMenu);
 $imagePrincipale = !empty($images) ? $images[0] : '/images/menus/placeholder.jpg';
 
-// Estimation initiale des frais
 $resultatGeo = calculer_frais_livraison($valeurs['adresse_livraison'], $valeurs['code_postal'], $valeurs['ville_livraison']);
 $reductionActive = $valeurs['nb_personnes'] >= ((int) $menu['nb_personnes_min'] + 5);
 $sousTotalAffiche = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * ($reductionActive ? 0.9 : 1);
@@ -148,7 +135,6 @@ $sousTotalAffiche = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * 
     <input type="hidden" name="id_menu" value="<?= $idMenu ?>">
 
     <div class="row justify-content-center g-4">
-      <!-- Récapitulatif du menu -->
       <div class="col-lg-4">
         <div class="vg-menu-card">
           <img src="<?= htmlspecialchars($imagePrincipale) ?>" alt="<?= htmlspecialchars($menu['titre']) ?>">
@@ -168,36 +154,34 @@ $sousTotalAffiche = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * 
         </div>
       </div>
 
-      <!-- Formulaire Client -->
       <div class="col-lg-4">
         <h2 class="mb-3">Informations de livraison</h2>
         <div class="mb-3">
-          <label class="vg-label">Adresse*</label>
+          <label for="adresse_livraison" class="vg-label">Adresse*</label>
           <input type="text" class="form-control vg-input" id="adresse_livraison" name="adresse_livraison" required value="<?= htmlspecialchars($valeurs['adresse_livraison']) ?>">
         </div>
         <div class="row">
           <div class="col-md-4 mb-3">
-            <label class="vg-label">Code postal</label>
+            <label for="code_postal" class="vg-label">Code postal</label>
             <input type="text" class="form-control vg-input" id="code_postal" name="code_postal" value="<?= htmlspecialchars($valeurs['code_postal']) ?>">
           </div>
           <div class="col-md-8 mb-3">
-            <label class="vg-label">Ville*</label>
+            <label for="ville_livraison" class="vg-label">Ville*</label>
             <input type="text" class="form-control vg-input" id="ville_livraison" name="ville_livraison" required value="<?= htmlspecialchars($valeurs['ville_livraison']) ?>">
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label class="vg-label">Date*</label>
-            <input type="date" class="form-control vg-input" name="date_prestation" required value="<?= htmlspecialchars($valeurs['date_prestation']) ?>">
+            <label for="date_prestation" class="vg-label">Date*</label>
+            <input type="date" class="form-control vg-input" id="date_prestation" name="date_prestation" required value="<?= htmlspecialchars($valeurs['date_prestation']) ?>">
           </div>
           <div class="col-md-6 mb-3">
-            <label class="vg-label">Heure*</label>
-            <input type="time" class="form-control vg-input" name="heure_prestation" required value="<?= htmlspecialchars($valeurs['heure_prestation']) ?>">
+            <label for="heure_prestation" class="vg-label">Heure*</label>
+            <input type="time" class="form-control vg-input" id="heure_prestation" name="heure_prestation" required value="<?= htmlspecialchars($valeurs['heure_prestation']) ?>">
           </div>
         </div>
       </div>
 
-      <!-- Mode de paiement -->
       <div class="col-lg-4">
         <h2 class="mb-3">Mode de paiement</h2>
         <div class="d-flex flex-column gap-2">
@@ -212,8 +196,8 @@ $sousTotalAffiche = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * 
           </label>
         </div>
         <div class="mt-4">
-          <label class="vg-label">Commentaires</label>
-          <textarea class="form-control vg-input" name="commentaires" rows="3"><?= htmlspecialchars($valeurs['commentaires']) ?></textarea>
+          <label for="commentaires" class="vg-label">Commentaires</label>
+          <textarea class="form-control vg-input" id="commentaires" name="commentaires" rows="3"><?= htmlspecialchars($valeurs['commentaires']) ?></textarea>
         </div>
       </div>
     </div>
