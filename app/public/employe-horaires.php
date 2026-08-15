@@ -7,19 +7,22 @@ require_once __DIR__ . '/../src/Helpers/csrf.php';
 $messages = ['succes' => [], 'erreurs' => []];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Vérification du jeton CSRF avant toute opération SQL
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
-    $messages['erreurs'][] = "Session expirée.";
+    $messages['erreurs'][] = "Erreur de sécurité : session expirée ou requête invalide.";
   } else {
-    // On boucle sur les données envoyées (un champ par id_horaire)
-    foreach ($_POST['horaires'] as $id => $data) {
-      Horaire::update((int)$id, [
-        'ouverture'   => $data['ouverture'],
-        'fermeture'   => $data['fermeture'],
-        'ouvert'      => isset($data['ouvert']),
-        'commentaire' => $data['commentaire']
-      ]);
+    // Le jeton est valide, on traite les données
+    if (isset($_POST['horaires']) && is_array($_POST['horaires'])) {
+      foreach ($_POST['horaires'] as $id => $data) {
+        Horaire::update((int)$id, [
+          'ouverture'   => $data['ouverture'],
+          'fermeture'   => $data['fermeture'],
+          'ouvert'      => isset($data['ouvert']),
+          'commentaire' => $data['commentaire']
+        ]);
+      }
+      $messages['succes'][] = "Les horaires ont été mis à jour avec succès.";
     }
-    $messages['succes'][] = "Horaires mis à jour avec succès.";
   }
 }
 
@@ -35,7 +38,8 @@ require_once __DIR__ . '/../views/partials/header.php';
   <?php foreach ($messages['succes'] as $m): ?><div class="alert alert-success"><?= $m ?></div><?php endforeach; ?>
 
   <form method="post" class="bg-white p-4 border rounded shadow-sm">
-    <input type="hidden" name="csrf_token" value="<?= generer_token_csrf() ?>">
+    <!-- Jeton CSRF pour sécuriser le formulaire -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
 
     <div class="table-responsive">
       <table class="table align-middle">

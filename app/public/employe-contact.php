@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
+// Récupération des demandes de contact
 $demandes = Contact::getAll();
 $current_page = 'employe';
 $page_title = 'Demandes de contact';
@@ -62,6 +63,7 @@ require_once __DIR__ . '/../views/partials/header.php';
                   <i class="bi bi-eye"></i>
                 </button>
 
+                <!-- Bouton Marquer comme traité -->
                 <?php if (!$d['traite']): ?>
                   <form method="post" class="d-inline">
                     <input type="hidden" name="csrf_token" value="<?= generer_token_csrf() ?>">
@@ -71,6 +73,7 @@ require_once __DIR__ . '/../views/partials/header.php';
                   </form>
                 <?php endif; ?>
 
+                <!-- Bouton Supprimer -->
                 <form method="post" class="d-inline" onsubmit="return confirm('Supprimer ce message ?');">
                   <input type="hidden" name="csrf_token" value="<?= generer_token_csrf() ?>">
                   <input type="hidden" name="id_contact" value="<?= $d['id_contact'] ?>">
