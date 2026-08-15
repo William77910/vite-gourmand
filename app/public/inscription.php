@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (Utilisateur::findByEmail($valeurs['email'])) {
       $erreurs[] = "Un compte existe déjà avec cette adresse email.";
     }
-    if (!mot_de_passe_valide($mot_de_passe)) {
-      $erreurs[] = "Le mot de passe ne respecte pas tous les critères requis.";
+    if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/', $mot_de_passe)) {
+      $erreurs[] = "Le mot de passe ne respecte pas les critères de sécurité.";
     } elseif ($mot_de_passe !== $confirmation) {
       $erreurs[] = "Les deux mots de passe ne correspondent pas.";
     }
@@ -116,10 +116,15 @@ require_once __DIR__ . '/../views/partials/header.php';
         </div>
 
         <div class="row">
-          <div class="col-md-6 mb-3">
+          <div class="mb-3">
             <label for="email" class="vg-label">Adresse email*</label>
-            <input type="email" class="form-control vg-input" id="email" name="email" required
-              value="<?= htmlspecialchars($valeurs['email']) ?>">
+            <input type="email" name="email" id="email" class="form-control vg-input"
+              required value="<?= htmlspecialchars($valeurs['email']) ?>"
+              placeholder="exemple@mail.com">
+            <!-- Conteneur pour le message d'erreur -->
+            <div id="email-error" class="text-danger small mt-1" style="display:none;">
+              <i class="bi bi-exclamation-circle"></i> Veuillez entrer un format d'email valide.
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label for="telephone" class="vg-label">Numéro de téléphone (GSM)</label>
@@ -151,7 +156,8 @@ require_once __DIR__ . '/../views/partials/header.php';
           <div class="mb-3">
             <label class="vg-label">Mot de passe*</label>
             <div class="input-group">
-              <input type="password" class="form-control vg-input input-password" name="mot_de_passe" required>
+              <input type="password" class="form-control vg-input input-password"
+                id="mot_de_passe" name="mot_de_passe" required>
               <button class="btn btn-outline-secondary toggle-password" type="button">
                 <i class="bi bi-eye"></i>
               </button>

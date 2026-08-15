@@ -1,21 +1,15 @@
 /* ============================================================
-   Vite & Gourmand - Charte graphique
-   Variables CSS + surcharges Bootstrap 5
+   Vite & Gourmand - Charte graphique complète (STABLE)
    ============================================================ */
 
 :root {
-  /* Couleurs */
-  --vg-vert-sauge: #7baf8b; /* Primary / Accent / Hover */
-  --vg-vert-fonce: #4f7f5f; /* Primary / CTA / Titres */
-  --vg-beige-clair: #f4efe6; /* Background / Header-Footer */
-  --vg-jaune-clair: #fdf9e3; /* Background / Body */
-  --vg-blanc: #ffffff; /* Cards / Content */
-  --vg-gris-chaud: #6f6f6f; /* Texte secondaire */
-  --vg-gris-clair: #e6e6e6; /* Bordures / Dividers */
-  --vg-orange: #e8a15b; /* Allergènes / Warnings */
-  --vg-rouge: #d96c6c; /* Erreurs / Critical */
-
-  /* Typographie */
+  --vg-vert-sauge: #7baf8b;
+  --vg-vert-fonce: #4f7f5f;
+  --vg-beige-clair: #f4efe6;
+  --vg-jaune-clair: #fdf9e3;
+  --vg-blanc: #ffffff;
+  --vg-gris-chaud: #6f6f6f;
+  --vg-gris-clair: #e6e6e6;
   --vg-font-titres: "Montserrat", sans-serif;
   --vg-font-paragraphes: "Open Sans", sans-serif;
 }
@@ -23,437 +17,150 @@
 body {
   background-color: var(--vg-jaune-clair);
   font-family: var(--vg-font-paragraphes);
-  font-weight: 400;
-  font-size: 15px;
   color: #1f1f1f;
+  margin: 0;
+  padding: 0;
 }
 
-h1,
-h2,
-h3,
-.vg-titre {
-  font-family: var(--vg-font-titres);
-  color: var(--vg-vert-fonce);
-}
-
-h1 {
-  font-size: 32px;
-  font-weight: 700;
-}
-h2 {
-  font-size: 24px;
-  font-weight: 600;
-}
-h3 {
-  font-size: 18px;
-  font-weight: 500;
-}
-
-small,
-.vg-text-secondary {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--vg-gris-chaud);
-}
-
-/* ------------------------------------------------------------
-   Boutons (surcharge Bootstrap)
-   ------------------------------------------------------------ */
-.btn-vg-primary {
-  font-family: var(--vg-font-titres);
-  font-weight: 700;
-  background-color: var(--vg-vert-fonce);
-  color: var(--vg-blanc);
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s ease-in-out;
-}
-
-.btn-vg-primary:hover {
-  background-color: var(--vg-vert-sauge);
-  color: var(--vg-blanc);
-}
-
-.btn-vg-secondary {
-  font-family: var(--vg-font-titres);
-  font-weight: 700;
-  background-color: var(--vg-blanc);
-  color: var(--vg-vert-fonce);
-  border: 1px solid var(--vg-vert-fonce);
-  border-radius: 8px;
-  padding: 12px 24px;
-}
-
-.btn-vg-secondary:hover {
+/* --- Navigation & Header --- */
+.vg-header {
   background-color: var(--vg-beige-clair);
-  color: var(--vg-vert-fonce);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-/* ------------------------------------------------------------
-   Champs de formulaire
-   ------------------------------------------------------------ */
-.form-control.vg-input {
-  height: 48px;
-  border: 1px solid var(--vg-gris-clair);
-  border-radius: 8px;
-  color: #000000;
-}
-
-.form-control.vg-input.is-invalid {
-  border-color: var(--vg-rouge);
-}
-
-.vg-label {
-  color: var(--vg-gris-chaud);
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-/* ------------------------------------------------------------
-   Header / Footer
-   ------------------------------------------------------------ */
-.vg-header,
-.vg-footer {
-  background-color: var(--vg-beige-clair);
-}
-
-/* --- Bloc Logo & Titre (Version Desktop) --- */
 .vg-logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    padding: 5px 0; /* Un peu d'espace en haut/bas */
+  display: flex;
+  align-items: center;
+  text-decoration: none;
 }
 
 .vg-logo img {
-    height: 100px; /* On passe de 75px à 100px pour la lisibilité */
-    width: auto;
-    transition: all 0.3s ease;
+  height: 90px !important;
+  width: auto !important;
 }
 
 .vg-logo span {
-    font-family: 'Italianno', cursive;
-    color: var(--vg-vert-fonce);
-    font-size: 3.5rem;    /* On augmente aussi le texte pour suivre l'image */
-    margin-left: 15px;
-    white-space: nowrap;
-    line-height: 1;
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 3.2rem;
+  margin-left: 15px;
 }
 
-/* --- Ajustements Tablette (zone où le menu est dense) --- */
-@media (max-width: 1400px) {
-    .vg-logo img {
-        height: 85px; /* Un peu plus petit pour laisser de la place au menu */
-    }
-    .vg-logo span {
-        font-size: 2.8rem;
-    }
-}
-
-@media (max-width: 1200px) {
-    .vg-logo img {
-        height: 75px;
-    }
-    .vg-logo span {
-        font-size: 2.5rem;
-        white-space: normal; 
-        max-width: 160px;
-    }
-}
-
-/* --- Ajustements Mobiles --- */
-@media (max-width: 576px) {
-    .vg-logo img {
-        height: 65px;
-    }
-    .vg-logo span {
-        font-size: 2rem;
-    }
-}
-
-  /* 2. On réduit l'espace entre les liens du menu */
+/* Optimisation Navbar entre 1200 et 1400px */
+@media (min-width: 1200px) and (max-width: 1400px) {
   .vg-nav .nav-link {
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-    font-size: 0.85rem !important; /* Texte un peu plus petit */
+    font-size: 0.85rem !important;
+    padding: 0 5px !important;
   }
-
-  /* 3. On réduit l'espacement global de la navbar */
-  .vg-header .container-fluid {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-  }
-}
-
-/* On s'assure que sur desktop le texte ne passe JAMAIS à la ligne */
-@media (min-width: 1200px) {
   .vg-logo span {
-    white-space: nowrap !important;
+    font-size: 2.2rem !important;
+  }
+  .vg-logo img {
+    height: 60px !important;
   }
 }
 
-.navbar.vg-header .vg-nav .nav-link {
-  font-family: var(--vg-font-paragraphes);
-  color: var(--vg-vert-sauge);
-  text-decoration: none;
-  margin-left: 24px;
-  font-size: 15px;
-  display: inline-block;
+/* --- Footer (Version Stable sans décalage) --- */
+.vg-footer {
+  background-color: var(--vg-beige-clair);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 4rem 0;
+  width: 100%; /* Plus de 100vw problématique */
 }
 
-.navbar.vg-header .vg-nav .nav-link:hover,
-.navbar.vg-header .vg-nav .nav-link.active {
+.vg-footer-title {
+  font-family: "Italianno", cursive;
   color: var(--vg-vert-fonce);
-  font-weight: 600;
+  font-size: 2.8rem;
+  margin-bottom: 1.2rem;
 }
 
-/* En mobile (menu déplié), les liens passent en colonne et sans marge gauche */
-@media (max-width: 991.98px) {
-  .vg-nav {
-    padding-top: 12px;
-  }
-  .vg-nav .nav-link {
-    margin-left: 0;
-    padding: 8px 0;
-  }
+/* Grille Horaires */
+.vg-footer-horaires {
+  max-width: 380px;
 }
 
-/* ------------------------------------------------------------
-   Bouton hamburger (mobile) - couleurs de la charte
-   ------------------------------------------------------------ */
-.navbar-toggler {
-  border-color: var(--vg-vert-fonce);
-}
-
-.navbar-toggler:focus {
-  box-shadow: 0 0 0 0.2rem rgba(79, 127, 95, 0.25);
-}
-
-.navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%234F7F5F' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
-
-.navbar-toggler:hover .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%237BAF8B' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
-
-.vg-footer a {
-  color: var(--vg-vert-fonce);
-  text-decoration: none;
-}
-
-.vg-footer a:hover {
-  text-decoration: underline;
-}
-
-.vg-horaires-container {
-  max-width: 450px;
-  margin: 0 auto;
-}
-
-.vg-horaire-row {
+.vg-footer-horaire-row {
   display: grid;
-  /* Colonne 1 (Jour) : 100px */
-  /* Colonne 2 (Midi) : 130px */
-  /* Colonne 3 (Séparateur) : 20px */
-  /* Colonne 4 (Soir) : 130px */
-  grid-template-columns: 100px 130px 20px 130px;
+  grid-template-columns: 85px 1fr 15px 1fr;
   align-items: center;
   padding: 4px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .vg-horaire-jour {
   font-weight: bold;
   color: var(--vg-vert-fonce);
-  text-align: left;
 }
-
 .vg-horaire-service {
   text-align: center;
   color: #666;
 }
-
 .vg-horaire-separateur {
   text-align: center;
   color: #ccc;
-  font-weight: 300;
 }
-
 .vg-ferme-message {
   font-style: italic;
-  font-size: 0.85rem;
   color: #999;
-}
-/* ------------------------------------------------------------
-   Bannière hero (photo + titre en forme ovale)
-   ------------------------------------------------------------ */
-.vg-hero {
-  position: relative;
-  min-height: 420px;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 0.8rem;
 }
 
-.vg-hero-overlay {
-  background-color: rgba(254, 254, 254, 0.92);
-  border-radius: 50% / 40%;
-  padding: 60px 90px;
-  text-align: center;
-  max-width: 650px;
+/* Bloc Central */
+.vg-footer-brand img {
+  height: 100px !important;
+  width: auto !important;
+  margin-bottom: 10px;
 }
 
-.vg-hero-overlay h1 {
-  font-family: "Italianno", cursive;
-  font-weight: 400;
-  font-style: normal;
+/* Bloc Contact */
+.vg-footer-contact p {
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
 }
 
-/* ------------------------------------------------------------
-   Photos ovales (chefs), avatars avis clients
-   ------------------------------------------------------------ */
-.vg-photo-ovale {
-  width: 150px;
-  height: 200px;
-  max-width: 100%;
-  border-radius: 50% / 30%;
-  object-fit: cover;
+/* --- Utilitaires --- */
+.btn-vg-primary {
+  background: var(--vg-vert-fonce);
+  color: white;
+  border-radius: 8px;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+}
+.btn-vg-primary:hover {
+  background: var(--vg-vert-sauge);
+  color: white;
+}
+.vg-texte-presentation {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--vg-gris-clair);
+}
+.form-control.vg-input {
+  border-radius: 8px;
+  border: 1px solid var(--vg-gris-clair);
 }
 
-@media (max-width: 991.98px) {
-  .vg-photo-ovale {
-    width: 110px;
-    height: 150px;
+/* Responsive General */
+@media (max-width: 1200px) {
+  .vg-logo span {
+    white-space: normal;
+    max-width: 150px;
+    line-height: 0.9;
   }
 }
-
-.vg-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-/* ------------------------------------------------------------
-   Cartes avis clients
-   ------------------------------------------------------------ */
-.vg-avis-card {
-  background-color: var(--vg-blanc);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-.vg-avis-etoiles {
-  color: #e8b23b;
-}
-
-.vg-texte-presentation {
-  background-color: var(--vg-blanc);
-  border: 1px solid var(--vg-gris-clair);
-  border-radius: 8px;
-  padding: 24px 32px;
-  text-align: justify;
-}
-
-/* ------------------------------------------------------------
-   Cartes de la page "Nos menus"
-   ------------------------------------------------------------ */
-.vg-menu-card {
-  background-color: var(--vg-blanc);
-  border: 1px solid var(--vg-gris-clair);
-  border-radius: 8px;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-}
-
-.vg-menu-card img {
-  width: 100%;
-  height: 190px;
-  object-fit: cover;
-}
-
-.vg-menu-card-body {
-  padding: 16px;
-  text-align: center;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.vg-menu-card-titre {
-  font-family: "Playfair Display", serif;
-  font-style: italic;
-  color: var(--vg-vert-fonce);
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-/* ------------------------------------------------------------
-   Boutons de filtre (modale "Nos menus")
-   ------------------------------------------------------------ */
-.btn-vg-filtre {
-  font-family: var(--vg-font-paragraphes);
-  background-color: var(--vg-blanc);
-  color: var(--vg-vert-fonce);
-  border: 1px solid var(--vg-vert-fonce);
-  border-radius: 20px;
-  padding: 6px 16px;
-  font-size: 14px;
-}
-
-.btn-vg-filtre:hover {
-  background-color: var(--vg-beige-clair);
-}
-
-.btn-vg-filtre.active {
-  background-color: var(--vg-vert-fonce);
-  color: var(--vg-blanc);
-}
-
-.badge-vg-warning {
-  background-color: var(--vg-orange);
-  color: var(--vg-blanc);
-}
-
-.badge-vg-error {
-  background-color: var(--vg-rouge);
-  color: var(--vg-blanc);
-}
-
-/* ------------------------------------------------------------
-   Images agrandissables (lightbox)
-   ------------------------------------------------------------ */
-.vg-zoomable {
-  cursor: pointer;
-  transition: opacity 0.15s ease-in-out;
-}
-
-.vg-zoomable:hover {
-  opacity: 0.5;
-}
-
-/* Limiter la taille de l'image d'illustration "Histoire" */
-.vg-img-history {
-  max-width: 280px; /* On impose une largeur max réelle */
-  max-height: 350px; /* On évite qu'elle ne soit trop longue verticalement */
-  object-fit: cover; /* On garde les proportions sans déformer */
-  width: 100%; /* Elle reste fluide dans sa limite de 280px */
-}
-
-/* Sur mobile, on peut la laisser un peu plus large pour la lisibilité */
 @media (max-width: 991px) {
-  .vg-img-history {
-    max-width: 220px;
-    margin-top: 20px;
+  .vg-footer-horaires {
+    margin: 0 auto 2rem;
+  }
+  .vg-footer-contact {
+    text-align: center !important;
+    margin-top: 2rem;
+  }
+  .vg-footer-horaire-row {
+    justify-content: center;
   }
 }
