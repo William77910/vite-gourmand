@@ -1,67 +1,64 @@
 <?php
 require_once __DIR__ . '/../../src/Models/Horaire.php';
-$tousLesHoraires = Horaire::getAll();
-
 $horairesGroupes = [];
-foreach ($tousLesHoraires as $h) {
-  $horairesGroupes[$h['jour_semaine']][] = $h;
+try {
+  $tousLesHoraires = Horaire::getAll();
+  foreach ($tousLesHoraires as $h) {
+    $horairesGroupes[$h['jour_semaine']][] = $h;
+  }
+} catch (Exception $e) {
+  $horairesGroupes = [];
 }
 
-function formaterHeure(?string $heure): string
-{
-  return $heure ? (new DateTime($heure))->format('H\hi') : '';
+if (!function_exists('formaterHeure')) {
+  function formaterHeure(?string $heure): string
+  {
+    return $heure ? (new DateTime($heure))->format('H\hi') : '';
+  }
 }
 ?>
 
-<footer class="vg-footer py-4 mt-5">
-  <div class="container">
-    <div class="row justify-content-center text-center">
+<footer class="vg-footer mt-5">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row g-4 align-items-center">
 
-      <!-- SECTION HORAIRES ALIGNÉS -->
-      <div class="col-md-7 mb-4">
-        <h3 class="mb-3">Nos horaires</h3>
-        <div class="vg-horaires-container">
+      <!-- 1. HORAIRES -->
+      <div class="col-lg-4">
+        <h3 class="vg-footer-title">Nos horaires</h3>
+        <div class="mx-auto mx-lg-0" style="max-width: 350px;">
           <?php foreach ($horairesGroupes as $jour => $services): ?>
-            <div class="vg-horaire-row">
-              <div class="vg-horaire-jour"><?= ucfirst($jour) ?> :</div>
-
+            <div class="vg-footer-horaire-row">
+              <div class="fw-bold"><?= ucfirst($jour) ?> :</div>
               <?php foreach ($services as $index => $s): ?>
-                <div class="vg-horaire-service">
-                  <?php if ($s['ouvert']): ?>
-                    <?= formaterHeure($s['heure_ouverture']) ?> - <?= formaterHeure($s['heure_fermeture']) ?>
-                  <?php else: ?>
-                    <span class="vg-ferme-message">
-                      <?= $s['commentaire_fermeture'] ? htmlspecialchars($s['commentaire_fermeture']) : 'Fermé' ?>
-                    </span>
-                  <?php endif; ?>
+                <div class="text-center text-muted">
+                  <?= $s['ouvert'] ? formaterHeure($s['heure_ouverture']) . '-' . formaterHeure($s['heure_fermeture']) : '<i>Fermé</i>' ?>
                 </div>
-
-                <?php if ($index === 0): // Après le premier service (midi), on met la barre 
-                ?>
-                  <div class="vg-horaire-separateur">|</div>
-                <?php endif; ?>
+                <?php if ($index === 0): ?><div>|</div><?php endif; ?>
               <?php endforeach; ?>
             </div>
           <?php endforeach; ?>
         </div>
       </div>
 
-      <!-- RESTE DU FOOTER -->
-      <div class="col-md-5 mb-3 d-flex flex-column justify-content-center">
-        <h3>Vite et Gourmand</h3>
-        <p class="vg-text-secondary mb-3">
-          7, rue de la ville, 33000 Bordeaux<br>
-          tél : 05 04 03 02 01
-        </p>
-        <div class="mb-2 fs-5">
-          <a href="#" class="me-3 text-dark"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-dark"><i class="bi bi-instagram"></i></a>
+      <!-- 2. LOGO CENTRAL -->
+      <div class="col-lg-4 text-center">
+        <a href="/index.php" class="text-decoration-none vg-footer-brand">
+          <img src="/images/logo.png" alt="Logo">
+          <h3 class="font-italianno" style="font-size: 2.5rem; color: var(--vg-vert-fonce); margin-bottom:0;">Vite & Gourmand</h3>
+        </a>
+        <p class="text-muted small">Votre traiteur à Bordeaux</p>
+      </div>
+
+      <!-- 3. CONTACT -->
+      <div class="col-lg-4 text-center text-lg-end">
+        <h3 class="vg-footer-title">Nous contacter</h3>
+        <p class="mb-1">7, rue de la ville, 33000 Bordeaux</p>
+        <p class="mb-4">Tél : 05 04 03 02 01</p>
+        <div class="small">
+          <a href="/mentions-legales.php" class="text-muted">Mentions légales</a> |
+          <a href="/cgv.php" class="text-muted">CGV</a>
+          <p class="mt-2 text-muted" style="font-size: 0.7rem;">&copy; <?= date('Y') ?> Vite & Gourmand</p>
         </div>
-        <p class="vg-text-secondary small mb-0">
-          <a href="/mentions-legales.php" class="text-decoration-none">Mentions légales</a> |
-          <a href="/cgv.php" class="text-decoration-none">CGV</a><br>
-          &copy; <?= date('Y') ?> Vite & Gourmand
-        </p>
       </div>
 
     </div>
@@ -69,8 +66,12 @@ function formaterHeure(?string $heure): string
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="/js/ui-utils.js"></script>
+<?php
+$f = basename($_SERVER['PHP_SELF']);
+if ($f === 'inscription.php') echo '<script src="/js/inscription.js"></script>';
+if ($f === 'compte.php') echo '<script src="/js/compte.js"></script>';
+?>
 </body>
 
 </html>

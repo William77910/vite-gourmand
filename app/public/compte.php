@@ -1,6 +1,7 @@
 <?php
 session_start();
-// Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+
+// Sécurité : Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
 if (!isset($_SESSION['id_utilisateur'])) {
   header('Location: /connexion.php');
   exit;
@@ -15,13 +16,14 @@ require_once __DIR__ . '/../src/Models/Avis.php';
 $idUtilisateur = $_SESSION['id_utilisateur'];
 $messages = ['succes' => [], 'erreurs' => []];
 
-// Gestion des actions POST
+// --- GESTION DES ACTIONS POST ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
     $messages['erreurs'][] = "Votre session a expiré, veuillez réessayer.";
   } else {
     $action = $_POST['action'] ?? '';
 
+    // Mise à jour des informations personnelles
     if ($action === 'maj_infos') {
       $nom = trim($_POST['nom'] ?? '');
       $prenom = trim($_POST['prenom'] ?? '');
@@ -59,19 +61,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
+    // Annulation de commande par le client
     if ($action === 'annuler_commande') {
       $idCommande = (int) ($_POST['id_commande'] ?? 0);
       if (Commande::annulerParClient($idCommande, $idUtilisateur)) {
-        // --- SYNCHRONISATION MONGODB (POINT 2.4 DU PDF) ---
+        // --- SYNCHRONISATION MONGODB ---
         require_once __DIR__ . '/../src/Helpers/stats_helper.php';
         mettre_a_jour_statut_mongo($idCommande, 'annulee');
-        // --------------------------------------------------
+        // -------------------------------
         $messages['succes'][] = "Votre commande a bien été annulée.";
       } else {
-        $messages['erreurs'][] = "Cette commande ne peut plus être annulée (déjà acceptée, en cours de préparation ou introuvable).";
+        $messages['erreurs'][] = "Cette commande ne peut plus être annulée.";
       }
     }
 
+    // Laisser un avis
     if ($action === 'laisser_avis') {
       $idCommande = (int) ($_POST['id_commande'] ?? 0);
       $note = (int) ($_POST['note'] ?? 0);
@@ -91,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $utilisateur = Utilisateur::findById($idUtilisateur);
 $commandes = Commande::getByUtilisateur($idUtilisateur);
 
-// Labels pour les statuts de commande
 $labels_statut = [
   'en_attente' => 'En attente',
   'accepte' => 'Acceptée',
@@ -103,7 +106,6 @@ $labels_statut = [
   'annulee' => 'Annulée',
 ];
 
-// Chargement du header
 $current_page = 'compte';
 $page_title = 'Mon compte';
 require_once __DIR__ . '/../views/partials/header.php';
@@ -113,194 +115,201 @@ require_once __DIR__ . '/../views/partials/header.php';
   <h1 class="text-center mb-4">Mon compte</h1>
 
   <?php foreach ($messages['succes'] as $m): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($m) ?></div>
+    <div class="alert alert-success alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
   <?php endforeach; ?>
   <?php foreach ($messages['erreurs'] as $m): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($m) ?></div>
+    <div class="alert alert-danger alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
   <?php endforeach; ?>
 
-  <ul class="nav nav-tabs mb-4" role="tablist">
+  <!-- ONGLETS -->
+  <ul class="nav nav-tabs mb-4" id="compteTabs" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#ongletInfos" type="button">Mes informations</button>
+      <button class="nav-link active" id="infos-tab" data-bs-toggle="tab" data-bs-target="#pane-infos" type="button" role="tab" aria-controls="pane-infos" aria-selected="true">Mes informations</button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ongletCommandes" type="button">Mes commandes</button>
+      <button class="nav-link" id="commandes-tab" data-bs-toggle="tab" data-bs-target="#pane-commandes" type="button" role="tab" aria-controls="pane-commandes" aria-selected="false">Mes commandes</button>
     </li>
   </ul>
 
-  <div class="tab-content">
-    <!-- Onglet informations personnelles -->
-    <div class="tab-pane fade show active" id="ongletInfos">
+  <div class="tab-content" id="compteTabsContent">
+
+    <!-- CONTENU 1 : INFORMATIONS -->
+    <div class="tab-pane fade show active" id="pane-infos" role="tabpanel" aria-labelledby="infos-tab">
       <div class="row justify-content-center">
         <div class="col-lg-6">
-          <form method="post" action="/compte.php">
+          <form method="post" action="/compte.php" class="vg-texte-presentation p-4 border rounded shadow-sm bg-white">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
             <input type="hidden" name="action" value="maj_infos">
 
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="vg-label">Nom*</label>
-                <input type="text" class="form-control vg-input" name="nom" required
-                  value="<?= htmlspecialchars($utilisateur['nom']) ?>">
+                <input type="text" class="form-control vg-input" name="nom" required value="<?= htmlspecialchars($utilisateur['nom']) ?>">
               </div>
               <div class="col-md-6 mb-3">
                 <label class="vg-label">Prénom*</label>
-                <input type="text" class="form-control vg-input" name="prenom" required
-                  value="<?= htmlspecialchars($utilisateur['prenom']) ?>">
+                <input type="text" class="form-control vg-input" name="prenom" required value="<?= htmlspecialchars($utilisateur['prenom']) ?>">
               </div>
             </div>
-
             <div class="mb-3">
               <label class="vg-label">Téléphone</label>
-              <input type="tel" class="form-control vg-input" name="telephone"
-                value="<?= htmlspecialchars($utilisateur['telephone'] ?? '') ?>">
+              <input type="tel" class="form-control vg-input" name="telephone" value="<?= htmlspecialchars($utilisateur['telephone'] ?? '') ?>">
             </div>
-
             <div class="mb-3">
               <label class="vg-label">Adresse postale</label>
-              <input type="text" class="form-control vg-input" name="adresse_postale"
-                value="<?= htmlspecialchars($utilisateur['adresse_postale'] ?? '') ?>">
+              <input type="text" class="form-control vg-input" name="adresse_postale" value="<?= htmlspecialchars($utilisateur['adresse_postale'] ?? '') ?>">
             </div>
-
             <div class="row">
               <div class="col-md-4 mb-3">
                 <label class="vg-label">Code postal</label>
-                <input type="text" class="form-control vg-input" name="code_postal"
-                  value="<?= htmlspecialchars($utilisateur['code_postal'] ?? '') ?>">
+                <input type="text" class="form-control vg-input" name="code_postal" value="<?= htmlspecialchars($utilisateur['code_postal'] ?? '') ?>">
               </div>
               <div class="col-md-8 mb-3">
                 <label class="vg-label">Ville</label>
-                <input type="text" class="form-control vg-input" name="ville"
-                  value="<?= htmlspecialchars($utilisateur['ville'] ?? '') ?>">
+                <input type="text" class="form-control vg-input" name="ville" value="<?= htmlspecialchars($utilisateur['ville'] ?? '') ?>">
               </div>
             </div>
-
-            <div class="text-center">
-              <button type="submit" class="btn btn-vg-primary">Enregistrer les modifications</button>
-            </div>
+            <button type="submit" class="btn btn-vg-primary w-100">Enregistrer les modifications</button>
           </form>
 
-          <hr class="my-4">
+          <hr class="my-5">
 
-          <h2 class="mb-3">Changer mon adresse email</h2>
-          <form method="post" action="/compte.php">
+          <h2 class="h4 mb-3 text-center">Sécurité</h2>
+          <form method="post" action="/compte.php" class="vg-texte-presentation p-4 border rounded shadow-sm bg-white">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
             <input type="hidden" name="action" value="maj_email">
 
             <div class="mb-3">
               <label class="vg-label">Nouvelle adresse email*</label>
-              <input type="email" class="form-control vg-input" name="nouvel_email" required
-                value="<?= htmlspecialchars($utilisateur['email']) ?>">
+              <input type="email" class="form-control vg-input" name="nouvel_email" required value="<?= htmlspecialchars($utilisateur['email']) ?>">
             </div>
             <div class="mb-3">
-              <label class="vg-label">Mot de passe actuel (confirmation)*</label>
+              <label class="vg-label">Mot de passe actuel (pour confirmer)*</label>
               <div class="input-group">
-                <input type="password" class="form-control vg-input" name="mot_de_passe_actuel" required>
-                <button class="btn btn-outline-secondary toggle-password" type="button">
-                  <i class="bi bi-eye"></i>
-                </button>
+                <input type="password" class="form-control vg-input input-password" name="mot_de_passe_actuel" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button"><i class="bi bi-eye"></i></button>
               </div>
             </div>
-            <div class="text-center">
-              <button type="submit" class="btn btn-vg-secondary">Changer mon email</button>
-            </div>
+            <button type="submit" class="btn btn-vg-secondary w-100">Mettre à jour l'email</button>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Onglet historique des commandes -->
-    <div class="tab-pane fade" id="ongletCommandes">
-      <?php if (empty($commandes)): ?>
-        <p class="text-center vg-text-secondary">Vous n'avez pas encore passé de commande.</p>
-      <?php endif; ?>
-
-      <?php foreach ($commandes as $commande): ?>
-        <div class="vg-texte-presentation mb-3">
-          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-            <div>
-              <h3 class="mb-1"><?= htmlspecialchars($commande['titre_menu']) ?></h3>
-              <p class="mb-1 vg-text-secondary">
-                <?= (int) $commande['nb_personnes'] ?> personnes —
-                <?= htmlspecialchars($commande['date_prestation']) ?> à <?= substr($commande['heure_prestation'], 0, 5) ?>
-              </p>
-              <p class="mb-0"><strong><?= number_format((float) $commande['prix_total'], 2, ',', ' ') ?> €</strong></p>
-            </div>
-            <span class="badge-vg-warning px-2 py-1 rounded">
-              <?= $labels_statut[$commande['statut_actuel']] ?? $commande['statut_actuel'] ?>
-            </span>
-          </div>
-
-          <?php if ($commande['statut_actuel'] === 'en_attente'): ?>
-            <div class="mt-3 d-flex gap-2 flex-wrap">
-              <a href="/commande-modifier.php?id=<?= (int) $commande['id_commande'] ?>" class="btn btn-vg-secondary">Modifier</a>
-              <form method="post" action="/compte.php" onsubmit="return confirm('Confirmez-vous l\'annulation de cette commande ?');" class="d-inline">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
-                <input type="hidden" name="action" value="annuler_commande">
-                <input type="hidden" name="id_commande" value="<?= (int) $commande['id_commande'] ?>">
-                <button type="submit" class="btn btn-sm btn-outline-danger">Annuler la commande</button>
-              </form>
-            </div>
-          <?php elseif (in_array($commande['statut_actuel'], ['accepte', 'en_preparation', 'en_cours_de_livraison', 'livre', 'en_attente_retour_materiel'], true)): ?>
-            <button type="button" class="btn btn-vg-secondary mt-3" data-bs-toggle="collapse" data-bs-target="#suivi<?= (int) $commande['id_commande'] ?>">
-              Voir le suivi de la commande
-            </button>
-            <div class="collapse mt-2" id="suivi<?= (int) $commande['id_commande'] ?>">
-              <ul class="list-unstyled">
-                <?php foreach (Commande::getHistoriqueStatuts((int) $commande['id_commande']) as $etape): ?>
-                  <li class="vg-text-secondary">
-                    <?= $labels_statut[$etape['statut']] ?? $etape['statut'] ?> —
-                    <?= (new DateTime($etape['date_modification']))->format('d/m/Y à H:i') ?>
-                  </li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
-          <?php elseif ($commande['statut_actuel'] === 'terminee' && !$commande['a_un_avis']): ?>
-            <button type="button" class="btn btn-vg-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalAvis<?= (int) $commande['id_commande'] ?>">
-              Laisser un avis
-            </button>
-
-            <!-- Modal pour laisser un avis -->
-            <div class="modal fade" id="modalAvis<?= (int) $commande['id_commande'] ?>" tabindex="-1" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h2 class="modal-title">Votre avis sur "<?= htmlspecialchars($commande['titre_menu']) ?>"</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+    <!-- CONTENU 2 : COMMANDES -->
+    <div class="tab-pane fade" id="pane-commandes" role="tabpanel" aria-labelledby="commandes-tab">
+      <div class="row justify-content-center">
+        <div class="col-lg-9">
+          <?php if (empty($commandes)): ?>
+            <p class="text-center text-muted py-5">Vous n'avez pas encore passé de commande.</p>
+          <?php else: ?>
+            <?php foreach ($commandes as $c): ?>
+              <?php
+              // Logique de couleur de badge
+              $badgeColor = 'bg-secondary';
+              $statut = $c['statut_actuel'];
+              if ($statut === 'en_attente') $badgeColor = 'bg-warning text-dark';
+              elseif (in_array($statut, ['accepte', 'en_preparation', 'en_cours_de_livraison'])) $badgeColor = 'bg-info text-dark';
+              elseif ($statut === 'annulee') $badgeColor = 'bg-danger';
+              elseif ($statut === 'terminee' || $statut === 'livre') $badgeColor = 'bg-success';
+              ?>
+              <div class="card mb-3 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                  <div>
+                    <h5 class="mb-1"><?= htmlspecialchars($c['titre_menu']) ?></h5>
+                    <p class="small text-muted mb-1">
+                      Le <?= date('d/m/Y', strtotime($c['date_prestation'])) ?> à <?= substr($c['heure_prestation'], 0, 5) ?> (<?= (int)$c['nb_personnes'] ?> pers.)
+                    </p>
+                    <strong class="text-dark"><?= number_format($c['prix_total'], 2, ',', ' ') ?> €</strong>
                   </div>
-                  <form method="post" action="/compte.php">
-                    <div class="modal-body">
-                      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
-                      <input type="hidden" name="action" value="laisser_avis">
-                      <input type="hidden" name="id_commande" value="<?= (int) $commande['id_commande'] ?>">
 
-                      <label class="vg-label mb-2 d-block">Note</label>
-                      <div class="d-flex gap-2 mb-3">
-                        <?php for ($n = 1; $n <= 5; $n++): ?>
-                          <label class="btn btn-vg-filtre">
-                            <input type="radio" name="note" value="<?= $n ?>" class="d-none" required> <?= $n ?> ★
-                          </label>
-                        <?php endfor; ?>
-                      </div>
+                  <div class="text-end" style="min-width: 160px;">
+                    <!-- LE BADGE DE STATUT -->
+                    <span class="badge <?= $badgeColor ?> d-block p-2 mb-2">
+                      <?= $labels_statut[$statut] ?? $statut ?>
+                    </span>
 
-                      <label class="vg-label">Commentaire</label>
-                      <textarea class="form-control vg-input" name="commentaire" rows="3" style="height:auto;" required></textarea>
+                    <!-- ACTIONS -->
+                    <div class="d-flex flex-column gap-1">
+                      <?php if ($statut === 'en_attente'): ?>
+                        <a href="/commande-modifier.php?id=<?= (int)$c['id_commande'] ?>" class="btn btn-sm btn-outline-secondary">Modifier</a>
+                        <form method="post" action="/compte.php" onsubmit="return confirm('Annuler cette commande ?');">
+                          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+                          <input type="hidden" name="action" value="annuler_commande">
+                          <input type="hidden" name="id_commande" value="<?= (int) $c['id_commande'] ?>">
+                          <button type="submit" class="btn btn-sm btn-outline-danger w-100">Annuler</button>
+                        </form>
+                      <?php elseif ($statut !== 'annulee'): ?>
+                        <button class="btn btn-sm btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#suivi<?= $c['id_commande'] ?>">
+                          <i class="bi bi-info-circle"></i> Suivre
+                        </button>
+                      <?php endif; ?>
+
+                      <?php if ($statut === 'terminee' && !$c['a_un_avis']): ?>
+                        <button type="button" class="btn btn-sm btn-vg-primary" data-bs-toggle="modal" data-bs-target="#modalAvis<?= $c['id_commande'] ?>">Donner mon avis</button>
+                      <?php endif; ?>
                     </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-vg-primary">Envoyer mon avis</button>
+                  </div>
+
+                  <!-- Zone de suivi dépliable -->
+                  <div class="collapse w-100 mt-3" id="suivi<?= $c['id_commande'] ?>">
+                    <div class="p-3 bg-light rounded small">
+                      <ul class="list-unstyled mb-0">
+                        <?php foreach (Commande::getHistoriqueStatuts((int) $c['id_commande']) as $etape): ?>
+                          <li class="border-bottom py-1">
+                            <i class="bi bi-check2"></i> <strong><?= $labels_statut[$etape['statut']] ?></strong>
+                            <span class="text-muted float-end"><?= date('d/m/Y H:i', strtotime($etape['date_modification'])) ?></span>
+                          </li>
+                        <?php endforeach; ?>
+                      </ul>
                     </div>
-                  </form>
+                  </div>
+
                 </div>
               </div>
-            </div>
+
+              <!-- MODALE AVIS (Uniquement si terminée) -->
+              <?php if ($statut === 'terminee' && !$c['a_un_avis']): ?>
+                <div class="modal fade" id="modalAvis<?= $c['id_commande'] ?>" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h2 class="h5 modal-title">Votre avis sur "<?= htmlspecialchars($c['titre_menu']) ?>"</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <form method="post">
+                        <div class="modal-body text-start">
+                          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+                          <input type="hidden" name="action" value="laisser_avis">
+                          <input type="hidden" name="id_commande" value="<?= (int) $c['id_commande'] ?>">
+
+                          <label class="vg-label mb-2 d-block">Votre note</label>
+                          <select name="note" class="form-select mb-3">
+                            <option value="5">5 ★ (Excellent)</option>
+                            <option value="4">4 ★ (Très bon)</option>
+                            <option value="3" selected>3 ★ (Correct)</option>
+                            <option value="2">2 ★ (Décevant)</option>
+                            <option value="1">1 ★ (Mauvais)</option>
+                          </select>
+
+                          <label class="vg-label mb-2">Votre commentaire</label>
+                          <textarea class="form-control" name="commentaire" rows="4" required placeholder="Comment était votre repas ?"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-vg-primary w-100">Publier mon avis</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <?php endif; ?>
+
+            <?php endforeach; ?>
           <?php endif; ?>
         </div>
-      <?php endforeach; ?>
+      </div>
     </div>
   </div>
 </div>
 
-<script src="/js/compte.js"></script>
-
-<?php
-require_once __DIR__ . '/../views/partials/footer.php';
+<?php require_once __DIR__ . '/../views/partials/footer.php'; ?>
