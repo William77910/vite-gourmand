@@ -3,12 +3,14 @@
 require_once __DIR__ . '/../../config/database.php';
 
 /**
- * Modèle Utilisateur : centralise les requêtes SQL liées aux comptes.
- * Les mots de passe sont toujours hachés (password_hash) avant stockage,
- * jamais manipulés en clair au-delà de la saisie du formulaire.
+ * Modèle Utilisateur : Gère les comptes clients, employés et administrateurs.
+ * Centralise la sécurité des accès et la persistance des profils.
  */
 class Utilisateur
 {
+    /**
+     * Recherche un utilisateur par son email (pour la connexion).
+     */
     public static function findByEmail(string $email): ?array
     {
         $pdo = Database::getConnection();
@@ -18,6 +20,9 @@ class Utilisateur
         return $u ?: null;
     }
 
+    /**
+     * Récupère un utilisateur par son ID unique.
+     */
     public static function findById(int $id): ?array
     {
         $pdo = Database::getConnection();
@@ -28,36 +33,59 @@ class Utilisateur
     }
 
     /**
-     * Crée un compte utilisateur (rôle "utilisateur" par défaut).
-     * Retourne l'identifiant du nouveau compte.
+     * Récupère tout le personnel (Employés et Admins).
+     * Exigence Page 9 du PDF.
+     */
+    public static function getAllPersonnel(): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "SELECT id_utilisateur, nom, prenom, email, role, actif, date_creation 
+                FROM utilisateur 
+                WHERE role IN ('employe', 'administrateur') 
+                ORDER BY role ASC, nom ASC";
+        return $pdo->query($sql)->fetchAll();
+    }
+
+    /**
+     * Active ou désactive un compte (Droit de dé-provisionnement).
+     */
+    public static function updateStatus(int $id, int $etat): bool
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE utilisateur SET actif = :etat WHERE id_utilisateur = :id");
+        return $stmt->execute([':etat' => $etat, ':id' => $id]);
+    }
+
+    /**
+     * Crée un nouvel utilisateur. 
+     * Utilise l'opérateur de fusion null (??) pour éviter les erreurs d'index.
      */
     public static function create(array $data): int
     {
         $pdo = Database::getConnection();
-
         $sql = "INSERT INTO utilisateur
                     (nom, prenom, email, mot_de_passe, telephone, adresse_postale, code_postal, ville, role, actif)
                 VALUES
-                    (:nom, :prenom, :email, :mot_de_passe, :telephone, :adresse_postale, :code_postal, :ville, 'utilisateur', 1)";
+                    (:nom, :prenom, :email, :mot_de_passe, :telephone, :adresse_postale, :code_postal, :ville, :role, 1)";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':nom'             => $data['nom'],
-            ':prenom'          => $data['prenom'],
-            ':email'           => $data['email'],
+            ':nom'             => $data['nom'] ?? '',
+            ':prenom'          => $data['prenom'] ?? '',
+            ':email'           => $data['email'] ?? '',
             ':mot_de_passe'    => password_hash($data['mot_de_passe'], PASSWORD_DEFAULT),
-            ':telephone'       => $data['telephone'],
-            ':adresse_postale' => $data['adresse_postale'],
-            ':code_postal'     => $data['code_postal'],
-            ':ville'           => $data['ville'],
+            ':telephone'       => $data['telephone'] ?? null,
+            ':adresse_postale' => $data['adresse_postale'] ?? null,
+            ':code_postal'     => $data['code_postal'] ?? null,
+            ':ville'           => $data['ville'] ?? null,
+            ':role'            => $data['role'] ?? 'utilisateur'
         ]);
 
         return (int) $pdo->lastInsertId();
     }
 
     /**
-     * Met à jour les informations personnelles d'un utilisateur
-     * (hors email et mot de passe, gérés séparément par sécurité).
+     * Met à jour les informations de profil.
      */
     public static function update(int $id, array $data): void
     {
@@ -79,14 +107,25 @@ class Utilisateur
     }
 
     /**
-     * Met à jour l'adresse email d'un utilisateur.
-     * L'unicité et la vérification du mot de passe sont contrôlées
-     * en amont, dans la page appelante.
+     * Met à jour uniquement l'email.
      */
     public static function updateEmail(int $id, string $nouvelEmail): void
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare('UPDATE utilisateur SET email = :email WHERE id_utilisateur = :id');
         $stmt->execute([':email' => $nouvelEmail, ':id' => $id]);
+    }
+
+    /**
+     * Met à jour le mot de passe (hachage sécurisé).
+     */
+    public static function updatePassword(int $id, string $nouveauMdp): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE utilisateur SET mot_de_passe = :mdp WHERE id_utilisateur = :id");
+        $stmt->execute([
+            ':mdp' => password_hash($nouveauMdp, PASSWORD_DEFAULT),
+            ':id'  => $id
+        ]);
     }
 }

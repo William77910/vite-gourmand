@@ -98,6 +98,18 @@ require_once __DIR__ . '/../views/partials/header.php';
         </div>
       </a>
     </div>
+    <!-- GESTION DES EMPLOYÉS (SÉCURISÉ : Uniquement Administrateur) -->
+    <?php if ($_SESSION['role'] === 'administrateur'): ?>
+      <div class="col-md-4 col-lg-3">
+        <a href="/admin-employes.php" class="text-decoration-none">
+          <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0 bg-light">
+            <i class="bi bi-people-fill fs-1" style="color: #2c3e50;"></i>
+            <h3 class="mt-2 text-dark h5">Gestion Personnel</h3>
+            <p class="vg-text-secondary mb-0 small">Activer ou suspendre les accès collaborateurs.</p>
+          </div>
+        </a>
+      </div>
+    <?php endif; ?>
 
   </div>
 

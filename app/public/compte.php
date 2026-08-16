@@ -47,6 +47,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
   }
+  // Mise à jour du mot de passe
+  if ($action === 'maj_mdp') {
+    require_once __DIR__ . '/../src/Helpers/mot_de_passe.php'; // On charge le validateur
+
+    $actuel = $_POST['mdp_actuel'] ?? '';
+    $nouveau = $_POST['nouveau_mdp'] ?? '';
+    $confirmation = $_POST['confirm_mdp'] ?? '';
+    $u = Utilisateur::findById($idUtilisateur);
+
+    if (!password_verify($actuel, $u['mot_de_passe'])) {
+      $messages['erreurs'][] = "Le mot de passe actuel est incorrect.";
+    }
+    // --- CONTRÔLE DE CONFORMITÉ (RECO) ---
+    elseif (!mot_de_passe_valide($nouveau)) {
+      $messages['erreurs'][] = "Le nouveau mot de passe ne respecte pas les critères de sécurité.";
+    } elseif ($nouveau !== $confirmation) {
+      $messages['erreurs'][] = "Les deux nouveaux mots de passe ne correspondent pas.";
+    } else {
+      Utilisateur::updatePassword($idUtilisateur, $nouveau);
+      $messages['succes'][] = "Votre mot de passe a été modifié avec succès.";
+    }
+  }
 }
 
 $utilisateur = Utilisateur::findById($idUtilisateur);
@@ -139,6 +161,52 @@ require_once __DIR__ . '/../views/partials/header.php';
             </div>
             <button type="submit" class="btn btn-vg-secondary w-100">Mettre à jour l'email</button>
           </form>
+
+          <!-- Modifier le mot de passe -->
+          <hr class="my-5">
+
+          <h2 class="h4 mb-3 text-center">Changer mon mot de passe</h2>
+          <form method="post" action="/compte.php" class="vg-texte-presentation p-4 border rounded shadow-sm bg-white">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+            <input type="hidden" name="action" value="maj_mdp">
+
+            <div class="mb-3">
+              <label class="vg-label">Mot de passe actuel*</label>
+              <div class="input-group">
+                <input type="password" name="mdp_actuel" class="form-control vg-input input-password" required shadow-none>
+                <button class="btn btn-outline-secondary toggle-password" type="button"><i class="bi bi-eye"></i></button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="vg-label">Nouveau mot de passe*</label>
+              <div class="input-group">
+                <!-- On garde l'ID 'mot_de_passe' pour que le JS d'inscription.js s'active automatiquement ici aussi ! -->
+                <input type="password" id="mot_de_passe" name="nouveau_mdp" class="form-control vg-input input-password" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button"><i class="bi bi-eye"></i></button>
+              </div>
+            </div>
+
+            <!-- LISTE DES CRITÈRES (Auto-pilotée par inscription.js) -->
+            <ul class="list-unstyled small mb-3" id="listeCriteresMdp">
+              <li data-critere="longueur" class="text-danger"><i class="bi bi-x-circle"></i> 10 caractères minimum</li>
+              <li data-critere="majuscule" class="text-danger"><i class="bi bi-x-circle"></i> 1 majuscule minimum</li>
+              <li data-critere="minuscule" class="text-danger"><i class="bi bi-x-circle"></i> 1 minuscule minimum</li>
+              <li data-critere="chiffre" class="text-danger"><i class="bi bi-x-circle"></i> 1 chiffre minimum</li>
+              <li data-critere="special" class="text-danger"><i class="bi bi-x-circle"></i> 1 caractère spécial minimum</li>
+            </ul>
+
+            <div class="mb-4">
+              <label class="vg-label">Confirmer le nouveau mot de passe*</label>
+              <div class="input-group">
+                <input type="password" name="confirm_mdp" class="form-control vg-input input-password" required>
+                <button class="btn btn-outline-secondary toggle-password" type="button"><i class="bi bi-eye"></i></button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-vg-primary w-100">Modifier mon mot de passe</button>
+          </form>
+
         </div>
       </div>
     </div>

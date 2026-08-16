@@ -67,11 +67,16 @@ if (!function_exists('formaterHeure')) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/ui-utils.js"></script>
+
 <?php
-$f = basename($_SERVER['PHP_SELF']);
-if ($f === 'inscription.php') echo '<script src="/js/inscription.js"></script>';
-if ($f === 'compte.php') echo '<script src="/js/compte.js"></script>';
+$currentFile = basename($_SERVER['PHP_SELF']);
+
+// MODIFICATION ICI : On charge le script sur les DEUX pages
+if ($currentFile === 'inscription.php' || $currentFile === 'compte.php'):
 ?>
+  <script src="/js/inscription.js"></script>
+<?php endif; ?>
+
 </body>
 
 </html>
