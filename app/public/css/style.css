@@ -1,5 +1,5 @@
 /* ============================================================
-   Vite & Gourmand - Charte graphique complète (STABLE)
+   Vite & Gourmand - CHARTE GRAPHIQUE OFFICIELLE
    ============================================================ */
 
 :root {
@@ -10,6 +10,8 @@
   --vg-blanc: #ffffff;
   --vg-gris-chaud: #6f6f6f;
   --vg-gris-clair: #e6e6e6;
+  --vg-orange: #e8a15b;
+  --vg-rouge: #d96c6c;
   --vg-font-titres: "Montserrat", sans-serif;
   --vg-font-paragraphes: "Open Sans", sans-serif;
 }
@@ -18,149 +20,260 @@ body {
   background-color: var(--vg-jaune-clair);
   font-family: var(--vg-font-paragraphes);
   color: #1f1f1f;
-  margin: 0;
-  padding: 0;
+  overflow-x: hidden;
 }
 
-/* --- Navigation & Header --- */
+h1,
+h2,
+h3,
+.vg-titre {
+  font-family: var(--vg-font-titres);
+  color: var(--vg-vert-fonce);
+}
+
+.font-italianno {
+  font-family: "Italianno", cursive !important;
+}
+
+/* --- LOGO & HEADER --- */
 .vg-header {
   background-color: var(--vg-beige-clair);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-
 .vg-logo {
   display: flex;
   align-items: center;
   text-decoration: none;
 }
-
 .vg-logo img {
-  height: 90px !important;
-  width: auto !important;
+  height: 80px !important;
+  width: auto;
 }
-
 .vg-logo span {
   font-family: "Italianno", cursive;
   color: var(--vg-vert-fonce);
-  font-size: 3.2rem;
+  font-size: 3rem;
   margin-left: 15px;
 }
 
-/* Optimisation Navbar entre 1200 et 1400px */
-@media (min-width: 1200px) and (max-width: 1400px) {
-  .vg-nav .nav-link {
-    font-size: 0.85rem !important;
-    padding: 0 5px !important;
-  }
-  .vg-logo span {
-    font-size: 2.2rem !important;
-  }
-  .vg-logo img {
-    height: 60px !important;
-  }
-}
-
-/* --- Footer (Version Stable sans décalage) --- */
-.vg-footer {
-  background-color: var(--vg-beige-clair);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 4rem 0;
-  width: 100%; /* Plus de 100vw problématique */
-}
-
-.vg-footer-title {
-  font-family: "Italianno", cursive;
-  color: var(--vg-vert-fonce);
-  font-size: 2.8rem;
-  margin-bottom: 1.2rem;
-}
-
-/* Grille Horaires */
-.vg-footer-horaires {
-  max-width: 380px;
-}
-
-.vg-footer-horaire-row {
-  display: grid;
-  grid-template-columns: 85px 1fr 15px 1fr;
-  align-items: center;
-  padding: 4px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  font-size: 0.85rem;
-}
-
-.vg-horaire-jour {
-  font-weight: bold;
-  color: var(--vg-vert-fonce);
-}
-.vg-horaire-service {
-  text-align: center;
-  color: #666;
-}
-.vg-horaire-separateur {
-  text-align: center;
-  color: #ccc;
-}
-.vg-ferme-message {
-  font-style: italic;
-  color: #999;
-  font-size: 0.8rem;
-}
-
-/* Bloc Central */
-.vg-footer-brand img {
-  height: 100px !important;
-  width: auto !important;
-  margin-bottom: 10px;
-}
-
-/* Bloc Contact */
-.vg-footer-contact p {
-  margin-bottom: 0.2rem;
-  font-size: 0.9rem;
-}
-
-/* --- Utilitaires --- */
-.btn-vg-primary {
-  background: var(--vg-vert-fonce);
-  color: white;
-  border-radius: 8px;
-  padding: 10px 20px;
-  border: none;
-  font-weight: bold;
-}
-.btn-vg-primary:hover {
-  background: var(--vg-vert-sauge);
-  color: white;
-}
-.vg-texte-presentation {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid var(--vg-gris-clair);
-}
-.form-control.vg-input {
-  border-radius: 8px;
-  border: 1px solid var(--vg-gris-clair);
-}
-
-/* Responsive General */
 @media (max-width: 1200px) {
   .vg-logo span {
+    font-size: 2.2rem;
     white-space: normal;
     max-width: 150px;
     line-height: 0.9;
   }
+  .vg-nav .nav-link {
+    font-size: 0.85rem;
+    padding: 0 5px !important;
+  }
 }
-@media (max-width: 991px) {
-  .vg-footer-horaires {
-    margin: 0 auto 2rem;
-  }
-  .vg-footer-contact {
-    text-align: center !important;
-    margin-top: 2rem;
-  }
-  .vg-footer-horaire-row {
-    justify-content: center;
-  }
+
+/* --- SECTION HERO (ACCUEIL) --- */
+.vg-hero {
+  position: relative;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vg-hero-overlay {
+  background-color: rgba(254, 254, 254, 0.85);
+  border-radius: 50% / 40%; /* Forme ovale */
+  padding: 50px 80px;
+  text-align: center;
+  max-width: 600px;
+}
+
+/* --- PHOTOS OVALES (CHEFS) --- */
+.vg-photo-ovale {
+  width: 150px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50% / 30%; /* Forme ovale verticale */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- CARTES (MENUS & ESPACE EMPLOYÉ) --- */
+.vg-menu-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  height: 100%;
+}
+.vg-menu-card:hover {
+  transform: translateY(-5px);
+}
+.vg-menu-card img {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+.vg-menu-card-body {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Couleurs spécifiques Espace Employé */
+.bg-light-custom {
+  background-color: #f8f9fa;
+  border: 1px solid var(--vg-gris-clair);
+}
+
+/* --- BADGES DE STATUT (MON COMPTE) --- */
+.badge-status {
+  padding: 8px 12px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* --- FOOTER STABILISÉ --- */
+.vg-footer {
+  background-color: var(--vg-beige-clair);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 3rem 0;
+}
+.vg-footer-title {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+.vg-footer-brand img {
+  height: 100px !important;
+  width: auto;
+  margin-bottom: 10px;
+}
+
+.vg-footer-horaire-row {
+  display: grid;
+  grid-template-columns: 80px 110px 15px 110px;
+  align-items: center;
+  font-size: 0.85rem;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* --- BOUTONS --- */
+.btn-vg-primary {
+  background-color: var(--vg-vert-fonce);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-weight: 700;
+}
+.btn-vg-primary:hover {
+  background-color: var(--vg-vert-sauge);
+  color: white;
+}
+.btn-vg-secondary {
+  border: 1px solid var(--vg-vert-fonce);
+  color: var(--vg-vert-fonce);
+  background: white;
+  border-radius: 8px;
+}
+
+/* Mise en évidence du texte d'introduction "A propos" */
+.vg-lead-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #444;
+  border-left: 4px solid var(--vg-vert-sauge); /* Petit trait décoratif à gauche */
+  padding-left: 20px;
+}
+
+/* Force les cartes de l'équipe à être identiques */
+.vg-team-card {
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.vg-team-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ============================================================
+   PAGE À PROPOS - STYLES SPÉCIFIQUES
+   ============================================================ */
+
+/* Titres de section spécifiques */
+.vg-about-title {
+  color: var(--vg-vert-fonce);
+}
+
+.vg-about-subtitle {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+/* Portraits des Chefs */
+.vg-team-img {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border: 3px solid var(--vg-vert-sauge);
+  transition: transform 0.3s ease;
+}
+
+.vg-team-card:hover .vg-team-img {
+  transform: scale(1.1); /* Petit effet de zoom au survol de la carte */
+}
+
+/* Ajustements pour les petits titres de rôle */
+.vg-role-label {
+  color: var(--vg-vert-sauge);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.75rem;
+}
+
+/* --- Section Engagements / Points Forts --- */
+.vg-engagement-item {
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.vg-engagement-item i {
+  color: var(--vg-vert-sauge); /* On utilise le vert de la charte */
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.vg-engagement-item h4 {
+  font-family: var(--vg-font-titres);
+  color: var(--vg-vert-fonce);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.vg-engagement-item p {
+  font-size: 0.85rem;
+  color: var(--vg-gris-chaud);
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+/* Petit séparateur décoratif sous les titres d'engagement */
+.vg-engagement-item h4::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 2px;
+  background-color: var(--vg-vert-sauge);
+  margin: 8px auto 0;
+  border-radius: 2px;
 }
