@@ -170,4 +170,26 @@ class Plat
       ]);
     }
   }
+  /**
+   * Synchronise les allergènes d'un plat.
+   * @param int $idPlat
+   * @param array $idsAllergenes Tableau d'entiers
+   */
+  public static function synchroniserAllergenes(int $idPlat, array $idsAllergenes): void
+  {
+    $pdo = Database::getConnection();
+
+    // 1. On supprime les anciennes liaisons
+    $stmt = $pdo->prepare("DELETE FROM plat_allergene WHERE id_plat = :id");
+    $stmt->execute([':id' => $idPlat]);
+
+    // 2. On insère les nouvelles
+    if (!empty($idsAllergenes)) {
+      $sql = "INSERT INTO plat_allergene (id_plat, id_allergene) VALUES (:id_plat, :id_all)";
+      $stmtInsert = $pdo->prepare($sql);
+      foreach ($idsAllergenes as $idAll) {
+        $stmtInsert->execute([':id_plat' => $idPlat, ':id_all' => (int)$idAll]);
+      }
+    }
+  }
 }
