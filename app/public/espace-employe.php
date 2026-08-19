@@ -26,7 +26,18 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
-    <!-- 2. GESTION DES MENUS (Commun) -->
+    <!-- 2.GESTION DES ALLERGÈNES -->
+    <div class="col-md-4 col-lg-3">
+      <a href="/employe-allergenes.php" class="text-decoration-none">
+        <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0 bg-light">
+          <i class="bi bi-exclamation-triangle fs-1" style="color: var(--vg-orange);"></i>
+          <h3 class="mt-2 text-dark h5">Allergènes</h3>
+          <p class="vg-text-secondary mb-0 small">Gérer la liste globale des allergènes.</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- 3. GESTION DES MENUS (Commun) -->
     <div class="col-md-4 col-lg-3">
       <a href="/employe-menus.php" class="text-decoration-none">
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
@@ -37,7 +48,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
-    <!-- 3. COMMANDES (Commun) -->
+    <!-- 4. COMMANDES (Commun) -->
     <div class="col-md-4 col-lg-3">
       <a href="/employe-commandes.php" class="text-decoration-none">
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
@@ -48,7 +59,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
-    <!-- 4. AVIS CLIENTS (Commun) -->
+    <!-- 5. AVIS CLIENTS (Commun) -->
     <div class="col-md-4 col-lg-3">
       <a href="/employe-avis.php" class="text-decoration-none">
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
@@ -63,7 +74,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
-    <!-- 5. STATISTIQUES (SÉCURISÉ : Uniquement Administrateur) -->
+    <!-- 6. STATISTIQUES (SÉCURISÉ : Uniquement Administrateur) -->
     <?php if ($_SESSION['role'] === 'administrateur'): ?>
       <div class="col-md-4 col-lg-3">
         <a href="/admin-stats.php" class="text-decoration-none">
@@ -77,7 +88,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </div>
     <?php endif; ?>
 
-    <!-- GESTION DES HORAIRES -->
+    <!-- 7. GESTION DES HORAIRES -->
     <div class="col-md-4 col-lg-3">
       <a href="/employe-horaires.php" class="text-decoration-none">
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
@@ -88,7 +99,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </a>
     </div>
 
-    <!-- GESTION DES CONTACTS -->
+    <!-- 8. GESTION DES CONTACTS -->
     <div class="col-md-4 col-lg-3">
       <a href="/employe-contact.php" class="text-decoration-none">
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
