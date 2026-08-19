@@ -63,47 +63,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $erreurs[] = "Veuillez choisir un mode de paiement.";
     }
 
-    if (empty($erreurs)) {
-      $reductionAppliquee = $valeurs['nb_personnes'] >= ((int) $menu['nb_personnes_min'] + 5);
-      $sousTotal = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * ($reductionAppliquee ? 0.9 : 1);
+    // Vérification de la case à cocher
+    if (!isset($_POST['accepte_conditions'])) {
+      $erreurs[] = "Vous devez accepter les CGV et prendre connaissance des allergènes pour commander.";
+    }
+  }
 
-      $resultatLivraison = calculer_frais_livraison($valeurs['adresse_livraison'], $valeurs['code_postal'], $valeurs['ville_livraison']);
-      $fraisLivraison = $resultatLivraison['frais'];
-      $prixTotal = $sousTotal + $fraisLivraison;
+  if (empty($erreurs)) {
+    $reductionAppliquee = $valeurs['nb_personnes'] >= ((int) $menu['nb_personnes_min'] + 5);
+    $sousTotal = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * ($reductionAppliquee ? 0.9 : 1);
 
-      try {
-        $idCommande = Commande::create([
-          'id_utilisateur'        => $_SESSION['id_utilisateur'],
-          'id_menu'               => $idMenu,
-          'nb_personnes'          => $valeurs['nb_personnes'],
-          'date_prestation'       => $valeurs['date_prestation'],
-          'heure_prestation'      => $valeurs['heure_prestation'],
-          'adresse_livraison'     => $valeurs['adresse_livraison'],
-          'ville_livraison'       => $valeurs['ville_livraison'],
-          'code_postal_livraison' => $valeurs['code_postal'],
-          'frais_livraison'       => $fraisLivraison,
-          'reduction_appliquee'   => $reductionAppliquee,
-          'prix_total'            => $prixTotal,
-          'commentaires'          => $valeurs['commentaires'] !== '' ? $valeurs['commentaires'] : null,
-          'mode_paiement'         => $valeurs['mode_paiement'],
-        ]);
+    $resultatLivraison = calculer_frais_livraison($valeurs['adresse_livraison'], $valeurs['code_postal'], $valeurs['ville_livraison']);
+    $fraisLivraison = $resultatLivraison['frais'];
+    $prixTotal = $sousTotal + $fraisLivraison;
 
-        // --- SYNCHRONISATION MONGODB ---
-        require_once __DIR__ . '/../src/Helpers/stats_helper.php';
-        $infosStats = [
-          'id_commande'  => $idCommande,
-          'id_menu'      => $idMenu,
-          'prix_total'   => $prixTotal,
-          'nb_personnes' => $valeurs['nb_personnes'],
-          'date_creation' => date('Y-m-d H:i:s')
-        ];
-        enregistrer_statistique_commande($infosStats, $menu['titre']);
+    try {
+      $idCommande = Commande::create([
+        'id_utilisateur'        => $_SESSION['id_utilisateur'],
+        'id_menu'               => $idMenu,
+        'nb_personnes'          => $valeurs['nb_personnes'],
+        'date_prestation'       => $valeurs['date_prestation'],
+        'heure_prestation'      => $valeurs['heure_prestation'],
+        'adresse_livraison'     => $valeurs['adresse_livraison'],
+        'ville_livraison'       => $valeurs['ville_livraison'],
+        'code_postal_livraison' => $valeurs['code_postal'],
+        'frais_livraison'       => $fraisLivraison,
+        'reduction_appliquee'   => $reductionAppliquee,
+        'prix_total'            => $prixTotal,
+        'commentaires'          => $valeurs['commentaires'] !== '' ? $valeurs['commentaires'] : null,
+        'mode_paiement'         => $valeurs['mode_paiement'],
+      ]);
 
-        header('Location: /commande-confirmee.php?id=' . $idCommande);
-        exit;
-      } catch (Exception $e) {
-        $erreurs[] = $e->getMessage(); // Affiche "Désolé, ce menu n'est plus disponible..."
-      }
+      // --- SYNCHRONISATION MONGODB ---
+      require_once __DIR__ . '/../src/Helpers/stats_helper.php';
+      $infosStats = [
+        'id_commande'  => $idCommande,
+        'id_menu'      => $idMenu,
+        'prix_total'   => $prixTotal,
+        'nb_personnes' => $valeurs['nb_personnes'],
+        'date_creation' => date('Y-m-d H:i:s')
+      ];
+      enregistrer_statistique_commande($infosStats, $menu['titre']);
+
+      header('Location: /commande-confirmee.php?id=' . $idCommande);
+      exit;
+    } catch (Exception $e) {
+      $erreurs[] = $e->getMessage(); // Affiche "Désolé, ce menu n'est plus disponible..."
     }
   }
 }
@@ -200,6 +205,16 @@ $sousTotalAffiche = (float) $menu['prix_personne'] * $valeurs['nb_personnes'] * 
           <textarea class="form-control vg-input" id="commentaires" name="commentaires" rows="3"><?= htmlspecialchars($valeurs['commentaires']) ?></textarea>
         </div>
       </div>
+    </div>
+
+    <!-- Case à cocher pour accepter les conditions générales de vente et les informations sur les allergènes -->
+    <div class="form-check mb-3 mt-4 p-3 border rounded bg-light">
+      <input class="form-check-input" type="checkbox" name="accepte_conditions" id="accepte_conditions" required>
+      <label class="form-check-label small" for="accepte_conditions">
+        En cochant cette case, je reconnais avoir pris connaissance des
+        <a href="/cgv.php" target="_blank">Conditions Générales de Vente</a> et des
+        <strong>informations relatives aux allergènes</strong> mentionnées dans le détail du menu.
+      </label>
     </div>
 
     <div class="text-center mt-5">
