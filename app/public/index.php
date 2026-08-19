@@ -16,17 +16,17 @@ require_once __DIR__ . '/../views/partials/header.php';
   <!-- Points forts -->
   <div class="row text-center mb-5">
     <div class="col-md-4">
-      <img src="/images/icon-livraison.png" alt="" height="70">
+      <img src="/images/icon-livraison.png" alt="icon livraison" height="70">
       <h3 class="mt-2">Livraison rapide</h3>
       <p class="vg-text-secondary">Service rapide et fiable</p>
     </div>
     <div class="col-md-4">
-      <img src="/images/icon-menus-perso.png" alt="" height="70">
+      <img src="/images/icon-menus-perso.png" alt="icon menus personnalisables" height="70">
       <h3 class="mt-2">Menus personnalisables</h3>
       <p class="vg-text-secondary">Des menus sur mesure</p>
     </div>
     <div class="col-md-4">
-      <img src="/images/icon-produits-frais.png" alt="" height="70">
+      <img src="/images/icon-produits-frais.png" alt="icon produits frais" height="70">
       <h3 class="mt-2">Produits frais</h3>
       <p class="vg-text-secondary">Ingredients de saison</p>
     </div>

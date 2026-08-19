@@ -26,7 +26,7 @@ $menus = Menu::getAll();
       <div class="col-md-4">
         <div class="vg-menu-card">
           <img src="<?= htmlspecialchars($menu['image_principale'] ?? '/images/menus/placeholder.jpg') ?>"
-            alt="<?= htmlspecialchars($menu['titre']) ?>">
+            alt="Photo du menu : <?= htmlspecialchars($menu['titre']) ?>">
           <div class="vg-menu-card-body">
             <div class="vg-menu-card-titre"><?= htmlspecialchars($menu['titre']) ?></div>
             <p class="mb-1"><?= number_format((float) $menu['prix_personne'], 2, ',', ' ') ?> € / personne</p>
