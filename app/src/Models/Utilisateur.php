@@ -128,4 +128,79 @@ class Utilisateur
             ':id'  => $id
         ]);
     }
+
+    /**
+     * Supprime le compte de l'utilisateur (Anonymisation RGPD).
+     * On désactive le compte et on vide les données personnelles.
+     */
+    public static function anonymiserCompte(int $id): bool
+    {
+        $pdo = Database::getConnection();
+        $sql = "UPDATE utilisateur SET
+                nom = 'Anonyme', 
+                prenom = 'Utilisateur',
+                email = CONCAT('deleted_', id_utilisateur, '@vitegourmand.com'),
+                telephone = NULL,
+                adresse_postale = NULL,
+                code_postal = NULL,
+                ville = NULL,
+                mot_de_passe = 'DELETED',
+                actif = 0
+                WHERE id_utilisateur = :id";
+
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    /**
+     * Enregistre un jeton de réinitialisation valable 30 minutes.
+     */
+    public static function saveResetToken(string $email, string $token): bool
+    {
+        $pdo = Database::getConnection();
+        // On calcule l'heure d'expiration en PHP
+        $expiration = date("Y-m-d H:i:s", strtotime('+30 minutes'));
+
+        $stmt = $pdo->prepare("UPDATE utilisateur SET token_reset_mdp = :token, token_reset_expire = :expire WHERE email = :email");
+        return $stmt->execute([
+            ':token'  => $token,
+            ':expire' => $expiration,
+            ':email'  => $email
+        ]);
+    }
+
+    /**
+     * Vérifie si un jeton est valide et non expiré.
+     */
+    public static function validateResetToken(string $token): ?array
+    {
+        $pdo = Database::getConnection();
+
+        // On récupère l'utilisateur et sa date d'expiration sans filtrer par NOW() en SQL
+        $stmt = $pdo->prepare("SELECT id_utilisateur, token_reset_expire 
+                               FROM utilisateur 
+                               WHERE token_reset_mdp = :token AND actif = 1");
+        $stmt->execute([':token' => $token]);
+        $u = $stmt->fetch();
+
+        if ($u) {
+            // On compare l'expiration enregistrée avec l'heure actuelle de PHP
+            // C'est la méthode la plus sûre pour éviter les décalages Docker/MySQL
+            if (strtotime($u['token_reset_expire']) > time()) {
+                return $u;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Supprime le jeton après utilisation.
+     */
+    public static function clearResetToken(int $id): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE utilisateur SET token_reset_mdp = NULL, token_reset_expire = NULL WHERE id_utilisateur = :id");
+        $stmt->execute([':id' => $id]);
+    }
 }

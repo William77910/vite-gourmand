@@ -15,8 +15,20 @@
   --vg-font-titres: "Montserrat", sans-serif;
   --vg-font-paragraphes: "Open Sans", sans-serif;
 }
+html,
+body {
+  height: 100%; /* Indispensable pour que le 100% de hauteur fonctionne */
+}
+
+/* On cible la balise main que nous allons ajouter */
+main {
+  flex: 1 0 auto; /* Force le contenu à "pousser" le footer vers le bas */
+}
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Prend au moins toute la hauteur de l'écran */
   background-color: var(--vg-jaune-clair);
   font-family: var(--vg-font-paragraphes);
   color: #1f1f1f;
@@ -137,6 +149,7 @@ h3,
 
 /* --- FOOTER STABILISÉ --- */
 .vg-footer {
+  flex-shrink: 0; /* Empêche le footer de s'écraser */
   background-color: var(--vg-beige-clair);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 3rem 0;

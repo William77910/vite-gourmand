@@ -59,3 +59,5 @@ $est_connecte = isset($_SESSION['id_utilisateur']);
       </div>
     </div>
   </nav>
+
+  <main>

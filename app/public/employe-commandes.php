@@ -87,20 +87,72 @@ require_once __DIR__ . '/../views/partials/header.php';
       <div class="card-body d-flex justify-content-between align-items-center">
         <div>
           <h5 class="mb-1">#<?= $c['id_commande'] ?> — <?= htmlspecialchars($c['titre_menu']) ?></h5>
-          <p class="small mb-0"><?= htmlspecialchars($c['prenom'] . ' ' . $c['nom']) ?> (<?= htmlspecialchars($c['email']) ?>)</p>
+          <p class="small mb-0">Client : <?= htmlspecialchars($c['prenom'] . ' ' . $c['nom']) ?> (<?= htmlspecialchars($c['email']) ?>)</p>
+          <p class="small text-muted">Livraison : <?= htmlspecialchars($c['adresse_livraison']) ?>, <?= htmlspecialchars($c['ville_livraison']) ?></p>
           <strong class="text-dark"><?= number_format($c['prix_total'], 2, ',', ' ') ?> €</strong>
         </div>
         <div class="text-end">
           <span class="badge <?= $badgeColor ?> mb-2 d-block p-2"><?= $labels_statut[$s] ?></span>
-          <?php $trans = Commande::transitionsAutorisees($s);
-          if (!empty($trans)): ?>
-            <button class="btn btn-sm btn-vg-secondary" data-bs-toggle="modal" data-bs-target="#modStatut<?= $c['id_commande'] ?>">Gérer</button>
+
+          <?php
+          $transitions = Commande::transitionsAutorisees($s);
+          if (!empty($transitions)):
+          ?>
+            <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modStatut<?= $c['id_commande'] ?>">Gérer</button>
           <?php endif; ?>
         </div>
       </div>
     </div>
 
-    <!-- Modal de changement de statut (omise pour brièveté mais garde ta logique existante) -->
+    <!-- MODALE DE GESTION (Indispensable pour que le bouton fonctionne) -->
+    <div class="modal fade" id="modStatut<?= $c['id_commande'] ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Commande #<?= $c['id_commande'] ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>Statut actuel : <strong><?= $labels_statut[$s] ?></strong></p>
+
+            <form method="post" class="mb-4">
+              <input type="hidden" name="csrf_token" value="<?= generer_token_csrf() ?>">
+              <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+              <input type="hidden" name="action" value="changer_statut">
+
+              <label class="form-label small fw-bold">Passer au statut :</label>
+              <div class="input-group">
+                <select name="nouveau_statut" class="form-select">
+                  <?php foreach ($transitions as $t): if ($t !== 'annulee'): ?>
+                      <option value="<?= $t ?>"><?= $labels_statut[$t] ?></option>
+                  <?php endif;
+                  endforeach; ?>
+                </select>
+                <button type="submit" class="btn btn-primary">Valider</button>
+              </div>
+            </form>
+
+            <?php if (in_array('annulee', $transitions)): ?>
+              <hr>
+              <form method="post">
+                <input type="hidden" name="csrf_token" value="<?= generer_token_csrf() ?>">
+                <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+                <input type="hidden" name="action" value="annuler">
+                <label class="form-label small fw-bold text-danger">Annuler la commande (Motif obligatoire) :</label>
+                <textarea name="motif" class="form-control mb-2" required placeholder="Pourquoi annulez-vous ?"></textarea>
+                <select name="mode_contact" class="form-select mb-2" required>
+                  <option value="">Mode de contact...</option>
+                  <option value="appel">Appel téléphonique</option>
+                  <option value="mail">Email</option>
+                </select>
+                <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Confirmer l\'annulation ?');">Annuler la commande</button>
+              </form>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+    </div>
   <?php endforeach; ?>
+
 </div>
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

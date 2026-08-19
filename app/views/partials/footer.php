@@ -18,6 +18,8 @@ if (!function_exists('formaterHeure')) {
 }
 ?>
 
+</main>
+
 <footer class="vg-footer mt-5">
   <div class="container-fluid px-4 px-lg-5">
     <div class="row g-4 align-items-center">
