@@ -174,6 +174,9 @@ require_once __DIR__ . '/../views/partials/header.php';
                 <?php endif; ?>
               </div>
               <hr>
+              <p class="mb-1 d-flex justify-content-between text-success d-none" id="ligneRemise">
+                Remise groupe (-10%) : <strong id="valeurRemise">0,00 €</strong>
+              </p>
               <h4 class="mb-0 d-flex justify-content-between h5">Total : <strong id="ligneTotal" class="text-vg-primary"><?= number_format($sousTotalAffiche + $fraisAffiches, 2, ',', ' ') ?> €</strong></h4>
             </div>
           </div>

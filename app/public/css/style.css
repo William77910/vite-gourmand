@@ -336,3 +336,46 @@ h3,
 .vg-payment-option.active .check-icon {
   display: block; /* Apparaît quand actif */
 }
+
+/* --- Styles spécifiques pour les titres cursifs --- */
+.vg-title-cursive {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  line-height: 1.1;
+}
+
+.vg-title-lg {
+  font-size: 4rem;
+}
+.vg-title-md {
+  font-size: 3.2rem;
+}
+
+/* --- Styles pour les cartes d'avis --- */
+.vg-stars-gold {
+  color: #f1c40f;
+  font-size: 1.1rem;
+}
+
+.vg-avatar-sm {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.vg-hr-light {
+  margin: 3rem 0;
+  opacity: 0.15;
+}
+
+/* Style spécifique pour la carte "Aucun avis" */
+.vg-empty-state {
+  padding: 3rem;
+  background-color: white;
+  border: 1px solid var(--vg-gris-clair);
+  border-radius: 12px;
+}

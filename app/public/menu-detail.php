@@ -7,7 +7,6 @@ require_once __DIR__ . '/../src/Models/Avis.php';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $menu = $id > 0 ? Menu::getById($id) : null;
 
-//
 if (!$menu) {
   echo '<div class="container my-5 text-center">';
   echo '<h1>Menu introuvable</h1>';
@@ -17,7 +16,7 @@ if (!$menu) {
   require_once __DIR__ . '/../views/partials/footer.php';
   exit;
 }
-// Récupération des informations pour l'affichage
+
 $page_title = htmlspecialchars($menu['titre']);
 $images = Menu::getGalerieComplete($id);
 if (empty($images)) {
@@ -26,131 +25,130 @@ if (empty($images)) {
 $plats = Menu::getPlatsAvecAllergenes($id);
 $avis = Avis::getByMenu($id);
 
-$labels_theme = [
-  'classique' => 'Classique',
-  'paques' => 'Pâques',
-  'noel' => 'Noël',
-  'evenement' => 'Événement',
-];
+$labels_theme = ['classique' => 'Classique', 'paques' => 'Pâques', 'noel' => 'Noël', 'evenement' => 'Événement'];
 $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dessert'];
 ?>
 
-<!-- Affichage du menu -->
 <div class="container my-5">
   <a href="/menus.php" class="vg-text-secondary d-inline-block mb-3">&larr; Retour aux menus</a>
 
   <div class="row">
+    <!-- Galerie Photo -->
     <div class="col-lg-6 mb-4">
       <div id="carouselMenu" class="carousel slide">
-        <div class="carousel-inner rounded">
+        <div class="carousel-inner rounded shadow-sm">
           <?php foreach ($images as $index => $url): ?>
             <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-              <img src="<?= htmlspecialchars($url) ?>" class="d-block w-100 vg-zoomable" alt="<?= htmlspecialchars($menu['titre']) ?>"
-                style="height:400px; object-fit:cover;">
+              <img src="<?= htmlspecialchars($url) ?>" class="d-block w-100 vg-zoomable" alt="<?= htmlspecialchars($menu['titre']) ?>" style="height:400px; object-fit:cover;">
             </div>
           <?php endforeach; ?>
         </div>
         <?php if (count($images) > 1): ?>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselMenu" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselMenu" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-          </button>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselMenu" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselMenu" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         <?php endif; ?>
       </div>
-      <p class="text-center vg-text-secondary small mt-2 mb-0">
-        <i class="bi bi-zoom-in"></i> Cliquez sur une photo pour l'agrandir
-      </p>
+      <p class="text-center vg-text-secondary small mt-2"><i class="bi bi-zoom-in"></i> Cliquez pour agrandir</p>
     </div>
 
-    <!-- Informations sur le menu et les plats -->
+    <!-- Infos & Commande -->
     <div class="col-lg-6">
-      <div class="vg-menu-card-titre" style="font-size:28px;"><?= htmlspecialchars($menu['titre']) ?></div>
-      <p class="vg-text-secondary"><?= htmlspecialchars($menu['description']) ?></p>
+      <h1 class="vg-menu-card-titre vg-title-md mb-2"><?= htmlspecialchars($menu['titre']) ?></h1>
+      <p class="vg-text-secondary mb-4"><?= htmlspecialchars($menu['description']) ?></p>
 
-      <p class="mb-1">
-        <strong><?= number_format((float) $menu['prix_personne'], 2, ',', ' ') ?> € / personne</strong>
-        &nbsp;•&nbsp; Minimum <?= (int) $menu['nb_personnes_min'] ?> personnes
-      </p>
-      <p class="vg-text-secondary mb-3">
-        Thème : <?= htmlspecialchars($labels_theme[$menu['theme']] ?? $menu['theme']) ?>
-        <?php if (!empty($menu['conditions_menu'])): ?>
-          <br><?= htmlspecialchars($menu['conditions_menu']) ?>
-        <?php endif; ?>
-      </p>
+      <p class="mb-1"><strong><?= number_format((float)$menu['prix_personne'], 2, ',', ' ') ?> € / personne</strong> &bull; Min. <?= (int)$menu['nb_personnes_min'] ?> pers.</p>
+      <p class="vg-text-secondary mb-4 small">Thème : <?= htmlspecialchars($labels_theme[$menu['theme']] ?? $menu['theme']) ?></p>
 
       <?php foreach ($plats as $plat): ?>
         <div class="vg-texte-presentation mb-3 d-flex gap-3 align-items-start">
           <?php if (!empty($plat['photo'])): ?>
-            <img src="<?= htmlspecialchars($plat['photo']) ?>" alt="<?= htmlspecialchars($plat['nom']) ?>" class="vg-zoomable"
-              style="width:90px; height:90px; object-fit:cover; border-radius:8px; flex-shrink:0;">
+            <img src="<?= htmlspecialchars($plat['photo']) ?>" alt="<?= htmlspecialchars($plat['nom']) ?>" class="vg-zoomable rounded" style="width:80px; height:80px; object-fit:cover;">
           <?php endif; ?>
           <div>
             <p class="vg-label mb-1"><?= $labels_type_plat[$plat['type_plat']] ?? $plat['type_plat'] ?></p>
-            <h3 class="mb-1"><?= htmlspecialchars($plat['nom']) ?></h3>
-            <p class="mb-2"><?= htmlspecialchars($plat['description']) ?></p>
+            <h3 class="h6 fw-bold mb-1"><?= htmlspecialchars($plat['nom']) ?></h3>
+            <p class="small text-muted mb-1"><?= htmlspecialchars($plat['description']) ?></p>
             <?php if (!empty($plat['allergenes'])): ?>
-              <span class="badge-vg-warning px-2 py-1 rounded">
-                Allergènes : <?= htmlspecialchars($plat['allergenes']) ?>
-              </span>
+              <span class="badge bg-light text-dark border" style="font-size: 0.65rem;">Allergènes : <?= htmlspecialchars($plat['allergenes']) ?></span>
             <?php endif; ?>
           </div>
         </div>
       <?php endforeach; ?>
 
-      <!-- Sélecteur du nombre de personnes et bouton de commande -->
-      <div class="d-flex align-items-center gap-3 my-3">
-        <span class="vg-label mb-0">Nombre de personnes :</span>
-        <button type="button" class="btn btn-vg-secondary" id="btnMoins">−</button>
-        <span id="nbPersonnes" data-min="<?= (int) $menu['nb_personnes_min'] ?>" data-prix="<?= (float) $menu['prix_personne'] ?>">
-          <?= (int) $menu['nb_personnes_min'] ?>
-        </span>
-        <button type="button" class="btn btn-vg-secondary" id="btnPlus">+</button>
-        <span class="ms-auto">Total : <strong id="prixTotal"><?= number_format((float) $menu['prix_personne'] * (int) $menu['nb_personnes_min'], 2, ',', ' ') ?> €
-          </strong></span>
+      <!-- Sélecteur Quantité -->
+      <div class="vg-texte-presentation p-4 border rounded shadow-sm bg-white mt-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="vg-label mb-0">Nombre de personnes :</span>
+          <button type="button" class="btn btn-vg-secondary btn-sm" id="btnMoins">−</button>
+          <span id="nbPersonnes" class="fw-bold" data-min="<?= (int) $menu['nb_personnes_min'] ?>" data-prix="<?= (float) $menu['prix_personne'] ?>"><?= (int) $menu['nb_personnes_min'] ?></span>
+          <button type="button" class="btn btn-vg-secondary btn-sm" id="btnPlus">+</button>
+        </div>
+        <div id="ligneRemiseMenu" class="text-success d-none mb-2 small fw-bold"><i class="bi bi-gift"></i> Remise groupe (-10%) : <span id="valeurRemiseMenu">0,00 €</span></div>
+        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+          <span class="h6">Total estimé :</span>
+          <strong id="prixTotal" class="h4 mb-0 text-vg-primary"><?= number_format((float)$menu['prix_personne'] * (int)$menu['nb_personnes_min'], 2, ',', ' ') ?> €</strong>
+        </div>
       </div>
 
-      <?php if ($est_connecte): ?>
-        <a href="/commande.php?menu=<?= $id ?>&personnes=<?= (int) $menu['nb_personnes_min'] ?>" class="btn btn-vg-primary w-100" id="lienCommander">
-          Commander maintenant
-        </a>
-      <?php else: ?>
-        <a href="/connexion.php" class="btn btn-vg-primary w-100">
-          Se connecter pour commander
-        </a>
-      <?php endif; ?>
+      <div class="mt-4">
+        <?php if ($est_connecte): ?>
+          <a href="/commande.php?menu=<?= $id ?>" class="btn btn-vg-primary btn-lg w-100 shadow-sm" id="lienCommander">Commander maintenant</a>
+        <?php else: ?>
+          <a href="/connexion.php" class="btn btn-vg-primary btn-lg w-100 shadow-sm">Se connecter pour commander</a>
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 
-  <!-- Section des avis -->
-  <hr class="my-5">
+  <!-- SECTION AVIS (Centrée et pleine largeur) -->
+  <hr class="vg-hr-light">
 
-  <!-- Affichage des avis -->
-  <h2 class="text-center mb-4">Avis de nos clients pour ce menu</h2>
-  <?php if (empty($avis)): ?>
-    <p class="text-center vg-text-secondary">Aucun avis pour ce menu pour le moment.</p>
-  <?php else: ?>
-    <div class="row g-3">
-      <?php foreach ($avis as $a): ?>
-        <div class="col-md-4">
-          <div class="vg-avis-card">
-            <strong><?= htmlspecialchars($a['prenom']) ?> <?= htmlspecialchars(substr($a['nom'], 0, 1)) ?>.</strong>
-            <div class="vg-avis-etoiles"><?= str_repeat('★', (int) $a['note']) . str_repeat('☆', 5 - (int) $a['note']) ?></div>
-            <p class="vg-text-secondary mb-0">"<?= htmlspecialchars($a['commentaire']) ?>"</p>
-          </div>
-        </div>
-      <?php endforeach; ?>
+  <div class="row justify-content-center">
+    <div class="col-12 text-center">
+      <h2 class="vg-title-cursive vg-title-lg mb-5">L'avis de nos gourmets</h2>
     </div>
-  <?php endif; ?>
+
+    <?php if (empty($avis)): ?>
+      <div class="col-md-6">
+        <div class="vg-empty-state text-center shadow-sm">
+          <i class="bi bi-chat-left-dots fs-1 text-muted opacity-25"></i>
+          <p class="vg-text-secondary mt-3 mb-0">Aucun avis pour ce menu pour le moment.</p>
+        </div>
+      </div>
+    <?php else: ?>
+      <div class="col-12">
+        <div class="row g-4 justify-content-center">
+          <?php foreach ($avis as $a): ?>
+            <div class="col-md-6 col-lg-4">
+              <div class="vg-avis-card d-flex flex-column h-100 p-4 shadow-sm border-0 bg-white rounded-3">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="rounded-circle bg-vg-primary text-white vg-avatar-sm">
+                    <?= substr(htmlspecialchars($a['prenom']), 0, 1) ?>
+                  </div>
+                  <div class="text-start">
+                    <strong class="d-block text-dark"><?= htmlspecialchars($a['prenom']) ?> <?= substr(htmlspecialchars($a['nom']), 0, 1) ?>.</strong>
+                    <small class="text-muted"><?= date('d/m/Y', strtotime($a['date_creation'])) ?></small>
+                  </div>
+                </div>
+                <div class="text-start vg-stars-gold mb-2">
+                  <?= str_repeat('★', (int)$a['note']) ?><?= str_repeat('☆', 5 - (int)$a['note']) ?>
+                </div>
+                <p class="text-start vg-text-secondary mb-0 flex-grow-1 fst-italic">"<?= htmlspecialchars($a['commentaire']) ?>"</p>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endif; ?>
+  </div>
 </div>
 
-<!-- Modale d'agrandissement d'image (lightbox) -->
+<!-- Modale Lightbox -->
 <div class="modal fade" id="modalImageAgrandie" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content bg-transparent border-0">
-      <button type="button" class="btn-close btn-close-white ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      <img src="" alt="" id="imageAgrandie" class="w-100 rounded">
+    <div class="modal-content bg-transparent border-0 text-end">
+      <button type="button" class="btn-close btn-close-white mb-2" data-bs-dismiss="modal"></button>
+      <img src="" alt="" id="imageAgrandie" class="w-100 rounded shadow">
     </div>
   </div>
 </div>
@@ -158,5 +156,4 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
 <script src="/js/lightbox.js"></script>
 <script src="/js/menu-detail.js"></script>
 
-<?php
-require_once __DIR__ . '/../views/partials/footer.php';
+<?php require_once __DIR__ . '/../views/partials/footer.php'; ?>
