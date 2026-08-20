@@ -57,7 +57,21 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
       <p class="vg-text-secondary mb-4"><?= htmlspecialchars($menu['description']) ?></p>
 
       <p class="mb-1"><strong><?= number_format((float)$menu['prix_personne'], 2, ',', ' ') ?> € / personne</strong> &bull; Min. <?= (int)$menu['nb_personnes_min'] ?> pers.</p>
-      <p class="vg-text-secondary mb-4 small">Thème : <?= htmlspecialchars($labels_theme[$menu['theme']] ?? $menu['theme']) ?></p>
+      <p class="vg-text-secondary mb-2 small">
+        <strong>Thème :</strong> <?= htmlspecialchars($labels_theme[$menu['theme']] ?? $menu['theme']) ?>
+      </p>
+
+      <!-- CONDITIONS SPÉCIFIQUES -->
+      <?php if (!empty($menu['conditions_menu'])): ?>
+        <div class="alert alert-info py-2 px-3 mb-4 shadow-none border-0 bg-light-custom" style="border-left: 4px solid var(--vg-vert-sauge) !important;">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill text-vg-primary"></i>
+            <span class="small text-dark">
+              <?= nl2br(htmlspecialchars($menu['conditions_menu'])) ?>
+            </span>
+          </div>
+        </div>
+      <?php endif; ?>
 
       <?php foreach ($plats as $plat): ?>
         <div class="vg-texte-presentation mb-3 d-flex gap-3 align-items-start">
