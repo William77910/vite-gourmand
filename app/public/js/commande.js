@@ -1,35 +1,44 @@
-// Gestion de la page de commande (calcul du total, estimation des frais de livraison, etc.)
+/**
+ * commande.js
+ * Gère les calculs dynamiques de prix et l'estimation des frais de port.
+ */
 
-// On attend que le DOM soit charge avant d'ajouter les ecouteurs d'evenements
 document.addEventListener("DOMContentLoaded", function () {
+  // Récupération des éléments du DOM
   const champNbPersonnes = document.getElementById("nb_personnes");
   const valeurSousTotal = document.getElementById("valeurSousTotal");
   const valeurFrais = document.getElementById("valeurFrais");
   const valeurDistance = document.getElementById("valeurDistance");
   const ligneTotal = document.getElementById("ligneTotal");
-  const champAdresse = document.getElementById("adresse_livraison");
-  const champCodePostal = document.getElementById("code_postal");
-  const champVille = document.getElementById("ville_livraison");
+
+  const inputsAdresse = [
+    document.getElementById("adresse_livraison"),
+    document.getElementById("code_postal"),
+    document.getElementById("ville_livraison"),
+  ];
 
   let fraisActuels =
     parseFloat((valeurFrais.textContent || "0").replace(",", ".")) || 0;
 
-  // Formate un nombre en montant monetaire (ex: 12.5 => "12,50 €")
   function formatMontant(nombre) {
     return nombre.toFixed(2).replace(".", ",") + " €";
   }
 
-  // Recalcule le sous-total et le total de la commande en fonction du nombre de personnes et des frais de livraison
-  function recalculerSousTotal() {
+  /**
+   * Recalcule le prix du menu + frais de livraison
+   */
+  function recalculerTout() {
     const prixUnitaire = parseFloat(champNbPersonnes.dataset.prix);
     const minimum = parseInt(champNbPersonnes.dataset.min, 10);
     let nb = parseInt(champNbPersonnes.value, 10) || minimum;
+
+    // Sécurité : on ne descend pas sous le minimum
     if (nb < minimum) {
       nb = minimum;
       champNbPersonnes.value = minimum;
     }
 
-    // Application d'une reduction de 10% si le nombre de personnes est superieur ou egal a minimum + 5
+    // Règle métier : -10% si on commande pour minimum + 5 personnes
     const reduction = nb >= minimum + 5 ? 0.9 : 1;
     const sousTotal = prixUnitaire * nb * reduction;
 
@@ -37,64 +46,66 @@ document.addEventListener("DOMContentLoaded", function () {
     ligneTotal.textContent = formatMontant(sousTotal + fraisActuels);
   }
 
-  // Estime les frais de livraison en fonction de l'adresse saisie par l'utilisateur
+  /**
+   * Appelle l'API PHP de géolocalisation
+   */
   function estimerLivraison() {
-    const ville = champVille.value.trim();
-    if (ville === "") {
-      return;
-    }
+    const adresse = inputsAdresse[0].value.trim();
+    const cp = inputsAdresse[1].value.trim();
+    const ville = inputsAdresse[2].value.trim();
 
-    const params = new URLSearchParams({
-      adresse: champAdresse.value,
-      code_postal: champCodePostal.value,
-      ville: ville,
-    });
+    if (ville === "") return;
 
+    const params = new URLSearchParams({ adresse, code_postal: cp, ville });
     valeurFrais.textContent = "Calcul...";
 
-    // On appelle l'API pour estimer les frais de livraison
     fetch("/api/estimer-livraison.php?" + params.toString())
-      .then(function (reponse) {
-        return reponse.json();
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur serveur HTTP " + res.status);
+        return res.json();
       })
-      .then(function (data) {
-        if (!data.success) {
-          return;
-        }
+      .then((data) => {
+        if (!data.success) return;
+
         fraisActuels = data.frais;
         valeurFrais.textContent = formatMontant(data.frais);
-        valeurDistance.textContent =
-          data.distance_km !== null
-            ? "(" + data.distance_km.toString().replace(".", ",") + " km)"
-            : "";
-        recalculerSousTotal();
+
+        // SÉCURITÉ : On vérifie si l'élément existe avant d'écrire dedans
+        if (valeurDistance) {
+          if (data.distance_km !== null) {
+            valeurDistance.innerHTML = `<br><small class="text-muted">Distance : <strong>${data.distance_km} km</strong> <span class="badge bg-light text-dark border ms-1" style="font-size: 0.6rem;">Source : ${data.source}</span></small>`;
+          } else {
+            valeurDistance.textContent = "";
+          }
+        }
+
+        recalculerTout();
       })
-      .catch(function () {
-        // En cas d'echec (service indisponible), on garde le
-        // dernier montant affiche plutot que de bloquer l'utilisateur
+      .catch((err) => {
+        console.error("Erreur Fetch détaillé :", err);
+        valeurFrais.textContent = "Service indisponible";
       });
   }
 
-  // On ajoute les ecouteurs d'evenements pour recalculer le total et estimer les frais de livraison
-  champNbPersonnes.addEventListener("input", recalculerSousTotal);
-  champNbPersonnes.addEventListener("change", recalculerSousTotal);
-  champVille.addEventListener("blur", estimerLivraison);
-  champCodePostal.addEventListener("blur", estimerLivraison);
-  champAdresse.addEventListener("blur", estimerLivraison);
+  // Écouteurs d'événements
+  champNbPersonnes.addEventListener("input", recalculerTout);
 
-  // Selection du mode de paiement (boutons stylises autour de radios cachees)
-  document
-    .querySelectorAll('input[name="mode_paiement"]')
-    .forEach(function (radio) {
-      radio.addEventListener("change", function () {
-        document
-          .querySelectorAll('input[name="mode_paiement"]')
-          .forEach(function (r) {
-            r.closest("label").classList.remove("active");
-          });
-        if (radio.checked) {
-          radio.closest("label").classList.add("active");
-        }
+  inputsAdresse.forEach((input) => {
+    if (input) input.addEventListener("blur", estimerLivraison);
+  });
+
+  // Sélection stylisée du mode de paiement
+  document.querySelectorAll('input[name="mode_paiement"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      // On retire la classe active de TOUTES les options de paiement
+      document.querySelectorAll(".vg-payment-option").forEach((option) => {
+        option.classList.remove("active");
       });
+
+      // On l'ajoute uniquement à celle qui contient le bouton radio coché
+      if (this.checked) {
+        this.closest(".vg-payment-option").classList.add("active");
+      }
     });
+  });
 });

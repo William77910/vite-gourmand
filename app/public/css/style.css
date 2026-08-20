@@ -290,3 +290,49 @@ h3,
   margin: 8px auto 0;
   border-radius: 2px;
 }
+
+/* --- Tuiles de paiement intuitives --- */
+.vg-payment-option {
+  cursor: pointer;
+  border: 2px solid var(--vg-gris-clair);
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.2s ease-in-out;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.vg-payment-option:hover {
+  border-color: var(--vg-vert-sauge);
+  background-color: var(--vg-beige-clair);
+}
+
+/* Style quand l'option est sélectionnée */
+.vg-payment-option.active {
+  border-color: var(--vg-vert-fonce);
+  background-color: #f0f4ef; /* Un vert très pâle */
+  box-shadow: 0 4px 12px rgba(79, 127, 95, 0.1);
+}
+
+.vg-payment-option i {
+  font-size: 1.5rem;
+  color: var(--vg-gris-chaud);
+}
+
+.vg-payment-option.active i {
+  color: var(--vg-vert-fonce);
+}
+
+.vg-payment-option .check-icon {
+  margin-left: auto;
+  color: var(--vg-vert-fonce);
+  display: none; /* Caché par défaut */
+}
+
+.vg-payment-option.active .check-icon {
+  display: block; /* Apparaît quand actif */
+}

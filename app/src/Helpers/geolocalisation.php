@@ -1,94 +1,104 @@
 <?php
 
 /**
- * Calcul des frais de livraison selon la règle du cahier des charges :
- * 5 € de base + 0,59 €/km si l'adresse est hors Bordeaux.
- *
- * Le géocodage (conversion adresse -> coordonnées GPS) utilise l'API
- * Adresse du gouvernement français (api-adresse.data.gouv.fr), qui est
- * gratuite, publique, ne nécessite aucune clé, et est bien adaptée aux
- * adresses françaises.
- * Documentation : https://adresse.data.gouv.fr/api-doc/adresse
+ * Helper de Géolocalisation - Version Finale Propre
+ * Gère le calcul des frais de livraison (5€ base + 0.59€/km hors Bordeaux)
  */
 
-// Définit les coordonnées GPS du centre de Bordeaux pour le calcul de distance
-const VG_BORDEAUX_LAT = 44.837789;
-const VG_BORDEAUX_LON = -0.579180;
+if (!defined('VG_BORDEAUX_LAT')) {
+  define('VG_BORDEAUX_LAT', 44.837789);
+  define('VG_BORDEAUX_LON', -0.579180);
+}
 
 /**
- * Convertit une adresse en coordonnées GPS via l'API Adresse.
- * Retourne null si l'adresse est introuvable ou si le service est indisponible
- * (on ne bloque jamais une commande a cause d'un service externe en panne).
+ * Convertit une adresse en coordonnées GPS.
+ * Tente l'API officielle, sinon bascule sur le simulateur interne.
  */
 function geocoder_adresse(string $adresse, string $codePostal, string $ville): ?array
 {
+  $ville_clean = strtolower(trim($ville));
+  $cp_clean = trim($codePostal);
   $requete = trim($adresse . ' ' . $codePostal . ' ' . $ville);
-  if ($requete === '') {
-    return null;
+
+  // 1. Appel API via cURL (plus robuste sous Docker)
+  if (function_exists('curl_init')) {
+    $url = 'https://api-adresse.data.gouv.fr/search/?q=' . urlencode($requete) . '&limit=1';
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Ignore les soucis de certificats SSL en local
+    curl_setopt($ch, CURLOPT_USERAGENT, 'ViteEtGourmand-App');
+    $reponse = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($reponse !== false && $httpCode === 200) {
+      $donnees = json_decode($reponse, true);
+      if (!empty($donnees['features'][0]['geometry']['coordinates'])) {
+        [$lon, $lat] = $donnees['features'][0]['geometry']['coordinates'];
+        return [
+          'lat' => (float)$lat,
+          'lon' => (float)$lon,
+          'source' => 'API Gouv.fr'
+        ];
+      }
+    }
   }
 
-  $url = 'https://api-adresse.data.gouv.fr/search/?q=' . urlencode($requete) . '&limit=1';
+  // 2. Repli sur le Simulateur (Résilience démo)
+  $villes_secours = [
+    'paris-75000' => ['lat' => 48.8566, 'lon' => 2.3522],
+    'paris-75002' => ['lat' => 48.8661, 'lon' => 2.3399],
+    'nice-06300'  => ['lat' => 43.7102, 'lon' => 7.2620],
+    'nice-06000'  => ['lat' => 43.7102, 'lon' => 7.2620],
+    'lyon-69000'  => ['lat' => 45.7640, 'lon' => 4.8357],
+    'aix-les-bains-73100' => ['lat' => 45.6885, 'lon' => 5.9153]
+  ];
 
-  $contexte = stream_context_create(['http' => ['timeout' => 4]]);
-  $reponse = @file_get_contents($url, false, $contexte);
-
-  if ($reponse === false) {
-    return null;
+  $cle = $ville_clean . '-' . $cp_clean;
+  if (array_key_exists($cle, $villes_secours)) {
+    return array_merge($villes_secours[$cle], ['source' => 'Simulateur Interne']);
   }
 
-  $donnees = json_decode($reponse, true);
-  if (empty($donnees['features'][0]['geometry']['coordinates'])) {
-    return null;
-  }
-
-  [$lon, $lat] = $donnees['features'][0]['geometry']['coordinates'];
-  return ['lat' => (float) $lat, 'lon' => (float) $lon];
+  return null;
 }
 
 /**
- * Distance a vol d'oiseau entre deux points GPS (formule de Haversine),
- * suffisamment precise pour un calcul de frais de livraison.
+ * Calcul de la distance à vol d'oiseau (Formule de Haversine)
  */
 function distance_haversine(float $lat1, float $lon1, float $lat2, float $lon2): float
 {
-  $rayonTerreKm = 6371;
+  $r = 6371; // Rayon de la Terre en km
   $dLat = deg2rad($lat2 - $lat1);
   $dLon = deg2rad($lon2 - $lon1);
-
-  $a = sin($dLat / 2) ** 2
-    + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
-  $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-  return $rayonTerreKm * $c;
+  $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
+  return $r * 2 * atan2(sqrt($a), sqrt(1 - $a));
 }
 
 /**
- * Calcule les frais de livraison pour une adresse donnee.
- * Retourne : ['distance_km' => float|null, 'frais' => float, 'methode' => string]
+ * Calcule les frais de livraison finaux
  */
 function calculer_frais_livraison(string $adresse, string $codePostal, string $ville): array
 {
   $baseFixe = 5.0;
   $tarifKm = 0.59;
 
-  if (mb_strtolower(trim($ville)) === 'bordeaux') {
-    return ['distance_km' => 0.0, 'frais' => $baseFixe, 'methode' => 'bordeaux'];
+  if (strtolower(trim($ville)) === 'bordeaux') {
+    return ['distance_km' => 0.0, 'frais' => $baseFixe, 'source' => 'Zone Locale'];
   }
 
-  $coordonnees = geocoder_adresse($adresse, $codePostal, $ville);
+  $resultat = geocoder_adresse($adresse, $codePostal, $ville);
 
-  if ($coordonnees === null) {
-    // Adresse non geocodable ou service indisponible : forfait de
-    // secours plutot que de bloquer la commande.
-    return ['distance_km' => null, 'frais' => $baseFixe + 10.0, 'methode' => 'forfait_secours'];
+  if ($resultat === null) {
+    return ['distance_km' => null, 'frais' => $baseFixe + 10.0, 'source' => 'Forfait de secours'];
   }
 
-  $distance = distance_haversine(VG_BORDEAUX_LAT, VG_BORDEAUX_LON, $coordonnees['lat'], $coordonnees['lon']);
-  $frais = $baseFixe + ($tarifKm * $distance);
+  $dist = distance_haversine(VG_BORDEAUX_LAT, VG_BORDEAUX_LON, $resultat['lat'], $resultat['lon']);
+  $frais = $baseFixe + ($tarifKm * $dist);
 
   return [
-    'distance_km' => round($distance, 1),
+    'distance_km' => round($dist, 1),
     'frais' => round($frais, 2),
-    'methode' => 'km',
+    'source' => $resultat['source']
   ];
 }
