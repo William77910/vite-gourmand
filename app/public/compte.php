@@ -25,7 +25,7 @@ $labels_statut = [
   'en_preparation' => 'En préparation',
   'en_cours_de_livraison' => 'En cours de livraison',
   'livre' => 'Livrée',
-  'en_attente_retour_materiel' => 'Attente retour matériel',
+  'en_attente_retour_materiel' => 'Attente matériel',
   'terminee' => 'Terminée',
   'annulee' => 'Annulée',
 ];
@@ -33,11 +33,11 @@ $labels_statut = [
 // --- 2. TRAITEMENT DES FORMULAIRES ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
-    $messages['erreurs'][] = "Session expirée, réessayez.";
+    $messages['erreurs'][] = "Votre session a expiré, veuillez réessayer.";
   } else {
     $action = $_POST['action'] ?? '';
 
-    // MISE À JOUR INFOS (NOM, TEL, ADRESSE...)
+    // Mise à jour Infos Profil
     if ($action === 'maj_infos') {
       $data = [
         'nom' => trim($_POST['nom'] ?? ''),
@@ -50,23 +50,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if ($data['nom'] && $data['prenom']) {
         Utilisateur::update($idUtilisateur, $data);
         $_SESSION['prenom'] = $data['prenom'];
-        $messages['succes'][] = "Informations mises à jour.";
+        $messages['succes'][] = "Vos informations ont été mises à jour.";
         $utilisateur = Utilisateur::findById($idUtilisateur);
       }
     }
 
-    // ANNULATION COMMANDE
+    // Annulation commande
     if ($action === 'annuler_commande') {
       $idCmd = (int)$_POST['id_commande'];
       if (Commande::annulerParClient($idCmd, $idUtilisateur)) {
         require_once __DIR__ . '/../src/Helpers/stats_helper.php';
         mettre_a_jour_statut_mongo($idCmd, 'annulee');
-        $messages['succes'][] = "Commande annulée.";
+        $messages['succes'][] = "Votre commande a été annulée.";
         $commandes = Commande::getByUtilisateur($idUtilisateur);
       }
     }
 
-    // CHANGEMENT MOT DE PASSE
+    // AJOUT : Traitement du dépôt d'avis
+    if ($action === 'laisser_avis') {
+      $idCmd = (int)$_POST['id_commande'];
+      $note = (int)$_POST['note'];
+      $comm = trim($_POST['commentaire'] ?? '');
+      if (Avis::create($idCmd, $idUtilisateur, $note, $comm)) {
+        $messages['succes'][] = "Merci pour votre avis ! Il sera visible après validation.";
+        $commandes = Commande::getByUtilisateur($idUtilisateur); // Rafraîchir la liste
+      } else {
+        $messages['erreurs'][] = "Impossible d'enregistrer l'avis.";
+      }
+    }
+
+    // Changement de mot de passe
     if ($action === 'maj_mdp') {
       $actuel = $_POST['mdp_actuel'] ?? '';
       $nouveau = $_POST['nouveau_mdp'] ?? '';
@@ -79,11 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $messages['erreurs'][] = "Les nouveaux mots de passe ne correspondent pas.";
       } else {
         Utilisateur::updatePassword($idUtilisateur, $nouveau);
-        $messages['succes'][] = "Mot de passe modifié avec succès.";
+        $messages['succes'][] = "Votre mot de passe a été modifié avec succès.";
       }
     }
 
-    // SUPPRESSION DE COMPTE (RGPD)
+    // Suppression / Anonymisation RGPD
     if ($action === 'supprimer_compte') {
       $mdp = $_POST['mdp_confirm'] ?? '';
       if (!password_verify($mdp, $utilisateur['mot_de_passe'])) {
@@ -97,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           }
         }
         if ($enCours) {
-          $messages['erreurs'][] = "Désolé, vous avez une commande en cours.";
+          $messages['erreurs'][] = "Impossible de supprimer le compte : une commande est en cours.";
         } else {
           Utilisateur::anonymiserCompte($idUtilisateur);
           session_destroy();
@@ -116,8 +129,8 @@ require_once __DIR__ . '/../views/partials/header.php';
 <div class="container my-5">
   <h1 class="text-center mb-4">Mon compte</h1>
 
-  <?php foreach ($messages['succes'] as $m): ?><div class="alert alert-success alert-dismissible fade show"><?= $m ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
-  <?php foreach ($messages['erreurs'] as $m): ?><div class="alert alert-danger alert-dismissible fade show"><?= $m ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
+  <?php foreach ($messages['succes'] as $m): ?><div class="alert alert-success alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
+  <?php foreach ($messages['erreurs'] as $m): ?><div class="alert alert-danger alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
 
   <!-- ONGLETS -->
   <ul class="nav nav-tabs mb-4" role="tablist">
@@ -130,12 +143,11 @@ require_once __DIR__ . '/../views/partials/header.php';
   </ul>
 
   <div class="tab-content">
-    <!-- CONTENU 1 : INFOS PERSONNELLES -->
+    <!-- ONGLET 1 : INFORMATIONS -->
     <div class="tab-pane fade show active" id="pane-infos" role="tabpanel">
       <div class="row justify-content-center">
         <div class="col-lg-8">
-          <!-- Formulaire Profil -->
-          <form method="post" class="bg-white p-4 border rounded shadow-sm mb-5">
+          <form method="post" action="/compte.php" class="vg-texte-presentation p-4 border rounded shadow-sm bg-white mb-5">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
             <input type="hidden" name="action" value="maj_infos">
             <div class="row g-3">
@@ -167,8 +179,8 @@ require_once __DIR__ . '/../views/partials/header.php';
             <button type="submit" class="btn btn-vg-primary w-100 mt-4">Enregistrer les modifications</button>
           </form>
 
-          <!-- Formulaire Mot de passe -->
-          <form method="post" class="bg-white p-4 border rounded shadow-sm mb-5">
+          <!-- Formulaire MDP -->
+          <form method="post" action="/compte.php" class="vg-texte-presentation p-4 border rounded shadow-sm bg-white mb-5">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
             <input type="hidden" name="action" value="maj_mdp">
             <h2 class="h5 mb-3 text-center">Changer le mot de passe</h2>
@@ -190,23 +202,22 @@ require_once __DIR__ . '/../views/partials/header.php';
               <li data-critere="special" class="text-danger"><i class="bi bi-x-circle"></i> 1 caractère spécial</li>
             </ul>
             <div class="mb-3">
-              <label class="vg-label">Confirmer le nouveau mot de passe</label>
+              <label class="vg-label">Confirmation</label>
               <input type="password" name="confirm_mdp" class="form-control vg-input" required>
             </div>
-            <button type="submit" class="btn btn-vg-secondary w-100">Mettre à jour le mot de passe</button>
+            <button type="submit" class="btn btn-vg-secondary w-100">Modifier le mot de passe</button>
           </form>
 
-          <!-- Zone de danger -->
+          <!-- Zone Danger -->
           <div class="p-4 border border-danger rounded bg-white mb-5">
             <h2 class="h5 text-danger">Zone de danger</h2>
-            <p class="small text-muted">Effacer vos données personnelles et fermer votre compte.</p>
             <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalSupprimerCompte">Supprimer mon compte</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- CONTENU 2 : HISTORIQUE DES COMMANDES -->
+    <!-- ONGLET 2 : COMMANDES -->
     <div class="tab-pane fade" id="pane-commandes" role="tabpanel">
       <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -222,8 +233,8 @@ require_once __DIR__ . '/../views/partials/header.php';
               elseif ($s === 'annulee') $badgeColor = 'bg-danger';
               elseif ($s === 'terminee' || $s === 'livre') $badgeColor = 'bg-success';
               ?>
-              <div class="card mb-3 border-0 shadow-sm">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+              <div class="card mb-3 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
                   <div>
                     <h5 class="mb-1"><?= htmlspecialchars($c['titre_menu']) ?></h5>
                     <p class="small text-muted mb-0">
@@ -231,19 +242,61 @@ require_once __DIR__ . '/../views/partials/header.php';
                     </p>
                     <strong class="text-dark"><?= number_format($c['prix_total'], 2, ',', ' ') ?> €</strong>
                   </div>
-                  <div class="text-end" style="min-width: 160px;">
+                  <div class="text-end" style="min-width: 150px;">
                     <span class="badge <?= $badgeColor ?> d-block p-2 mb-2"><?= $labels_statut[$s] ?></span>
                     <?php if ($s === 'en_attente'): ?>
-                      <form method="post" onsubmit="return confirm('Annuler cette commande ?');">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
-                        <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
-                        <input type="hidden" name="action" value="annuler_commande">
-                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Annuler</button>
-                      </form>
+                      <div class="d-flex gap-2">
+                        <a href="/commande-modifier.php?id=<?= $c['id_commande'] ?>" class="btn btn-sm btn-outline-primary flex-grow-1">Modifier</a>
+                        <form method="post" onsubmit="return confirm('Annuler cette commande ?');">
+                          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+                          <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+                          <input type="hidden" name="action" value="annuler_commande">
+                          <button type="submit" class="btn btn-sm btn-outline-danger">X</button>
+                        </form>
+                      </div>
+                    <?php elseif ($s === 'terminee' && (int)$c['a_un_avis'] === 0): ?>
+                      <!-- AJOUT : Bouton pour ouvrir la modale d'avis -->
+                      <button type="button" class="btn btn-sm btn-vg-primary w-100" data-bs-toggle="modal" data-bs-target="#modalAvis<?= $c['id_commande'] ?>">Laisser un avis</button>
                     <?php endif; ?>
                   </div>
                 </div>
               </div>
+
+              <!-- AJOUT : MODALE POUR LAISSER UN AVIS -->
+              <?php if ($s === 'terminee' && (int)$c['a_un_avis'] === 0): ?>
+                <div class="modal fade" id="modalAvis<?= $c['id_commande'] ?>" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <form method="post">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Votre avis sur "<?= htmlspecialchars($c['titre_menu']) ?>"</h5>
+                        </div>
+                        <div class="modal-body text-start">
+                          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generer_token_csrf()) ?>">
+                          <input type="hidden" name="action" value="laisser_avis">
+                          <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+
+                          <label class="vg-label mb-2">Note :</label>
+                          <select name="note" class="form-select mb-3">
+                            <option value="5">5 ★ (Excellent)</option>
+                            <option value="4">4 ★ (Très bon)</option>
+                            <option value="3" selected>3 ★ (Correct)</option>
+                            <option value="2">2 ★ (Décevant)</option>
+                            <option value="1">1 ★ (Mauvais)</option>
+                          </select>
+                          <label class="vg-label mb-2">Commentaire :</label>
+                          <textarea name="commentaire" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                          <button type="submit" class="btn btn-vg-primary">Envoyer l'avis</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <?php endif; ?>
+
             <?php endforeach; ?>
           <?php endif; ?>
         </div>
@@ -277,7 +330,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>
 
-<!-- SCRIPT DE SECOURS ONGLETS -->
+<!-- Script de secours pour les onglets -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');

@@ -86,7 +86,7 @@ class Avis
   }
 
   /**
-   * Avis deja publies (valide = 1), les plus recents d'abord.
+   * Avis déjà publiés (valide = 1), les plus recents d'abord.
    */
   public static function getValides(): array
   {
@@ -120,7 +120,7 @@ class Avis
   }
 
   /**
-   * Depublie un avis deja valide (fait machine arriere si besoin).
+   * Dépublie un avis déjà valide (fait machine arriere si besoin).
    */
   public static function depublier(int $idAvis): void
   {

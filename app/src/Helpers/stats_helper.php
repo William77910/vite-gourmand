@@ -88,18 +88,26 @@ function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $da
  * Met à jour le statut d'une commande dans MongoDB.
  * Si la commande n'existe pas (ancienne commande MySQL), elle est créée.
  */
-function mettre_a_jour_statut_mongo(int $idCommande, string $nouveauStatut): void
+/**
+ * Met à jour le statut et le montant d'une commande dans MongoDB.
+ */
+function mettre_a_jour_statut_mongo(int $idCommande, string $nouveauStatut, float $nouveauMontant = null): void
 {
   try {
     $db = MongoConnection::getDatabase();
     $collection = $db->selectCollection('commandes_stats');
 
-    // On utilise 'updateOne' avec l'option 'upsert' => true
-    // Source : MongoDB Manual - Update Operations (Recherche anglophone)
+    $updateData = ['statut' => $nouveauStatut];
+
+    // Si un nouveau montant est fourni (cas d'une modification), on le met à jour
+    if ($nouveauMontant !== null) {
+      $updateData['montant'] = $nouveauMontant;
+    }
+
     $collection->updateOne(
-      ['id_commande' => $idCommande], // Filtre : on cherche par ID de commande
-      ['$set' => ['statut' => $nouveauStatut]], // Modification
-      ['upsert' => true] // Si n'existe pas, il le crée !
+      ['id_commande' => $idCommande],
+      ['$set' => $updateData],
+      ['upsert' => true]
     );
   } catch (Exception $e) {
     error_log("Erreur Update MongoDB : " . $e->getMessage());
