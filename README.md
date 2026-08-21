@@ -1,101 +1,47 @@
-# Vite & Gourmand
+# ECF : Vite & Gourmand - Traiteur Gastronomique
 
-Application web de commande de menus traiteur en ligne, développée pour l'entreprise "Vite & Gourmand" (Bordeaux) dans le cadre de l'ECF Développeur Web et Web Mobile.
+Ce projet est réalisé dans le cadre du titre professionnel **Développeur Web et Web Mobile (DWWM)**.
+Il s'agit d'une application de gestion pour un traiteur bordelais, intégrant la vente en ligne et l'analyse de données.
 
-## Stack technique
+## 🛠 Stack Technique
 
-- **Front-end** : HTML5, Bootstrap 5 (surchargé avec la charte graphique du projet), JavaScript vanilla (fetch API)
-- **Back-end** : PHP 8.2 orienté objet, PDO pour l'accès MySQL
-- **Base de données relationnelle** : MySQL 8.0
-- **Base de données NoSQL** : MongoDB 7 (statistiques admin)
-- **Conteneurisation** : Docker / Docker Compose
+- **Serveur Web :** Apache / PHP 8.x
+- **Base de données Relationnelle :** MySQL 8.0 (Gestion des commandes et du catalogue)
+- **Base de données NoSQL :** MongoDB 7.0 (Analytique et Statistiques)
+- **Front-end :** Bootstrap 5.3, JavaScript (Chart.js, Geocoding API)
+- **Environnement :** Docker Desktop
 
-## Prérequis
+## 🚀 Installation locale
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé et lancé
-
-## Installation et lancement de l'environnement
-
-1. Cloner le dépôt
+1. **Clonage du dépôt :**
 
    ```bash
-   git clone <url_du_depot>
+   git clone [TON_LIEN_GITHUB]
    cd vite-gourmand
    ```
 
-2. Copier le fichier d'environnement d'exemple
+2. Lancement de l'environnement :
+   Assurez-vous que Docker Desktop est lancé, puis :
 
-   ```bash
-   cp .env.example .env
-   ```
+   docker-compose up -d --build
 
-3. Lancer les conteneurs
+3. Initialisation de la base MySQL :
+   Accédez à phpMyAdmin : http://localhost:8081
+   Importez le fichier database/vite_gourmand_final.sql dans la base vite_gourmand.
 
-   ```bash
-   docker compose up -d --build
-   ```
+4. Initialisation de MongoDB :
+   Dans le terminal Docker (Exec) du conteneur vg_mongo :
 
-4. Accès aux services :
-   - Application web : http://localhost:8080
-   - phpMyAdmin : http://localhost:8081 (utilisateur : `vg_user`, mot de passe : voir `.env`)
-   - MongoDB (via Compass ou mongosh) : `mongodb://localhost:8090`
+   mongosh vite_gourmand_stats database/03_init_mongodb.js
 
-Les tables MySQL et le jeu de données de test sont importés **automatiquement** au premier démarrage du conteneur `mysql` (scripts dans `database/`).
+🔐 Identifiants de Test (Démonstration)
+Rôle Email Mot de passe
+Administrateur josegourmand@mail.com [Azerty123!]
+Employé julie@vitegourmand.com [Azerty123!]
+Client johndoe@test.com [Azerty123!]
 
-Pour initialiser la collection MongoDB (à faire manuellement une première fois) :
-
-```bash
-docker exec -it vg_mongo mongosh --file /dev/stdin < database/03_init_mongodb.js
-```
-
-## Arrêter l'environnement
-
-```bash
-docker compose down
-```
-
-Pour tout réinitialiser (⚠️ supprime les données) :
-
-```bash
-docker compose down -v
-```
-
-## Arborescence du projet
-
-```
-vite-gourmand/
-├── docker-compose.yml
-├── .env
-├── app/                 # Code PHP (Dockerfile + application : config, src, views, public)
-├── database/            # Scripts SQL et MongoDB
-└── docs/                # Documentation ECF (analyse, technique, déploiement)
-```
-
-## Justification des choix techniques
-
-Le choix de la pile technique répond à plusieurs objectifs :
-
-- **PHP 8.2 + PDO** : simplicité d'implémentation, compatibilité avec l'environnement de formation et bonnes pratiques de sécurisation.
-- **MySQL** : adapté aux données transactionnelles du restaurant, comme les commandes, les utilisateurs et les produits.
-- **MongoDB** : utile pour stocker des données de statistiques, de logs ou d'observations sans imposer une structure SQL rigide.
-- **Docker Compose** : permet de reproduire rapidement l'environnement local et de faciliter le déploiement.
-
-Cette combinaison est pertinente pour un projet de formation, car elle permet d'illustrer à la fois la logique d'un développement web classique et l'intégration d'une base de données NoSQL.
-
-## Sécurité
-
-- Mots de passe utilisateurs hashés (bcrypt via `password_hash()`)
-- Requêtes préparées (PDO) contre les injections SQL
-- Validation de schéma MongoDB (`$jsonSchema`)
-- Variables sensibles isolées dans `.env` (non versionné)
-
-## Documentation ECF
-
-La documentation complémentaire est disponible dans le dossier [docs](docs) :
-
-- [docs/manuel-utilisation.md](docs/manuel-utilisation.md)
-- [docs/documentation-technique.md](docs/documentation-technique.md)
-- [docs/gestion-projet.md](docs/gestion-projet.md)
-- [docs/deploiement.md](docs/deploiement.md)
-- [docs/maquettes.md](docs/maquettes.md)
-- [docs/diagrammes.md](docs/diagrammes.md)
+💡 Points clés du projet
+Architecture Polyglotte : Utilisation de MySQL pour les transactions ACID et MongoDB pour l'agrégation de données analytiques.
+Sécurité : Protection contre les failles XSS (htmlspecialchars), CSRF (tokens), et hachage des mots de passe (BCRYPT).
+Résilience : Système de géolocalisation hybride (API Adresse Gouv.fr + Simulateur interne en cas de coupure réseau).
+Responsive : Design adaptatif et accessible (Grid CSS, RGAA).

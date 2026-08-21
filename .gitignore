@@ -1,14 +1,14 @@
 # Environnement / secrets
 .env
 
-# Dépendances PHP
-backend/vendor/
+# Dépendances PHP (CORRIGÉ : correspond à ton dossier 'app')
+app/vendor/
 
 # Fichiers système
 .DS_Store
 Thumbs.db
 
-# Volumes Docker (générés localement, ne pas versionner)
+# Volumes Docker (Données locales des bases)
 mysql_data/
 mongo_data/
 
