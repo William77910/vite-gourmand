@@ -82,7 +82,7 @@ require_once __DIR__ . '/../views/partials/header.php';
                 <span class="small text-muted">Sur le <?= htmlspecialchars($a['titre_menu']) ?></span>
               </div>
             </div>
-            <div class="vg-avis-etoiles mb-2" style="color: #f1c40f;">
+            <div class="vg-avis-etoiles vg-stars-gold mb-2">
               <?= str_repeat('★', (int)$a['note']) ?><?= str_repeat('☆', 5 - (int)$a['note']) ?>
             </div>
             <p class="vg-text-secondary mb-0 flex-grow-1">"<?= htmlspecialchars($a['commentaire']) ?>"</p>

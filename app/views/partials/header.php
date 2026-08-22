@@ -7,8 +7,8 @@
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-$current_page = $current_page ?? '';
-$est_connecte = isset($_SESSION['id_utilisateur']);
+$current_page = $current_page ?? ''; // "?? ''" pour éviter les erreurs si la variable n'est pas définie
+$est_connecte = isset($_SESSION['id_utilisateur']); // Vérifie si l'utilisateur est connecté
 ?>
 <!DOCTYPE html>
 <html lang="fr">

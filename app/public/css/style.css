@@ -67,6 +67,19 @@ h3,
   font-size: 3rem;
   margin-left: 15px;
 }
+.vg-nav .nav-link {
+  font-family: var(--vg-font-paragraphes);
+  color: var(--vg-vert-sauge);
+  text-decoration: none;
+}
+.vg-nav .nav-link:hover,
+.vg-nav .nav-link:focus-visible,
+.vg-nav .nav-link.active {
+  /* <-- C'est ici la magie ! */
+  color: var(--vg-vert-fonce);
+  font-weight: bold;
+  /* ou un background-color si c'est un bouton plein */
+}
 
 @media (max-width: 1200px) {
   .vg-logo span {
@@ -79,6 +92,14 @@ h3,
     font-size: 0.85rem;
     padding: 0 5px !important;
   }
+}
+
+/* --- Bouton hamburger (mobile) --- */
+.navbar-toggler {
+  color: var(--vg-vert-sauge);
+}
+.navbar-toggler:focus {
+  color: var(--vg-vert-fonce);
 }
 
 /* --- SECTION HERO (ACCUEIL) --- */
@@ -117,9 +138,12 @@ h3,
   transition: transform 0.3s ease;
   height: 100%;
 }
-.vg-menu-card:hover {
+.vg-menu-card:hover,
+.vg-menu-card:focus-visible {
   transform: translateY(-5px);
+  outline: 2px solid var(--vg-vert-fonce);
 }
+
 .vg-menu-card img {
   height: 200px;
   object-fit: cover;
@@ -128,6 +152,13 @@ h3,
 .vg-menu-card-body {
   padding: 20px;
   text-align: center;
+}
+
+/* --- CARTES D'ÉQUIPE --- */
+.vg-team-card:hover,
+.vg-team-card:focus-visible {
+  transform: translateY(-5px);
+  outline: 2px solid var(--vg-vert-fonce);
 }
 
 /* Couleurs spécifiques Espace Employé */
@@ -184,10 +215,8 @@ h3,
   padding: 10px 25px;
   font-weight: 700;
 }
-.btn-vg-primary:hover {
-  background-color: var(--vg-vert-sauge);
-  color: white;
-}
+
+/* --- BOUTONS SECONDAIRES --- */
 .btn-vg-secondary {
   border: 1px solid var(--vg-vert-fonce);
   color: var(--vg-vert-fonce);
@@ -213,6 +242,7 @@ h3,
 
 .vg-team-card:hover {
   transform: translateY(-5px);
+  outline: 2px solid var(--vg-vert-fonce); /* Optionnel : accentue le focus */
 }
 
 /* ============================================================
