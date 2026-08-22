@@ -1,27 +1,35 @@
-# Maquettes et wireframes
+# Maquettes, Wireframes et Démarche UX
 
-## Objectif
+## 🎯 Objectif de conception
 
-Ce document présente l'organisation visuelle de l'application ainsi que l'évolution du design entre la première version de maquette et la version actuelle intégrée dans le projet.
+La conception visuelle de "Vite & Gourmand" a suivi une approche centrée sur l'utilisateur (UCD), visant à simplifier le tunnel de commande tout en valorisant l'aspect artisanal et haut de gamme du traiteur.
 
-## Éléments de référence fournis
+## 🖼️ Ressources de conception (Dossier /docs)
 
-Les fichiers suivants ont été ajoutés au dossier docs pour illustrer la démarche de conception :
+| Fichier                      | Description                                                                     |
+| :--------------------------- | :------------------------------------------------------------------------------ |
+| `mockup-desktop-depart.png`  | **Wireframe basse fidélité** : Focus sur l'agencement des blocs (Z-Pattern).    |
+| `section-mobile-depart.png`  | **Approche Mobile First** : Priorisation des éléments pour les écrans tactiles. |
+| `charte-graphique.png`       | **Styleguide** : Définition des couleurs, typographies et composants UI.        |
+| `mockup-accueil-modifié.png` | **Maquette haute fidélité** : Rendu final avant intégration.                    |
 
-- charte-graphique.png : représentation visuelle de la charte graphique
-- mockup-desktup-depart.png : maquette de départ représentant l'orientation initiale du site
-- mockup-accueil-modifié.png : version actuelle de la page d'accueil intégrée dans le projet
-- section-desktop-depart.png : vue desktop de la section initiale
-- section-mobile-depart.png : vue mobile de la section initiale
+## 📈 Analyse de l'évolution (Design Iteratif)
 
-## Analyse de l'évolution
+Le passage de la maquette initiale à la version intégrée a permis plusieurs optimisations :
 
-La page d'accueil a été structurée autour d'un parcours utilisateur clair et d'une identité visuelle cohérente avec la charte graphique. Les maquettes de départ ont permis de poser les bases de la structure, tandis que la version actuelle montre une adaptation plus précise au contenu réel du projet et à l'expérience utilisateur.
+1. **Épuration du Header** : Simplification de la navigation pour réduire la charge cognitive.
+2. **Accessibilité (RGAA)** : Ajustement des contrastes (notamment sur le Vert Sauge) pour garantir une lisibilité optimale (Ratio > 4.5:1).
+3. **Hiérarchie visuelle** : Utilisation de la typographie _Montserrat_ pour les titres afin de guider le regard vers les "Appels à l'action" (CTA).
 
-## Structure visuelle retenue
+## 📱 Stratégie Responsive & Grilles
 
-- Header avec logo, liens vers les sections principales
-- Section hero pour présenter l'offre du restaurant
-- Sections de cartes pour les menus
-- Footer avec informations de contact et horaires
-- Adaptation responsive pour le format desktop et mobile
+L'interface a été pensée selon la **grille de 12 colonnes de Bootstrap 5** :
+
+- **Desktop** : Affichage des menus en 3 ou 4 colonnes pour une vue d'ensemble rapide.
+- **Tablette** : Passage en 2 colonnes pour maintenir la taille des visuels produits.
+- **Mobile** : Empilage vertical (1 colonne) avec des zones de clic (boutons) d'au moins 44x44px pour faciliter la navigation tactile.
+
+## 🛠️ Outils utilisés
+
+- **Conception** : Figma
+- **Intégration** : Bootstrap 5.3, CSS Flexbox et Grid pour une fidélité maximale aux maquettes.

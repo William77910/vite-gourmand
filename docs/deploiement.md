@@ -1,51 +1,51 @@
-# Documentation de déploiement
+# Documentation de déploiement - Vite & Gourmand
 
 ## 📋 Prérequis
 
 - Docker Desktop installé et fonctionnel
 - Git
-- Un client SQL (type DBeaver ou accès via phpMyAdmin inclus)
+- Un client SQL (type DBeaver ou l'accès via phpMyAdmin inclus dans notre stack)
 
 ## 🚀 Procédure d'installation
 
-1. **Récupération du projet :**
+**1. Récupération du projet :**
 
-   ```bash
-   git clone [TON_LIEN_GITHUB]
-   cd vite-gourmand
+git clone [TON_LIEN_GITHUB]
+cd vite-gourmand
 
-   Configuration :
-   Copiez le fichier .env.example en .env et adaptez les secrets si nécessaire (les valeurs par défaut sont configurées pour Docker).
+2. Configuration des variables d'environnement :
+   Copiez le fichier d'exemple pour initialiser la configuration. Les valeurs par défaut sont déjà optimisées pour l'environnement Docker.
 
-   Lancement des services :
+cp .env.example .env
 
-   docker-compose up -d --build
+3. Lancement des services (Apache, PHP, MySQL, MongoDB, phpMyAdmin) :
 
-   Initialisation des données (MySQL) :
-   Accédez à phpMyAdmin : http://localhost:8081
-   Sélectionnez la base vite_gourmand.
-   Importez le fichier : database/vite_gourmand_final.sql.
-   Note : Ce fichier contient la structure et les données de démonstration.
+docker-compose up -d --build
 
-   Initialisation des données (MongoDB) :
-   Ouvrez un terminal dans le conteneur vg_mongo ou utilisez la commande :
+4. Initialisation des bases de données :
+   MySQL (Base transactionnelle) :
 
-   docker exec -it vg_mongo mongosh vite_gourmand_stats database/03_init_mongodb.js
+Accédez à phpMyAdmin : http://localhost:8081
+Sélectionnez la base vite_gourmand.
+Importez le fichier : database/vite_gourmand_final.sql. (Note : Ce fichier contient la structure de la base et les données de démonstration).
 
-   Accès à l'application :
-   L'interface est disponible sur http://localhost:8080.
-   ```
+MongoDB (Base analytique) :
+Injectez le script d'initialisation directement dans le conteneur depuis votre terminal :
 
-### 2. Mise à jour de `manuel-utilisation.md`
+docker exec -i vg_mongo mongosh vite_gourmand_stats < database/03_init_mongodb.js
 
-Ici, nous devons mettre tes **vrais** identifiants de test pour que le jury puisse suivre tes 3 cycles de démo.
+5. Accès à l'application :
+   L'interface client est désormais disponible sur http://localhost:8080.
 
-**Remplace le contenu par celui-ci :**
+---
 
-```markdown
-# Manuel d'utilisation
+### 2. Fichier `manuel-utilisation.md` (ou à mettre à la fin du README)
 
-## 🔑 Identifiants de test (Démonstration)
+# Manuel d'utilisation & Démonstration
+
+## 🔑 Identifiants de test
+
+Pour faciliter l'évaluation du projet, voici les comptes pré-configurés :
 
 | Rôle               | Email                  | Mot de passe |
 | :----------------- | :--------------------- | :----------- |
@@ -53,20 +53,21 @@ Ici, nous devons mettre tes **vrais** identifiants de test pour que le jury puis
 | **Employé**        | julie@vitegourmand.com | Azerty123!   |
 | **Client**         | johndoe@test.com       | Azerty123!   |
 
-## 🧭 Parcours de démonstration conseillé
+## 🧭 Parcours de démonstration conseillé (Cycle de vie métier)
 
-### 1. Cycle de commande complet
+Afin d'explorer la logique métier complète de l'application, nous vous invitons à suivre ce scénario :
+
+**1. Le Tunnel de Commande (Client & Employé)**
 
 - Connectez-vous en tant que **Client**.
-- Choisissez un menu et passez commande (Vérifiez le calcul des frais de port).
-- Connectez-vous en tant qu'**Employé**.
-- Gérez la commande jusqu'au statut "Terminée".
-- Repassez côté **Client** pour déposer un avis.
-- Repassez côté **Employé** pour valider l'avis.
+- Choisissez un menu, ajoutez-le au panier et passez commande (Observez le calcul dynamique des frais de livraison via l'API Adresse / Simulateur interne).
+- Déconnectez-vous, puis connectez-vous en tant qu'**Employé**.
+- Allez dans la gestion des commandes et faites évoluer le statut de la nouvelle commande jusqu'à "Terminée". _(Cette action décrémente les stocks et synchronise les données avec MongoDB)._
+- Repassez côté **Client** : vous pouvez maintenant déposer un avis sur cette commande terminée.
+- Repassez côté **Employé** pour modérer (valider) cet avis afin qu'il apparaisse sur la page d'accueil.
 
-### 2. Gestion et Statistiques
+**2. Gestion Analytique et Administration (Administrateur)**
 
 - Connectez-vous en tant qu'**Administrateur**.
-- Consultez l'onglet "Statistiques Ventes" pour visualiser les données synchronisées dans MongoDB.
-- Gérez les accès du personnel via "Gestion Personnel".
-```
+- Consultez l'onglet "Statistiques Ventes" pour visualiser les données (Chart.js) générées via le pipeline d'agrégation de MongoDB.
+- Consultez "Gestion du Personnel" pour tester le Soft Delete (suspension d'un employé).
