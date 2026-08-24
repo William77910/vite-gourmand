@@ -33,7 +33,10 @@ if (!function_exists('formaterHeure')) {
               <div class="fw-bold"><?= ucfirst($jour) ?> :</div>
               <?php foreach ($services as $index => $s): ?>
                 <div class="text-center text-muted">
-                  <?= $s['ouvert'] ? formaterHeure($s['heure_ouverture']) . '-' . formaterHeure($s['heure_fermeture']) : '<i>Fermé</i>' ?>
+                  <?= $s['ouvert']
+                    ? formaterHeure($s['heure_ouverture']) . '-' . formaterHeure($s['heure_fermeture'])
+                    : '<i>' . htmlspecialchars($s['commentaire_fermeture'] ?: 'Fermé') . '</i>'
+                  ?>
                 </div>
                 <?php if ($index === 0): ?><div>|</div><?php endif; ?>
               <?php endforeach; ?>

@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $horaires = Horaire::getAll();
 $current_page = 'employe';
 $page_title = 'Gestion des horaires';
+
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
@@ -47,17 +48,19 @@ require_once __DIR__ . '/../views/partials/header.php';
           <tr>
             <th>Jour</th>
             <th>Service</th>
-            <th>Ouvert</th>
+            <th class="text-center">Ouvert</th>
             <th>Ouverture</th>
             <th>Fermeture</th>
+            <th>Commentaire (si fermé)</th> <!-- 6ème colonne ajoutée -->
           </tr>
         </thead>
         <tbody>
           <?php foreach ($horaires as $h): ?>
             <tr>
-              <td class="fw-bold"><?= ucfirst($h['jour_semaine']) ?> (<?= $h['service'] ?>)</td>
-              <td>
-                <div class="form-check form-switch">
+              <td class="fw-bold"><?= ucfirst($h['jour_semaine']) ?></td>
+              <td><?= ucfirst($h['service']) ?></td>
+              <td class="text-center">
+                <div class="form-check form-switch d-inline-block">
                   <input class="form-check-input" type="checkbox" name="horaires[<?= $h['id_horaire'] ?>][ouvert]" <?= $h['ouvert'] ? 'checked' : '' ?>>
                 </div>
               </td>
@@ -68,7 +71,7 @@ require_once __DIR__ . '/../views/partials/header.php';
                 <input type="time" name="horaires[<?= $h['id_horaire'] ?>][fermeture]" class="form-control form-control-sm" value="<?= $h['heure_fermeture'] ?>">
               </td>
               <td>
-                <input type="text" name="horaires[<?= $h['id_horaire'] ?>][commentaire]" class="form-control form-control-sm" placeholder="Ex: Fermé pour réception..." value="<?= htmlspecialchars($h['commentaire_fermeture'] ?? '') ?>">
+                <input type="text" name="horaires[<?= $h['id_horaire'] ?>][commentaire]" class="form-control form-control-sm" placeholder="Ex: Fermé..." value="<?= htmlspecialchars($h['commentaire_fermeture'] ?? '') ?>">
               </td>
             </tr>
           <?php endforeach; ?>
