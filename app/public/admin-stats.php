@@ -24,12 +24,12 @@ require_once __DIR__ . '/../views/partials/header.php';
     <div class="card-body">
       <form method="get" class="row g-3 align-items-end">
         <div class="col-md-4">
-          <label class="form-label small fw-bold">Date de début</label>
-          <input type="date" name="debut" class="form-control vg-input" value="<?= htmlspecialchars($dateDebut ?? '') ?>">
+          <label for="date_debut" class="form-label small fw-bold">Date de début</label>
+          <input type="date" name="debut" id="date_debut" class="form-control vg-input" value="<?= htmlspecialchars($dateDebut ?? '') ?>">
         </div>
         <div class="col-md-4">
-          <label class="form-label small fw-bold">Date de fin</label>
-          <input type="date" name="fin" class="form-control vg-input" value="<?= htmlspecialchars($dateFin ?? '') ?>">
+          <label for="date_fin" class="form-label small fw-bold">Date de fin</label>
+          <input type="date" name="fin" id="date_fin" class="form-control vg-input" value="<?= htmlspecialchars($dateFin ?? '') ?>">
         </div>
         <div class="col-md-4">
           <button type="submit" class="btn btn-vg-primary w-100">Filtrer les données</button>

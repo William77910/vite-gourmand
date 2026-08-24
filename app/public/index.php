@@ -74,8 +74,8 @@ require_once __DIR__ . '/../views/partials/header.php';
           <div class="vg-avis-card d-flex flex-column h-100 p-4 shadow-sm border-0 bg-white rounded-3">
             <div class="d-flex align-items-center gap-3 mb-3">
               <!-- Avatar générique basé sur l'initiale -->
-              <div class="rounded-circle bg-vg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px; flex-shrink:0;">
-                <?= substr(htmlspecialchars($a['prenom']), 0, 1) ?>
+              <div class="vg-avatar-sm bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-person-fill" aria-hidden="true"></i>
               </div>
               <div>
                 <strong class="d-block text-dark"><?= htmlspecialchars($a['prenom']) ?> <?= substr(htmlspecialchars($a['nom']), 0, 1) ?>.</strong>

@@ -67,18 +67,36 @@ h3,
   font-size: 3rem;
   margin-left: 15px;
 }
+/* État normal : Vert foncé pour passer l'audit WAVE (Contraste ok) */
 .vg-nav .nav-link {
   font-family: var(--vg-font-paragraphes);
-  color: var(--vg-vert-sauge);
+  color: #436b51 !important; /* Vert optimisé accessibilité */
+  font-weight: 600;
   text-decoration: none;
+  position: relative; /* Pour l'effet de barre en dessous */
+  transition: all 0.3s ease;
 }
+
+/* État Hover / Focus / Active */
 .vg-nav .nav-link:hover,
 .vg-nav .nav-link:focus-visible,
 .vg-nav .nav-link.active {
-  /* <-- C'est ici la magie ! */
-  color: var(--vg-vert-fonce);
-  font-weight: bold;
-  /* ou un background-color si c'est un bouton plein */
+  color: var(
+    --vg-vert-sauge
+  ); /* Le vert sauge devient lisible ici car on accentue le trait */
+  font-weight: 700;
+}
+
+/* Optionnel : Une petite barre sous le texte pour le hover (Très moderne et accessible) */
+.vg-nav .nav-link:hover::after,
+.vg-nav .nav-link.active::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: var(--vg-vert-sauge);
+  bottom: -5px;
+  left: 0;
 }
 
 @media (max-width: 1200px) {
@@ -274,7 +292,7 @@ h3,
 
 /* Ajustements pour les petits titres de rôle */
 .vg-role-label {
-  color: var(--vg-vert-sauge);
+  color: var(--vg-vert-fonce);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -282,6 +300,15 @@ h3,
 }
 
 /* --- Section Engagements / Points Forts --- */
+.vg-engagement-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  height: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--vg-gris-clair);
+}
+
 .vg-engagement-item {
   padding: 20px;
   transition: all 0.3s ease;
@@ -383,7 +410,7 @@ h3,
 
 /* --- Styles pour les cartes d'avis --- */
 .vg-stars-gold {
-  color: #f1c40f;
+  color: var(--vg-vert-fonce);
   font-size: 1.1rem;
 }
 
@@ -408,4 +435,11 @@ h3,
   background-color: white;
   border: 1px solid var(--vg-gris-clair);
   border-radius: 12px;
+}
+
+/* On crée une classe utilitaire pour les liens qui doivent être accessibles */
+.vg-link-accessible {
+  color: #3d624a !important;
+  font-weight: 600;
+  text-decoration: underline; /* Le soulignement est un critère d'accessibilité pour les liens dans un texte */
 }

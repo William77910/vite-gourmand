@@ -67,7 +67,8 @@ require_once __DIR__ . '/../views/partials/header.php';
       </select>
     </div>
     <div class="col-md-5">
-      <input type="text" name="client" class="form-control vg-input" placeholder="Rechercher un client..." value="<?= htmlspecialchars($filtres['client']) ?>">
+      <label for="search_client" class="visually-hidden">Rechercher un client</label>
+      <input type="text" name="client" id="search_client" class="form-control vg-input" placeholder="Rechercher un client..." value="<?= htmlspecialchars($filtres['client']) ?>">
     </div>
     <div class="col-md-3">
       <button type="submit" class="btn btn-vg-primary w-100">Filtrer</button>

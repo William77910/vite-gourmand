@@ -120,12 +120,12 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
     <!-- Section Infos Générales -->
     <div class="row">
       <div class="col-md-12 mb-3">
-        <label class="vg-label">Titre du Menu*</label>
-        <input type="text" class="form-control vg-input" name="titre" required value="<?= htmlspecialchars($valeurs['titre']) ?>">
+        <label for="titre" class="vg-label">Titre du Menu*</label>
+        <input type="text" id="titre" class="form-control vg-input" name="titre" required value="<?= htmlspecialchars($valeurs['titre']) ?>">
       </div>
       <div class="col-md-12 mb-3">
-        <label class="vg-label">Description</label>
-        <textarea class="form-control vg-input" name="description" rows="2"><?= htmlspecialchars($valeurs['description']) ?></textarea>
+        <label for="description" class="vg-label">Description</label>
+        <textarea class="form-control vg-input" id="description" name="description" rows="2"><?= htmlspecialchars($valeurs['description']) ?></textarea>
       </div>
     </div>
 
@@ -137,8 +137,8 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
 
     <div class="row">
       <div class="col-md-6 mb-3">
-        <label class="vg-label">Thème du menu*</label>
-        <select name="theme" class="form-select vg-input" required>
+        <label for="theme" class="vg-label">Thème du menu*</label>
+        <select name="theme" class="form-select vg-input" id="theme" required>
           <option value="classique" <?= $valeurs['theme'] === 'classique' ? 'selected' : '' ?>>Classique</option>
           <?php /* Attention : les valeurs 'noel' et 'paques' ne doivent pas avoir d'accents (conforme à l'ENUM SQL) */ ?>
           <option value="noel" <?= $valeurs['theme'] === 'noel' ? 'selected' : '' ?>>Noël</option>
@@ -147,8 +147,8 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
         </select>
       </div>
       <div class="col-md-6 mb-3">
-        <label class="vg-label">Régime alimentaire*</label>
-        <select name="regime" class="form-select vg-input" required>
+        <label for="regime" class="vg-label">Régime alimentaire*</label>
+        <select name="regime" class="form-select vg-input" id="regime" required>
           <option value="classique" <?= $valeurs['regime'] === 'classique' ? 'selected' : '' ?>>Classique (Viande/Poisson)</option>
           <option value="vegetarien" <?= $valeurs['regime'] === 'vegetarien' ? 'selected' : '' ?>>Végétarien</option>
           <option value="vegan" <?= $valeurs['regime'] === 'vegan' ? 'selected' : '' ?>>Vegan</option>
@@ -156,15 +156,15 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
       </div>
     </div>
     <div class="mb-3">
-      <label class="vg-label">Conditions spécifiques (délais, stockage...)</label>
-      <textarea class="form-control vg-input" name="conditions_menu" rows="2"><?= htmlspecialchars($valeurs['conditions_menu']) ?></textarea>
+      <label for="conditions_menu" class="vg-label">Conditions spécifiques (délais, stockage...)</label>
+      <textarea class="form-control vg-input" id="conditions_menu" name="conditions_menu" rows="2"><?= htmlspecialchars($valeurs['conditions_menu']) ?></textarea>
     </div>
 
 
     <div class="row g-3">
       <div class="col-md-4">
-        <label class="vg-label">Entrée</label>
-        <select name="id_entree" class="form-select vg-input">
+        <label for="id_entree" class="vg-label">Entrée</label>
+        <select name="id_entree" class="form-select vg-input" id="id_entree">
           <option value="0">-- Aucune entrée --</option>
           <?php
           $platActuel = $modeEdition ? Plat::getParMenuEtType($idMenu, 'entree') : null;
@@ -176,8 +176,8 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
         </select>
       </div>
       <div class="col-md-4">
-        <label class="vg-label">Plat principal</label>
-        <select name="id_plat" class="form-select vg-input">
+        <label for="id_plat" class="vg-label">Plat principal</label>
+        <select name="id_plat" class="form-select vg-input" id="id_plat">
           <option value="0">-- Aucun plat --</option>
           <?php
           $platActuel = $modeEdition ? Plat::getParMenuEtType($idMenu, 'plat') : null;
@@ -189,8 +189,8 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
         </select>
       </div>
       <div class="col-md-4">
-        <label class="vg-label">Dessert</label>
-        <select name="id_dessert" class="form-select vg-input">
+        <label for="id_dessert" class="vg-label">Dessert</label>
+        <select name="id_dessert" class="form-select vg-input" id="id_dessert">
           <option value="0">-- Aucun dessert --</option>
           <?php
           $platActuel = $modeEdition ? Plat::getParMenuEtType($idMenu, 'dessert') : null;
@@ -208,31 +208,31 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
     <!-- Section Tarification et Images d'ambiance -->
     <div class="row">
       <div class="col-md-4 mb-3">
-        <label class="vg-label">Prix / personne (€)*</label>
-        <input type="number" step="0.01" class="form-control vg-input" name="prix_personne" required value="<?= htmlspecialchars((string)$valeurs['prix_personne']) ?>">
+        <label for="prix_personne" class="vg-label">Prix / personne (€)*</label>
+        <input type="number" step="0.01" class="form-control vg-input" name="prix_personne" id="prix_personne" required value="<?= htmlspecialchars((string)$valeurs['prix_personne']) ?>">
       </div>
       <div class="col-md-4 mb-3">
-        <label class="vg-label">Personnes min.*</label>
-        <input type="number" class="form-control vg-input" name="nb_personnes_min" value="<?= htmlspecialchars((string)$valeurs['nb_personnes_min']) ?>">
+        <label for="nb_personnes_min" class="vg-label">Personnes min.*</label>
+        <input type="number" class="form-control vg-input" name="nb_personnes_min" id="nb_personnes_min" value="<?= htmlspecialchars((string)$valeurs['nb_personnes_min']) ?>">
       </div>
       <div class="col-md-4 mb-3">
-        <label class="vg-label">Stock disponible</label>
-        <input type="number" class="form-control vg-input" name="stock_disponible" value="<?= htmlspecialchars((string)$valeurs['stock_disponible']) ?>">
+        <label for="stock_disponible" class="vg-label">Stock disponible</label>
+        <input type="number" class="form-control vg-input" name="stock_disponible" id="stock_disponible" value="<?= htmlspecialchars((string)$valeurs['stock_disponible']) ?>">
       </div>
     </div>
 
     <div class="mb-4">
-      <label class="vg-label">Ajouter une photo d'ambiance (galerie)</label>
-      <input type="file" class="form-control vg-input" name="photo" accept="image/*">
+      <label for="photo" class="vg-label">Ajouter une photo d'ambiance (galerie)</label>
+      <input type="file" class="form-control vg-input" name="photo" id="photo" accept="image/*">
     </div>
 
     <?php if (!empty($imagesExistantes)): ?>
       <div class="mb-4">
-        <label class="vg-label d-block mb-2">Galerie d'ambiance actuelle</label>
+        <label for="galerie_ambiance" class="vg-label d-block mb-2">Galerie d'ambiance actuelle</label>
         <div class="d-flex gap-3 flex-wrap">
           <?php foreach ($imagesExistantes as $image): ?>
             <div class="text-center">
-              <img src="<?= htmlspecialchars($image['url_image']) ?>" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">
+              <img src="<?= htmlspecialchars($image['url_image']) ?>" style="width:100px;height:100px;object-fit:cover;border-radius:8px;" alt="Ambiance">
               <br>
               <button type="submit" name="action" value="supprimer_image" onclick="document.getElementById('id_image_del').value='<?= $image['id_image'] ?>';" class="btn btn-danger btn-sm mt-1">Supprimer</button>
             </div>

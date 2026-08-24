@@ -30,7 +30,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
 ?>
 
 <div class="container my-5">
-  <a href="/menus.php" class="vg-text-secondary d-inline-block mb-3">&larr; Retour aux menus</a>
+  <a href="/menus.php" class="vg-text-secondary vg-link-accessible d-inline-block mb-3">&larr; Retour aux menus</a>
 
   <div class="row">
     <!-- Galerie Photo -->
@@ -136,8 +136,8 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
             <div class="col-md-6 col-lg-4">
               <div class="vg-avis-card d-flex flex-column h-100 p-4 shadow-sm border-0 bg-white rounded-3">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                  <div class="rounded-circle bg-vg-primary text-white vg-avatar-sm">
-                    <?= substr(htmlspecialchars($a['prenom']), 0, 1) ?>
+                  <div class="vg-avatar-sm bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-person-fill" aria-hidden="true"></i>
                   </div>
                   <div class="text-start">
                     <strong class="d-block text-dark"><?= htmlspecialchars($a['prenom']) ?> <?= substr(htmlspecialchars($a['nom']), 0, 1) ?>.</strong>

@@ -135,10 +135,10 @@ require_once __DIR__ . '/../views/partials/header.php';
   <!-- ONGLETS -->
   <ul class="nav nav-tabs mb-4" role="tablist">
     <li class="nav-item">
-      <button class="nav-link active" id="btn-infos" data-bs-toggle="tab" data-bs-target="#pane-infos" type="button" role="tab">Mes informations</button>
+      <button class="nav-link active vg-link-accessible" id="btn-infos" data-bs-toggle="tab" data-bs-target="#pane-infos" type="button" role="tab">Mes informations</button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" id="btn-commandes" data-bs-toggle="tab" data-bs-target="#pane-commandes" type="button" role="tab">Mes commandes</button>
+      <button class="nav-link vg-link-accessible" id="btn-commandes" data-bs-toggle="tab" data-bs-target="#pane-commandes" type="button" role="tab">Mes commandes</button>
     </li>
   </ul>
 
@@ -152,28 +152,28 @@ require_once __DIR__ . '/../views/partials/header.php';
             <input type="hidden" name="action" value="maj_infos">
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="vg-label">Nom*</label>
-                <input type="text" name="nom" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['nom']) ?>" required>
+                <label For="nom" class="vg-label">Nom*</label>
+                <input type="text" id="nom" name="nom" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['nom']) ?>" aria-label="Nom" required>
               </div>
               <div class="col-md-6">
-                <label class="vg-label">Prénom*</label>
-                <input type="text" name="prenom" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['prenom']) ?>" required>
+                <label For="prenom" class="vg-label">Prénom*</label>
+                <input type="text" id="prenom" name="prenom" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['prenom']) ?>" aria-label="Prénom" required>
               </div>
               <div class="col-12">
-                <label class="vg-label">Téléphone</label>
-                <input type="tel" name="telephone" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['telephone'] ?? '') ?>">
+                <label For="telephone" class="vg-label">Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['telephone'] ?? '') ?>" aria-label="Téléphone">
               </div>
               <div class="col-12">
-                <label class="vg-label">Adresse postale</label>
-                <input type="text" name="adresse_postale" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['adresse_postale'] ?? '') ?>">
+                <label For="adresse_postale" class="vg-label">Adresse postale</label>
+                <input type="text" id="adresse_postale" name="adresse_postale" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['adresse_postale'] ?? '') ?>" aria-label="Adresse postale">
               </div>
               <div class="col-md-4">
-                <label class="vg-label">Code postal</label>
-                <input type="text" name="code_postal" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['code_postal'] ?? '') ?>">
+                <label For="code_postal" class="vg-label">Code postal</label>
+                <input type="text" id="code_postal" name="code_postal" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['code_postal'] ?? '') ?>" aria-label="Code postal">
               </div>
               <div class="col-md-8">
-                <label class="vg-label">Ville</label>
-                <input type="text" name="ville" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['ville'] ?? '') ?>">
+                <label For="ville" class="vg-label">Ville</label>
+                <input type="text" id="ville" name="ville" class="form-control vg-input" value="<?= htmlspecialchars($utilisateur['ville'] ?? '') ?>" aria-label="Ville">
               </div>
             </div>
             <button type="submit" class="btn btn-vg-primary w-100 mt-4">Enregistrer les modifications</button>
@@ -185,13 +185,13 @@ require_once __DIR__ . '/../views/partials/header.php';
             <input type="hidden" name="action" value="maj_mdp">
             <h2 class="h5 mb-3 text-center">Changer le mot de passe</h2>
             <div class="mb-3">
-              <label class="vg-label">Mot de passe actuel</label>
-              <input type="password" name="mdp_actuel" class="form-control vg-input" required>
+              <label For="mdp_actuel" class="vg-label">Mot de passe actuel</label>
+              <input type="password" id="mdp_actuel" name="mdp_actuel" class="form-control vg-input" aria-label="Mot de passe actuel" required>
             </div>
             <div class="mb-3">
-              <label class="vg-label">Nouveau mot de passe</label>
+              <label For="nouveau_mdp" class="vg-label">Nouveau mot de passe</label>
               <div class="input-group">
-                <input type="password" id="mot_de_passe" name="nouveau_mdp" class="form-control vg-input input-password" required>
+                <input type="password" id="nouveau_mdp" name="nouveau_mdp" class="form-control vg-input input-password" aria-label="Nouveau mot de passe" required>
                 <button class="btn btn-outline-secondary toggle-password" type="button"><i class="bi bi-eye"></i></button>
               </div>
             </div>
@@ -202,8 +202,8 @@ require_once __DIR__ . '/../views/partials/header.php';
               <li data-critere="special" class="text-danger"><i class="bi bi-x-circle"></i> 1 caractère spécial</li>
             </ul>
             <div class="mb-3">
-              <label class="vg-label">Confirmation</label>
-              <input type="password" name="confirm_mdp" class="form-control vg-input" required>
+              <label For="confirm_mdp" class="vg-label">Confirmation</label>
+              <input type="password" id="confirm_mdp" name="confirm_mdp" class="form-control vg-input" aria-label="Confirmation du mot de passe" required>
             </div>
             <button type="submit" class="btn btn-vg-secondary w-100">Modifier le mot de passe</button>
           </form>

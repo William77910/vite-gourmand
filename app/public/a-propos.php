@@ -71,23 +71,23 @@ require_once __DIR__ . '/../views/partials/header.php';
   <!-- SECTION 3 : ENGAGEMENTS (Points forts harmonisés) -->
   <section class="row mt-5 pt-5 text-center g-4 border-top border-opacity-10">
     <div class="col-md-4">
-      <div class="vg-engagement-item">
+      <div class="vg-engagement-item vg-engagement-card">
         <i class="bi bi-patch-check"></i>
-        <h4>Qualité Traiteur</h4>
+        <h4><strong>Qualité Traiteur</strong></h4>
         <p>25 ans d'exigence au service de vos plus beaux événements.</p>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="vg-engagement-item">
+      <div class="vg-engagement-item vg-engagement-card">
         <i class="bi bi-calendar-range"></i>
-        <h4>Menus Évolutifs</h4>
+        <h4><strong>Menus Évolutifs</strong></h4>
         <p>Des créations inspirées par le cycle naturel des saisons.</p>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="vg-engagement-item">
+      <div class="vg-engagement-item vg-engagement-card">
         <i class="bi bi-bicycle"></i>
-        <h4>Proximité</h4>
+        <h4><strong>Proximité</strong></h4>
         <p>Une livraison soignée et réactive dans toute l'agglomération.</p>
       </div>
     </div>
