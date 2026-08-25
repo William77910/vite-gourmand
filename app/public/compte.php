@@ -127,7 +127,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
 <div class="container my-5">
-  <h1 class="text-center mb-4">Mon compte</h1>
+  <h1 class="text-center mb-4 vg-moncompte-title">Mon compte</h1>
 
   <?php foreach ($messages['succes'] as $m): ?><div class="alert alert-success alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
   <?php foreach ($messages['erreurs'] as $m): ?><div class="alert alert-danger alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>

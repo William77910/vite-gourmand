@@ -55,12 +55,8 @@ require_once __DIR__ . '/../views/partials/header.php';
     </div>
   </div>
 
-  <div class="text-center mb-5">
-    <a href="#avis" class="btn btn-vg-primary">Nos clients vous en parlent</a>
-  </div>
-
   <!-- Section Avis Clients Dynamiques -->
-  <h2 class="text-center mb-4">L'avis de nos gourmets</h2>
+  <h2 class="text-center mb-4 vg-index-title">Les avis de nos gourmets</h2>
   <div id="avis" class="row g-4 mb-5">
     <?php
     require_once __DIR__ . '/../src/Models/Avis.php';

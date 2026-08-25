@@ -137,6 +137,12 @@ h3,
   text-align: center;
   max-width: 600px;
 }
+.vg-hero-overlay h1 {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+}
 
 /* --- PHOTOS OVALES (CHEFS) --- */
 .vg-photo-ovale {
@@ -145,6 +151,38 @@ h3,
   object-fit: cover;
   border-radius: 50% / 30%; /* Forme ovale verticale */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- H2 page nos menus --- */
+.vg-menu-title {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 4rem;
+  margin-bottom: 30px;
+}
+
+/* --- H1 page contact --- */
+.vg-contact-title {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 4rem;
+  margin-bottom: 30px;
+}
+
+/* --- H2 page index --- */
+.vg-index-title {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 4rem;
+  margin-bottom: 30px;
+}
+
+/* --- H1 page mon compte --- */
+.vg-moncompte-title {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 4rem;
+  margin-bottom: 30px;
 }
 
 /* --- CARTES (MENUS & ESPACE EMPLOYÉ) --- */
@@ -156,6 +194,13 @@ h3,
   transition: transform 0.3s ease;
   height: 100%;
 }
+.vg-menu-card-titre {
+  font-family: "Italianno", cursive;
+  color: var(--vg-vert-fonce);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
 .vg-menu-card:hover,
 .vg-menu-card:focus-visible {
   transform: translateY(-5px);
@@ -232,6 +277,11 @@ h3,
   border-radius: 8px;
   padding: 10px 25px;
   font-weight: 700;
+}
+.btn-vg-primary:hover {
+  background-color: var(--vg-vert-sauge);
+  color: white;
+  text-decoration: none;
 }
 
 /* --- BOUTONS SECONDAIRES --- */

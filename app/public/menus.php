@@ -19,7 +19,7 @@ $menus = Menu::getAll();
 
 <!-- Conteneur des menus -->
 <div class="container my-5">
-  <h2 class="text-center mb-4">Nos menus gastronomiques</h2>
+  <h2 class="text-center mb-4 vg-menu-title">Nos menus gastronomiques</h2>
   <!-- Conteneur des cartes de menus -->
   <div class="row g-4" id="conteneur-menus">
     <?php foreach ($menus as $menu): ?>
