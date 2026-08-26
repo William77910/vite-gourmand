@@ -6,20 +6,11 @@ La conception visuelle de "Vite & Gourmand" a suivi une approche centrée sur l'
 
 ## 🖼️ Ressources de conception (Dossier /docs)
 
-| Fichier                      | Description                                                                     |
-| :--------------------------- | :------------------------------------------------------------------------------ |
-| `mockup-desktop-depart.png`  | **Wireframe basse fidélité** : Focus sur l'agencement des blocs (Z-Pattern).    |
-| `section-mobile-depart.png`  | **Approche Mobile First** : Priorisation des éléments pour les écrans tactiles. |
-| `charte-graphique.png`       | **Styleguide** : Définition des couleurs, typographies et composants UI.        |
-| `mockup-accueil-modifié.png` | **Maquette haute fidélité** : Rendu final avant intégration.                    |
-
-## 📈 Analyse de l'évolution (Design Iteratif)
-
-Le passage de la maquette initiale à la version intégrée a permis plusieurs optimisations :
-
-1. **Épuration du Header** : Simplification de la navigation pour réduire la charge cognitive.
-2. **Accessibilité (RGAA)** : Ajustement des contrastes (notamment sur le Vert Sauge) pour garantir une lisibilité optimale (Ratio > 4.5:1).
-3. **Hiérarchie visuelle** : Utilisation de la typographie _Montserrat_ pour les titres afin de guider le regard vers les "Appels à l'action" (CTA).
+| Fichier                 | Description                                                                 |
+| :---------------------- | :-------------------------------------------------------------------------- |
+| `charte-graphique.png`  | **Styleguide** : Définition des couleurs, typographies et composants UI.    |
+| `Maquettes-Desktop.pdf` | **Maquette haute fidélité** : Rendu final avant intégration format desktup. |
+| `Maquettes-Mobile.pdf`  | **Maquette haute fidélité** : Rendu final avant intégration format mobile.  |
 
 ## 📱 Stratégie Responsive & Grilles
 

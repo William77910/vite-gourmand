@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // écurité : un utilisateur doit être connecté pour voir cette page
 
 if (!isset($_SESSION['id_utilisateur'])) {
   header('Location: /connexion.php');

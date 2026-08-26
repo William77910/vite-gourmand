@@ -291,6 +291,11 @@ h3,
   background: white;
   border-radius: 8px;
 }
+.btn-vg-secondary:hover {
+  background-color: var(--vg-orange);
+  color: white;
+  text-decoration: none;
+}
 
 /* Mise en évidence du texte d'introduction "A propos" */
 .vg-lead-text {
@@ -487,9 +492,9 @@ h3,
   border-radius: 12px;
 }
 
-/* On crée une classe utilitaire pour les liens qui doivent être accessibles */
+/* On crée une classe utilitaire pour les liens de retour */
 .vg-link-accessible {
-  color: #3d624a !important;
+  color: var(--vg-vert-fonce) !important;
   font-weight: 600;
   text-decoration: underline; /* Le soulignement est un critère d'accessibilité pour les liens dans un texte */
 }
