@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $erreurs[] = "Votre session a expiré, veuillez réessayer.";
   } else {
     $nb = (int)$_POST['nb_personnes'];
-    $nb = max($nb, (int)$menu['nb_personnes_min']);
+    $nb = max($nb, (int)$menu['nb_personnes_min']); // Force le minimum
 
     // 1. Recalcul de la remise
     $reduction = $nb >= ((int)$menu['nb_personnes_min'] + 5);
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resGeo = calculer_frais_livraison($_POST['adresse'], $_POST['cp'], $_POST['ville']);
     $prixTotal = $sousTotal + $resGeo['frais'];
 
-    // 3. Mise à jour MySQL via la méthode modifier()
+    // 3. Mise à jour MySQL
     Commande::modifier($idCommande, $_SESSION['id_utilisateur'], [
       'nb_personnes' => $nb,
       'date_prestation' => $_POST['date'],
@@ -52,10 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       'commentaires' => $_POST['commentaires']
     ]);
 
-    // 4. Synchronisation MongoDB
+    // 4. SYNCHRONISATION MONGODB (CORRIGÉ)
     require_once __DIR__ . '/../src/Helpers/stats_helper.php';
-    if (function_exists('mettre_a_jour_statut_mongo')) {
-      mettre_a_jour_statut_mongo($idCommande, 'en_attente', (float)$prixTotal);
+    if (function_exists('mettre_a_jour_commande_mongo')) {
+      mettre_a_jour_commande_mongo($idCommande, [
+        'montant'      => (float)$prixTotal,
+        'nb_personnes' => (int)$nb,
+        'statut'       => 'en_attente'
+      ]);
     }
 
     header('Location: /compte.php?success=modifie');
@@ -114,7 +118,7 @@ require_once __DIR__ . '/../views/partials/header.php';
           </div>
           <div class="col-12">
             <label class="vg-label">Instructions pour le livreur</label>
-            <textarea name="commentaires" class="form-control vg-input" rows="3" style="height:auto;"><?= htmlspecialchars($commande['commentaires']) ?></textarea>
+            <textarea name="commentaires" class="form-control vg-input" rows="3" style="height:auto;"><?= htmlspecialchars($commande['commentaires'] ?? '') ?></textarea>
           </div>
         </div>
 

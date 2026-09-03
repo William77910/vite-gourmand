@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../config/mongodb.php';
 
-// On utilise le namespace complet pour éviter les alias non détectés
 use MongoDB\BSON\UTCDateTime;
 
 /**
@@ -14,20 +13,14 @@ function enregistrer_statistique_commande(array $dataCommande, string $titreMenu
     $db = MongoConnection::getDatabase();
     $collection = $db->selectCollection('commandes_stats');
 
-    // Sécurité : Si la date est invalide, on prend l'heure actuelle
+    $titreNettoye = trim($titreMenu, " \t\n\r\0\x0B\"'");
     $timestamp = strtotime($dataCommande['date_creation'] ?? 'now');
-    if ($timestamp === false) {
-      $timestamp = time();
-    }
-
-    // Création de l'objet date MongoDB
     $mongoDate = new UTCDateTime($timestamp * 1000);
-    // l'alert sur "UTCDateTime" est normale, c'est un objet BSON spécifique à MongoDB qui installé dans docker, mais pas dans l'IDE. Il n'y a pas d'erreur à craindre.
 
     $document = [
       'id_commande'   => (int)$dataCommande['id_commande'],
       'id_menu'       => (int)$dataCommande['id_menu'],
-      'titre_menu'    => $titreMenu,
+      'titre_menu'    => $titreNettoye,
       'montant'       => (float)$dataCommande['prix_total'],
       'nb_personnes'  => (int)$dataCommande['nb_personnes'],
       'date_commande' => $mongoDate,
@@ -36,34 +29,67 @@ function enregistrer_statistique_commande(array $dataCommande, string $titreMenu
 
     $collection->insertOne($document);
   } catch (Exception $e) {
-    // On log l'erreur sans l'afficher pour ne pas bloquer les headers HTTP
     error_log("Erreur Stats MongoDB : " . $e->getMessage());
   }
 }
 
 /**
- * Récupère le volume de commandes par menu (uniquement celles non annulées) avec filtres de dates.
+ * Met à jour les données d'une commande dans MongoDB.
  */
-function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $dateFin = null): array
+function mettre_a_jour_commande_mongo(int $idCommande, array $newData): void
+{
+  try {
+    $db = MongoConnection::getDatabase();
+    $collection = $db->selectCollection('commandes_stats');
+
+    $updateFields = [];
+    if (isset($newData['statut']))       $updateFields['statut'] = $newData['statut'];
+    if (isset($newData['montant']))      $updateFields['montant'] = (float)$newData['montant'];
+    if (isset($newData['nb_personnes'])) $updateFields['nb_personnes'] = (int)$newData['nb_personnes'];
+
+    if (isset($newData['titre_menu'])) {
+      $updateFields['titre_menu'] = trim($newData['titre_menu'], " \t\n\r\0\x0B\"'");
+    }
+
+    $collection->updateOne(
+      ['id_commande' => $idCommande],
+      ['$set' => $updateFields],
+      ['upsert' => true]
+    );
+  } catch (Exception $e) {
+    error_log("Erreur Update MongoDB : " . $e->getMessage());
+  }
+}
+
+/**
+ * Récupère le volume de commandes (Activité globale)
+ * Filtres : Dates et Titre de menu
+ */
+function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $dateFin = null, ?string $filtreMenu = null): array
 {
   try {
     $db = MongoConnection::getDatabase();
     $collection = $db->selectCollection('commandes_stats');
 
     $pipeline = [];
+    $match = [];
 
     // 1. Filtre par date
     if ($dateDebut || $dateFin) {
-      $filtreDate = [];
-      if ($dateDebut) $filtreDate['$gte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateDebut) * 1000);
-      if ($dateFin)   $filtreDate['$lte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateFin . " 23:59:59") * 1000);
-      $pipeline[] = ['$match' => ['date_commande' => $filtreDate]];
+      if ($dateDebut) $match['date_commande']['$gte'] = new UTCDateTime(strtotime($dateDebut . " 00:00:00") * 1000);
+      if ($dateFin)   $match['date_commande']['$lte'] = new UTCDateTime(strtotime($dateFin . " 23:59:59") * 1000);
     }
 
-    // 2. IMPORTANT : On exclut les commandes annulées du volume
-    $pipeline[] = ['$match' => ['statut' => ['$ne' => 'annulee']]];
+    // 2. Filtre par titre de menu (si renseigné)
+    if ($filtreMenu) {
+      $match['titre_menu'] = $filtreMenu;
+    }
 
-    // 3. Groupement
+    // 3. On exclut les annulations du volume d'activité
+    $match['statut'] = ['$ne' => 'annulee'];
+
+    $pipeline[] = ['$match' => $match];
+
     $pipeline[] = ['$group' => [
       '_id' => '$titre_menu',
       'total_commandes' => ['$sum' => 1]
@@ -72,7 +98,6 @@ function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $da
     $pipeline[] = ['$sort' => ['total_commandes' => -1]];
 
     $cursor = $collection->aggregate($pipeline);
-
     $resultats = [];
     foreach ($cursor as $doc) {
       $resultats[$doc['_id']] = $doc['total_commandes'];
@@ -85,68 +110,41 @@ function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $da
 }
 
 /**
- * Met à jour le statut d'une commande dans MongoDB.
- * Si la commande n'existe pas (ancienne commande MySQL), elle est créée.
+ * Calcule le CA (Uniquement commandes encaissées/validées)
+ * Filtres : Dates et Titre de menu
  */
-/**
- * Met à jour le statut et le montant d'une commande dans MongoDB.
- */
-function mettre_a_jour_statut_mongo(int $idCommande, string $nouveauStatut, float $nouveauMontant = null): void
-{
-  try {
-    $db = MongoConnection::getDatabase();
-    $collection = $db->selectCollection('commandes_stats');
-
-    $updateData = ['statut' => $nouveauStatut];
-
-    // Si un nouveau montant est fourni (cas d'une modification), on le met à jour
-    if ($nouveauMontant !== null) {
-      $updateData['montant'] = $nouveauMontant;
-    }
-
-    $collection->updateOne(
-      ['id_commande' => $idCommande],
-      ['$set' => $updateData],
-      ['upsert' => true]
-    );
-  } catch (Exception $e) {
-    error_log("Erreur Update MongoDB : " . $e->getMessage());
-  }
-}
-
-/**
- * Calcule le CA par menu avec filtres optionnels.
- * @param string|null $dateDebut Format Y-m-d
- * @param string|null $dateFin Format Y-m-d
- */
-function obtenir_ca_par_menu(?string $dateDebut = null, ?string $dateFin = null): array
+function obtenir_ca_par_menu(?string $dateDebut = null, ?string $dateFin = null, ?string $filtreMenu = null): array
 {
   try {
     $db = MongoConnection::getDatabase();
     $collection = $db->selectCollection('commandes_stats');
 
     $pipeline = [];
+    $match = [];
 
-    // 1. Filtre par durée (si précisée)
+    // 1. Filtre par date
     if ($dateDebut || $dateFin) {
-      $filtreDate = [];
-      if ($dateDebut) $filtreDate['$gte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateDebut) * 1000);
-      if ($dateFin)   $filtreDate['$lte'] = new MongoDB\BSON\UTCDateTime(strtotime($dateFin . " 23:59:59") * 1000);
-
-      $pipeline[] = ['$match' => ['date_commande' => $filtreDate]];
+      if ($dateDebut) $match['date_commande']['$gte'] = new UTCDateTime(strtotime($dateDebut . " 00:00:00") * 1000);
+      if ($dateFin)   $match['date_commande']['$lte'] = new UTCDateTime(strtotime($dateFin . " 23:59:59") * 1000);
     }
 
-    // 2. Filtre pour exclure les commandes annulées (le CA ne compte que le validé/terminé)
-    $pipeline[] = ['$match' => ['statut' => ['$ne' => 'annulee']]];
+    // 2. Filtre par titre de menu
+    if ($filtreMenu) {
+      $match['titre_menu'] = $filtreMenu;
+    }
 
-    // 3. Groupement et Somme
+    // 3. LOGIQUE MÉTIER CA : On ne compte que les commandes validées, en cours ou terminées.
+    // On exclut 'en_attente' (pas encore validé par l'employé) et 'annulee'.
+    $match['statut'] = ['$in' => ['accepte', 'en_preparation', 'en_cours_de_livraison', 'livre', 'terminee', 'en_attente_retour_materiel']];
+
+    $pipeline[] = ['$match' => $match];
+
     $pipeline[] = ['$group' => [
       '_id' => '$titre_menu',
       'ca_total' => ['$sum' => '$montant']
     ]];
 
     $cursor = $collection->aggregate($pipeline);
-
     $resultats = [];
     foreach ($cursor as $doc) {
       $resultats[$doc['_id']] = (float)$doc['ca_total'];

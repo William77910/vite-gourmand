@@ -5,6 +5,8 @@ exiger_role(['employe', 'administrateur']);
 
 require_once __DIR__ . '/../src/Models/Avis.php';
 $nbAvisEnAttente = count(Avis::getEnAttente());
+require_once __DIR__ . '/../src/Models/Contact.php';
+$nbMessagesNonTraites = count(Contact::getNonTraited());
 
 $current_page = 'employe';
 $page_title = 'Espace de gestion';
@@ -106,6 +108,8 @@ require_once __DIR__ . '/../views/partials/header.php';
           <i class="bi bi-envelope-paper fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Messages</h3>
           <p class="vg-text-secondary mb-0 small">Consulter et traiter les demandes clients.</p>
+          <!-- Affichage du nombre de messages non traités -->
+          <span class="badge bg-danger"><?= $nbMessagesNonTraites ?> non traité(s)</span>
         </div>
       </a>
     </div>

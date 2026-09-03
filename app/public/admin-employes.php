@@ -85,6 +85,11 @@ require_once __DIR__ . '/../views/partials/header.php';
       </tbody>
     </table>
   </div>
+  <div class="mt-4">
+    <a href="/espace-employe.php" class="btn btn-link text-secondary vg-link-accessible">
+      <i class="bi bi-arrow-left"></i> Retour à l'espace employé
+    </a>
+  </div>
 </div>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

@@ -34,7 +34,7 @@ if ($nbPersonnes < (int) $menu['nb_personnes_min']) {
 
 // Valeurs par défaut du formulaire (pré-remplissage avec les infos du compte)
 $valeurs = [
-  'nb_personnes'      => $nbPersonnes,
+  'nb_personnes' => $_POST['nb_personnes'] ?? (isset($_GET['personnes']) ? (int)$_GET['personnes'] : (int)$menu['nb_personnes_min']),
   'date_prestation'   => $_POST['date_prestation'] ?? '',
   'heure_prestation'  => $_POST['heure_prestation'] ?? '',
   'adresse_livraison' => $_POST['adresse_livraison'] ?? ($utilisateur['adresse_postale'] ?? ''),

@@ -1,96 +1,113 @@
 <?php
 require_once __DIR__ . '/../src/Helpers/auth.php';
 exiger_role(['administrateur']);
+
+// On inclut bien le Modèle Menu pour que la classe soit reconnue
+require_once __DIR__ . '/../src/Models/Menu.php';
 require_once __DIR__ . '/../src/Helpers/stats_helper.php';
 
-// Récupération des filtres
-$dateDebut = $_GET['debut'] ?? null;
-$dateFin = $_GET['fin'] ?? null;
+// 1. Récupération des filtres
+$dateDebut  = $_GET['date_debut'] ?? null;
+$dateFin    = $_GET['date_fin'] ?? null;
+$menuFiltre = $_GET['menu_nom'] ?? null;
 
-// Données MongoDB
-$statsVentes = obtenir_stats_commandes_par_menu($dateDebut, $dateFin);
-$statsCA = obtenir_ca_par_menu($dateDebut, $dateFin);
+// 2. Chargement de la liste des menus pour le select
+$listeMenus = Menu::getAllActifs();
 
-$current_page = 'admin';
-$page_title = 'Tableau de bord financier';
+// 3. Récupération des stats via MongoDB
+$statsVolume = obtenir_stats_commandes_par_menu($dateDebut, $dateFin, $menuFiltre);
+$statsCA     = obtenir_ca_par_menu($dateDebut, $dateFin, $menuFiltre);
+
+$page_title = "Tableau de bord - Statistiques";
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
 <div class="container my-5">
-  <h1 class="text-center mb-4">Tableau de bord Administrateur</h1>
+  <h1 class="text-center mb-4">Analyse des ventes</h1>
 
   <!-- Formulaire de filtres -->
-  <div class="card mb-5 shadow-sm">
-    <div class="card-body">
-      <form method="get" class="row g-3 align-items-end">
-        <div class="col-md-4">
-          <label for="date_debut" class="form-label small fw-bold">Date de début</label>
-          <input type="date" name="debut" id="date_debut" class="form-control vg-input" value="<?= htmlspecialchars($dateDebut ?? '') ?>">
-        </div>
-        <div class="col-md-4">
-          <label for="date_fin" class="form-label small fw-bold">Date de fin</label>
-          <input type="date" name="fin" id="date_fin" class="form-control vg-input" value="<?= htmlspecialchars($dateFin ?? '') ?>">
-        </div>
-        <div class="col-md-4">
-          <button type="submit" class="btn btn-vg-primary w-100">Filtrer les données</button>
-        </div>
-      </form>
+  <form method="get" class="row g-3 mb-5 bg-white p-4 border rounded shadow-sm">
+    <div class="col-md-3">
+      <label class="form-label small fw-bold">Date de début</label>
+      <input type="date" name="date_debut" class="form-control" value="<?= htmlspecialchars($dateDebut ?? '') ?>">
     </div>
-  </div>
+    <div class="col-md-3">
+      <label class="form-label small fw-bold">Date de fin</label>
+      <input type="date" name="date_fin" class="form-control" value="<?= htmlspecialchars($dateFin ?? '') ?>">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small fw-bold">Filtrer par Menu</label>
+      <select name="menu_nom" class="form-select">
+        <option value="">Tous les menus</option>
+        <?php foreach ($listeMenus as $m): ?>
+          <option value="<?= htmlspecialchars($m['titre']) ?>" <?= $menuFiltre === $m['titre'] ? 'selected' : '' ?>>
+            <?= htmlspecialchars($m['titre']) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-vg-primary w-100">Actualiser</button>
+    </div>
+  </form>
 
   <div class="row g-4">
     <!-- Graphique Volume -->
-    <div class="col-md-6">
-      <div class="bg-white p-4 border rounded shadow-sm h-100">
-        <h2 class="h5 mb-4 text-center">Volume de commandes</h2>
-        <canvas id="chartVentes"></canvas>
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Volume de ventes par menu</h5>
+          <canvas id="chartVolume"></canvas>
+        </div>
       </div>
     </div>
 
-    <!-- Graphique Chiffre d'Affaires -->
-    <div class="col-md-6">
-      <div class="bg-white p-4 border rounded shadow-sm h-100">
-        <h2 class="h5 mb-4 text-center">Chiffre d'affaires par menu (€)</h2>
-        <canvas id="chartCA"></canvas>
+    <!-- Graphique CA -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Répartition du Chiffre d'Affaires (€)</h5>
+          <canvas id="chartCA"></canvas>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="mt-4">
+    <a href="/espace-employe.php" class="btn btn-link text-secondary vg-link-accessible">
+      <i class="bi bi-arrow-left"></i> Retour à l'espace employé
+    </a>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Config Chart Ventes (Nombre)
-    new Chart(document.getElementById('chartVentes'), {
-      type: 'pie', // On change en camembert pour varier et plaire au jury
-      data: {
-        labels: <?= json_encode(array_keys($statsVentes)) ?>,
-        datasets: [{
-          data: <?= json_encode(array_values($statsVentes)) ?>,
-          backgroundColor: ['#5c7251', '#a6b08e', '#d2d8c7', '#2c3e50']
-        }]
-      }
-    });
+  const labels = <?= json_encode(array_keys($statsVolume)) ?>;
+  const dataVolume = <?= json_encode(array_values($statsVolume)) ?>;
+  const dataCA = <?= json_encode(array_values($statsCA)) ?>;
 
-    // Config Chart CA (Euros)
-    new Chart(document.getElementById('chartCA'), {
-      type: 'bar',
-      data: {
-        labels: <?= json_encode(array_keys($statsCA)) ?>,
-        datasets: [{
-          label: 'CA en €',
-          data: <?= json_encode(array_values($statsCA)) ?>,
-          backgroundColor: '#5c7251'
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
+  // Graphique Barres (Volume)
+  new Chart(document.getElementById('chartVolume'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Nombre de commandes',
+        data: dataVolume,
+        backgroundColor: '#7baf8b'
+      }]
+    }
+  });
+
+  // Graphique Doughnut (CA)
+  new Chart(document.getElementById('chartCA'), {
+    type: 'doughnut',
+    data: {
+      labels: <?= json_encode(array_keys($statsCA)) ?>,
+      datasets: [{
+        data: dataCA,
+        backgroundColor: ['#4f7f5f', '#7baf8b', '#e8a15b', '#713704', '#6f6f6f']
+      }]
+    }
   });
 </script>
 

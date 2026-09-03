@@ -33,4 +33,14 @@ class Contact
     $stmt = $pdo->prepare("DELETE FROM message_contact WHERE id_contact = :id");
     $stmt->execute([':id' => $id]);
   }
+
+  /**
+   * Récupérer les messages non traités pour l'affichage dans le menu employé.
+   */
+  public static function getNonTraited(): array
+  {
+    $pdo = Database::getConnection();
+    $sql = "SELECT * FROM message_contact WHERE traite = 0 ORDER BY date_creation DESC";
+    return $pdo->query($sql)->fetchAll();
+  }
 }

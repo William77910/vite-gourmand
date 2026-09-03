@@ -94,8 +94,10 @@ require_once __DIR__ . '/../views/partials/header.php';
         </table>
       </div>
 
-      <div class="text-center mt-4">
-        <a href="/espace-employe.php" class="btn btn-link text-secondary vg-link-accessible">Retour à la gestion</a>
+      <div class="mt-4">
+        <a href="/espace-employe.php" class="btn btn-link text-secondary vg-link-accessible">
+          <i class="bi bi-arrow-left"></i> Retour à l'espace employé
+        </a>
       </div>
     </div>
   </div>

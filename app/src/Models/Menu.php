@@ -82,6 +82,16 @@ class Menu
   }
 
   /**
+   * NOUVELLE MÉTHODE : Récupère uniquement titres et IDs pour les filtres stats.
+   */
+  public static function getAllActifs(): array
+  {
+    $pdo = Database::getConnection();
+    $sql = "SELECT id_menu, titre FROM menu WHERE est_actif = 1 ORDER BY titre ASC";
+    return $pdo->query($sql)->fetchAll();
+  }
+
+  /**
    * Crée un nouveau menu.
    */
   public static function create(array $data): int
@@ -130,7 +140,6 @@ class Menu
 
   /**
    * Soft Delete : On désactive le menu au lieu de le supprimer physiquement.
-   * Cela évite les erreurs de clés étrangères avec les commandes passées.
    */
   public static function delete(int $id): void
   {
@@ -158,7 +167,7 @@ class Menu
   /**
    * Ajoute une photo à la galerie du menu.
    */
-  public static function definirPhotoAmbiance(int $idMenu, string $urlImage): void
+  public static function définirPhotoAmbiance(int $idMenu, string $urlImage): void
   {
     $pdo = Database::getConnection();
     $idImage = Image::creerOuRecuperer($urlImage);
