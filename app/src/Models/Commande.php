@@ -5,6 +5,54 @@ require_once __DIR__ . '/../../config/database.php';
 class Commande
 {
   /**
+   * Crée une commande (Transactionnel)
+   */
+  public static function create(array $data): int
+  {
+    $pdo = Database::getConnection();
+    try {
+      // On commence une transaction
+      $pdo->beginTransaction();
+      // On verrouille la ligne du menu pour éviter les problèmes de stock
+      $stmt = $pdo->prepare("SELECT stock_disponible FROM menu WHERE id_menu = ? FOR UPDATE");
+      $stmt->execute([$data['id_menu']]);
+      $m = $stmt->fetch();
+      // On vérifie le stock disponible
+      if (!$m || (int)$m['stock_disponible'] <= 0) throw new Exception("Stock épuisé");
+      // On insère la commande
+      $sql = "INSERT INTO commande (id_utilisateur, id_menu, nb_personnes, date_prestation, heure_prestation, adresse_livraison,
+      ville_livraison, code_postal_livraison, frais_livraison, reduction_appliquee, prix_total, commentaires, mode_paiement)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      $pdo->prepare($sql)->execute([
+        $data['id_utilisateur'],
+        $data['id_menu'],
+        $data['nb_personnes'],
+        $data['date_prestation'],
+        $data['heure_prestation'],
+        $data['adresse_livraison'],
+        $data['ville_livraison'],
+        $data['code_postal_livraison'],
+        $data['frais_livraison'],
+        $data['reduction_appliquee'] ? 1 : 0,
+        $data['prix_total'],
+        $data['commentaires'],
+        $data['mode_paiement']
+      ]);
+      $id = (int)$pdo->lastInsertId();
+      // On ajoute le statut initial "en_attente" dans l'historique
+      $pdo->prepare("INSERT INTO historique_statut (id_commande, statut) VALUES (?, 'en_attente')")->execute([$id]);
+      // On décrémente le stock disponible du menu
+      $pdo->prepare("UPDATE menu SET stock_disponible = stock_disponible - 1 WHERE id_menu = ?")->execute([$data['id_menu']]);
+      // On valide la transaction
+      $pdo->commit();
+      return $id;
+      // Si une exception est levée, on annule la transaction et on relance l'exception
+    } catch (Exception $e) {
+      $pdo->rollBack();
+      throw $e;
+    }
+  }
+  /**
    * Récupère une commande par son ID
    */
   public static function getById(int $id): ?array
@@ -163,31 +211,6 @@ class Commande
     } catch (Exception $e) {
       $pdo->rollBack();
       return false;
-    }
-  }
-
-  /**
-   * Crée une commande (Transactionnel)
-   */
-  public static function create(array $data): int
-  {
-    $pdo = Database::getConnection();
-    try {
-      $pdo->beginTransaction();
-      $stmt = $pdo->prepare("SELECT stock_disponible FROM menu WHERE id_menu = ? FOR UPDATE");
-      $stmt->execute([$data['id_menu']]);
-      $m = $stmt->fetch();
-      if (!$m || (int)$m['stock_disponible'] <= 0) throw new Exception("Stock épuisé");
-      $sql = "INSERT INTO commande (id_utilisateur, id_menu, nb_personnes, date_prestation, heure_prestation, adresse_livraison, ville_livraison, code_postal_livraison, frais_livraison, reduction_appliquee, prix_total, commentaires, mode_paiement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      $pdo->prepare($sql)->execute([$data['id_utilisateur'], $data['id_menu'], $data['nb_personnes'], $data['date_prestation'], $data['heure_prestation'], $data['adresse_livraison'], $data['ville_livraison'], $data['code_postal_livraison'], $data['frais_livraison'], $data['reduction_appliquee'] ? 1 : 0, $data['prix_total'], $data['commentaires'], $data['mode_paiement']]);
-      $id = (int)$pdo->lastInsertId();
-      $pdo->prepare("INSERT INTO historique_statut (id_commande, statut) VALUES (?, 'en_attente')")->execute([$id]);
-      $pdo->prepare("UPDATE menu SET stock_disponible = stock_disponible - 1 WHERE id_menu = ?")->execute([$data['id_menu']]);
-      $pdo->commit();
-      return $id;
-    } catch (Exception $e) {
-      $pdo->rollBack();
-      throw $e;
     }
   }
 

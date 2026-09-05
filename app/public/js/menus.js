@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     conteneurMenus.innerHTML =
       '<p class="text-center vg-text-secondary">Chargement...</p>';
 
+    // Appel AJAX pour récupérer les menus filtrés
     fetch("/api/menus-filtrer.php?" + params.toString())
       .then(function (reponse) {
         return reponse.json();

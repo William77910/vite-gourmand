@@ -110,7 +110,7 @@ function obtenir_stats_commandes_par_menu(?string $dateDebut = null, ?string $da
 }
 
 /**
- * Calcule le CA (Uniquement commandes encaissées/validées)
+ * Calcule le CA (Uniquement commandes validées)
  * Filtres : Dates et Titre de menu
  */
 function obtenir_ca_par_menu(?string $dateDebut = null, ?string $dateFin = null, ?string $filtreMenu = null): array
@@ -138,20 +138,21 @@ function obtenir_ca_par_menu(?string $dateDebut = null, ?string $dateFin = null,
     $match['statut'] = ['$in' => ['accepte', 'en_preparation', 'en_cours_de_livraison', 'livre', 'terminee', 'en_attente_retour_materiel']];
 
     $pipeline[] = ['$match' => $match];
-
+    // 4. On regroupe par titre de menu et on calcule le CA total
     $pipeline[] = ['$group' => [
       '_id' => '$titre_menu',
       'ca_total' => ['$sum' => '$montant']
     ]];
 
+    // 5. On retourne les résultats sous forme de tableau associatif [titre_menu => ca_total]
     $cursor = $collection->aggregate($pipeline);
     $resultats = [];
-    foreach ($cursor as $doc) {
+    foreach ($cursor as $doc) { // On convertit le montant en float pour éviter les problèmes de type
       $resultats[$doc['_id']] = (float)$doc['ca_total'];
     }
     return $resultats;
-  } catch (Exception $e) {
+  } catch (Exception $e) { // On log l'erreur pour le débogage
     error_log("Erreur CA MongoDB : " . $e->getMessage());
-    return [];
+    return []; // On retourne un tableau vide en cas d'erreur
   }
 }
