@@ -47,26 +47,26 @@ function geocoder_adresse(string $adresse, string $codePostal, string $ville): ?
 
   // 2. Repli sur le Simulateur (Résilience en cas de panne API)
   $villes_secours = [
-    'bordeaux-33000'      => ['lat' => 44.8378, 'lon' => -0.5792],
-    'merignac-33700'      => ['lat' => 44.8415, 'lon' => -0.6464],
-    'pessac-33600'        => ['lat' => 44.8058, 'lon' => -0.6312],
-    'talence-33400'       => ['lat' => 44.8080, 'lon' => -0.5901],
-    'villenave-dornon-33140' => ['lat' => 44.7818, 'lon' => -0.5599],
-    'begles-33130'        => ['lat' => 44.8078, 'lon' => -0.5484],
-    'cenon-33150'         => ['lat' => 44.8569, 'lon' => -0.5312],
-    'floirac-33270'       => ['lat' => 44.8361, 'lon' => -0.5262],
-    'lormont-33310'       => ['lat' => 44.8785, 'lon' => -0.5222],
-    'le-bouscat-33110'    => ['lat' => 44.8647, 'lon' => -0.5997],
-    'eysines-33320'       => ['lat' => 44.8841, 'lon' => -0.6504],
-    'bruges-33520'        => ['lat' => 44.8821, 'lon' => -0.6125],
-    'gradignan-33170'     => ['lat' => 44.7709, 'lon' => -0.6171],
-    'blanquefort-33290'   => ['lat' => 44.9110, 'lon' => -0.6384],
-    'saint-medard-en-jalles-33160' => ['lat' => 44.8962, 'lon' => -0.7183],
-    'libourne-33500'               => ['lat' => 44.9170, 'lon' => -0.2340],
-    'saint-andre-de-cubzac-33240'  => ['lat' => 44.9920, 'lon' => -0.4420],
-    'langon-33210'                 => ['lat' => 44.5530, 'lon' => -0.2450],
-    'arcachon-33120'               => ['lat' => 44.6580, 'lon' => -1.1700],
-    'la-teste-de-buch-33260'       => ['lat' => 44.6290, 'lon' => -1.1410]
+    'bordeaux-33000'      => ['lat' => 44.8372, 'lon' => -0.584345],
+    'merignac-33700'      => ['lat' => 44.784130, 'lon' => -0.087226],
+    'pessac-33600'        => ['lat' => 44.80583, 'lon' => -0.630386],
+    'talence-33400'       => ['lat' => 44.8134094, 'lon' => -0.600507500000049],
+    'villenave-dornon-33140' => ['lat' => 44.7695013, 'lon' => -0.544014],
+    'begles-33130'        => ['lat' => 44.812649, 'lon' => -0.551078],
+    'cenon-33150'         => ['lat' => 44.853209, 'lon' => -0.522079],
+    'floirac-33270'       => ['lat' => 44.835601, 'lon' => -0.517768],
+    'lormont-33310'       => ['lat' => 44.876407, 'lon' => -0.5182007],
+    'le-bouscat-33110'    => ['lat' => 44.865299, 'lon' => -0.594785],
+    'eysines-33320'       => ['lat' => 44.879826, 'lon' => -0.635789],
+    'bruges-33520'        => ['lat' => 44.8693999, 'lon' => -0.5763499],
+    'gradignan-33170'     => ['lat' => 44.7734342, 'lon' => -0.6166045],
+    'blanquefort-33290'   => ['lat' => 44.91396, 'lon' => -0.63543],
+    'saint-medard-en-jalles-33160' => ['lat' => 44.89359, 'lon' => -0.711531],
+    'libourne-33500'               => ['lat' => 44.937431, 'lon' => -0.235289],
+    'saint-andre-de-cubzac-33240'  => ['lat' => 44.988606, 'lon' => 0.450383],
+    'langon-33210'                 => ['lat' => 44.555169, 'lon' => -0.251069],
+    'arcachon-33120'               => ['lat' => 44.6601467, 'lon' => -1.167542],
+    'la-teste-de-buch-33260'       => ['lat' => 44.5372009277, 'lon' => -1.15588998795]
   ];
 
   $cle = $ville_clean . '-' . $cp_clean;

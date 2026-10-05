@@ -7,7 +7,7 @@ Les couleurs de l'application sont définies en variables CSS personnalisées, s
 | Couleur         | Hexadécimal | Usage / Variable CSS suggérée                                   |
 | :-------------- | :---------- | :-------------------------------------------------------------- |
 | **Vert sauge**  | `#7baf8b`   | Couleur principale (`--color-primary` / Boutons primaires)      |
-| **Vert foncé**  | `#4f7f5f`   | Titres, header, éléments de mise en avant (`--color-secondary`) |
+| **Vert foncé**  | `#3f7250`   | Titres, header, éléments de mise en avant (`--color-secondary`) |
 | **Beige clair** | `#f4efe6`   | Fond principal de l'application (`--color-background`)          |
 | **Jaune clair** | `#fdf9e3`   | Fonds secondaires (cartes, encarts)                             |
 | **Blanc**       | `#ffffff`   | Texte sur fond sombre, conteneurs (`--color-white`)             |

@@ -34,7 +34,7 @@ require_once __DIR__ . '/../views/partials/header.php';
           </div>
           <div class="card-body">
             <h5 class="card-title"><?= htmlspecialchars($a['prenom'] . ' ' . $a['nom']) ?></h5>
-            <div class="text-warning mb-2"><?= str_repeat('★', $a['note']) . str_repeat('☆', 5 - $a['note']) ?></div>
+            <div class="vg-stars-gold mb-2"><?= str_repeat('★', $a['note']) . str_repeat('☆', 5 - $a['note']) ?></div>
             <p class="card-text">"<?= htmlspecialchars($a['commentaire']) ?>"</p>
           </div>
           <div class="card-footer bg-white border-0 pb-3">

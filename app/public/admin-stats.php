@@ -28,11 +28,11 @@ require_once __DIR__ . '/../views/partials/header.php';
   <!-- Formulaire de filtres -->
   <form method="get" class="row g-3 mb-5 bg-white p-4 border rounded shadow-sm">
     <div class="col-md-3">
-      <label class="form-label small fw-bold">Date de début</label>
+      <label for="date_debut" class="form-label small fw-bold">Date de début</label>
       <input type="date" name="date_debut" class="form-control" value="<?= htmlspecialchars($dateDebut ?? '') ?>">
     </div>
     <div class="col-md-3">
-      <label class="form-label small fw-bold">Date de fin</label>
+      <label for="date_fin" class="form-label small fw-bold">Date de fin</label>
       <input type="date" name="date_fin" class="form-control" value="<?= htmlspecialchars($dateFin ?? '') ?>">
     </div>
     <div class="col-md-4">
@@ -51,12 +51,12 @@ require_once __DIR__ . '/../views/partials/header.php';
     </div>
   </form>
 
+  <!-- Graphique Volume -->
   <div class="row g-4">
-    <!-- Graphique Volume -->
     <div class="col-lg-6">
       <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title mb-4">Volume de ventes par menu</h5>
+          <h5 class="card-title mb-4">Volume de ventes par menu => "popularité"</h5>
           <canvas id="chartVolume"></canvas>
         </div>
       </div>
@@ -79,7 +79,9 @@ require_once __DIR__ . '/../views/partials/header.php';
   </div>
 </div>
 
+<!-- Inclusion de Chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Script pour générer les graphiques (transforme les données en graphiques) -->
 <script>
   const labels = <?= json_encode(array_keys($statsVolume)) ?>;
   const dataVolume = <?= json_encode(array_values($statsVolume)) ?>;

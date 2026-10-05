@@ -16,7 +16,7 @@ Il s'agit d'une application de gestion pour un traiteur bordelais, intégrant la
 1. **Clonage du dépôt :**
 
    ```bash
-   git clone [TON_LIEN_GITHUB]
+   git clone https://github.com/William77910/vite-gourmand.git
    cd vite-gourmand
    ```
 
@@ -36,9 +36,9 @@ Il s'agit d'une application de gestion pour un traiteur bordelais, intégrant la
 
 🔐 Identifiants de Test (Démonstration)
 Rôle Email Mot de passe
-Administrateur josegourmand@mail.com [Azerty123!]
-Employé julie@vitegourmand.com [Azerty123!]
-Client johndoe@test.com [Azerty123!]
+Administrateur votreemailadmin [votre mdp]
+Employé emailemploie [mdp emploie]
+Client emailclient [mdp client]
 
 💡 Points clés du projet
 Architecture Polyglotte : Utilisation de MySQL pour les transactions ACID et MongoDB pour l'agrégation de données analytiques.

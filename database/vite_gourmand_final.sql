@@ -120,8 +120,8 @@ CREATE TABLE IF NOT EXISTS `commande` (
 --
 
 INSERT INTO `commande` (`id_commande`, `id_utilisateur`, `id_menu`, `nb_personnes`, `date_prestation`, `heure_prestation`, `adresse_livraison`, `ville_livraison`, `code_postal_livraison`, `frais_livraison`, `reduction_appliquee`, `prix_total`, `materiel_prete`, `commentaires`, `mode_paiement`, `date_creation`) VALUES
-(1, 11, 1, 4, '2026-08-24', '12:30:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 105.00, 0, 'Sonner à l\'interphone du portail', 'carte', '2026-08-21 09:41:17'),
-(2, 12, 14, 4, '2026-08-24', '13:30:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 81.22, 0, 'Dernière maison au fond de la court', 'paypal', '2026-08-21 10:47:23'),
+(1, 11, 1, 4, '2026-08-24', '12:30:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 105.00, 0, 'Sonner à l''interphone du portail', 'carte', '2026-08-21 09:41:17'),
+(2, 12, 14, 4, '2026-08-24', '13:30:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 81.22, 0, 'Dernière maison au fond de la coure', 'paypal', '2026-08-21 10:47:23'),
 (3, 13, 3, 6, '2026-08-24', '21:00:00', '10, rue du château', 'La Couronne', '16400', 64.55, 0, 244.55, 0, NULL, 'virement', '2026-08-21 12:02:18');
 
 -- --------------------------------------------------------

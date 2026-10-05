@@ -4,7 +4,7 @@
 
 :root {
   --vg-vert-sauge: #7baf8b;
-  --vg-vert-fonce: #4f7f5f;
+  --vg-vert-fonce: #3f7250;
   --vg-beige-clair: #f4efe6;
   --vg-jaune-clair: #fdf9e3;
   --vg-blanc: #ffffff;
@@ -497,4 +497,19 @@ h3,
   color: var(--vg-vert-fonce) !important;
   font-weight: 600;
   text-decoration: underline; /* Le soulignement est un critère d'accessibilité pour les liens dans un texte */
+}
+
+.vg-badge-avis {
+  background-color: rgb(255, 166, 0);
+  color: rgb(19, 19, 19);
+  font-size: 0.75rem;
+}
+
+.vg-badge-text {
+  color: rgb(2, 23, 244);
+}
+
+.vg-stars-gold {
+  color: var(--vg-vert-fonce);
+  font-size: 1.1rem;
 }

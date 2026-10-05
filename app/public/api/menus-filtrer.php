@@ -5,8 +5,8 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../../src/Models/Menu.php';
 
-// Listes blanches : on n'accepte que des valeurs connues (defense en profondeur,
-// en plus des requetes preparees deja utilisees dans le modele)
+// Listes blanches : on n'accepte que des valeurs connues (défense en profondeur,
+// en plus des requêtes préparees déjà utilisées dans le modèle)
 $themes_valides  = ['classique', 'paques', 'noel', 'evenement'];
 $regimes_valides = ['classique', 'vegetarien', 'vegan'];
 

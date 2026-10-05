@@ -57,7 +57,7 @@ class Utilisateur
     }
 
     /**
-     * Crée un nouvel utilisateur. 
+     * Crée un nouvel utilisateur.
      * Utilise l'opérateur de fusion null (??) pour éviter les erreurs d'index.
      */
     public static function create(array $data): int

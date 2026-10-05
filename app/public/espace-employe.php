@@ -23,7 +23,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
           <i class="bi bi-egg-fried fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Bibliothèque de Plats</h3>
-          <p class="vg-text-secondary mb-0 small">Créer et modifier les entrées, plats et desserts.</p>
+          <p class="vg-badge-text mb-0 small">Créer et modifier les entrées, plats et desserts.</p>
         </div>
       </a>
     </div>
@@ -34,7 +34,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0 bg-light">
           <i class="bi bi-exclamation-triangle fs-1" style="color: var(--vg-orange);"></i>
           <h3 class="mt-2 text-dark h5">Allergènes</h3>
-          <p class="vg-text-secondary mb-0 small">Gérer la liste globale des allergènes.</p>
+          <p class="vg-badge-text mb-0 small">Gérer la liste globale des allergènes.</p>
         </div>
       </a>
     </div>
@@ -45,7 +45,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
           <i class="bi bi-journal-text fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Gestion des Menus</h3>
-          <p class="vg-text-secondary mb-0 small">Assembler les plats pour créer des menus complets.</p>
+          <p class="vg-badge-text mb-0 small">Assembler les plats pour créer des menus complets.</p>
         </div>
       </a>
     </div>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
           <i class="bi bi-basket fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Suivi Commandes</h3>
-          <p class="vg-text-secondary mb-0 small">Gérer les statuts de livraison et les annulations.</p>
+          <p class="vg-badge-text mb-0 small">Gérer les statuts de livraison et les annulations.</p>
         </div>
       </a>
     </div>
@@ -68,7 +68,7 @@ require_once __DIR__ . '/../views/partials/header.php';
           <i class="bi bi-star fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Modération Avis</h3>
           <p class="vg-text-secondary mb-0 small">
-            <span class="badge <?= $nbAvisEnAttente > 0 ? 'bg-warning' : 'bg-light text-dark' ?>">
+            <span class="badge vg-badge-avis <?= $nbAvisEnAttente > 0 ?>">
               <?= $nbAvisEnAttente ?> en attente
             </span>
           </p>
@@ -83,7 +83,7 @@ require_once __DIR__ . '/../views/partials/header.php';
           <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0 bg-light">
             <i class="bi bi-bar-chart-line-fill fs-1" style="color: var(--vg-vert-fonce);"></i>
             <h3 class="mt-2 text-dark h5">Statistiques Ventes</h3>
-            <p class="vg-text-secondary mb-0 small">Analyse NoSQL des performances par menu.</p>
+            <p class="vg-badge-text mb-0 small">Analyse NoSQL des performances par menu.</p>
             <div class="badge bg-dark mt-2">Admin uniquement</div>
           </div>
         </a>
@@ -96,7 +96,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
           <i class="bi bi-clock-history fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Horaires</h3>
-          <p class="vg-text-secondary mb-0 small">Modifier les heures d'ouverture du restaurant.</p>
+          <p class="vg-badge-text mb-0 small">Modifier les heures d'ouverture du restaurant.</p>
         </div>
       </a>
     </div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0">
           <i class="bi bi-envelope-paper fs-1" style="color: var(--vg-vert-sauge);"></i>
           <h3 class="mt-2 text-dark h5">Messages</h3>
-          <p class="vg-text-secondary mb-0 small">Consulter et traiter les demandes clients.</p>
+          <p class="vg-badge-text mb-0 small">Consulter et traiter les demandes clients.</p>
           <!-- Affichage du nombre de messages non traités -->
           <span class="badge bg-danger"><?= $nbMessagesNonTraites ?> non traité(s)</span>
         </div>
@@ -120,7 +120,7 @@ require_once __DIR__ . '/../views/partials/header.php';
           <div class="vg-menu-card text-center p-4 h-100 shadow-sm border-0 bg-light">
             <i class="bi bi-people-fill fs-1" style="color: #2c3e50;"></i>
             <h3 class="mt-2 text-dark h5">Gestion Personnel</h3>
-            <p class="vg-text-secondary mb-0 small">Activer ou suspendre les accès collaborateurs.</p>
+            <p class="vg-badge-text mb-0 small">Activer ou suspendre les accès collaborateurs.</p>
           </div>
         </a>
       </div>
@@ -130,7 +130,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 
   <!-- Lien de retour spécifique pour les employés/admins -->
   <div class="text-center mt-5">
-    <a href="/index.php" class="btn btn-link text-secondary text-decoration-none">
+    <a href="/index.php" class="btn btn-link vg-link-accessible text-decoration-none">
       <i class="bi bi-house"></i> Retour au site public
     </a>
   </div>
