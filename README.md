@@ -11,7 +11,7 @@ Il s'agit d'une application de gestion pour un traiteur bordelais, intégrant la
 - **Front-end :** Bootstrap 5.3, JavaScript (Chart.js, Geocoding API)
 - **Environnement :** Docker Desktop
 
-## 🚀 Installation locale
+## Installation locale
 
 1. **Clonage du dépôt :**
 
@@ -34,13 +34,15 @@ Il s'agit d'une application de gestion pour un traiteur bordelais, intégrant la
 
    mongosh vite_gourmand_stats database/03_init_mongodb.js
 
-🔐 Identifiants de Test (Démonstration)
+## Identifiants de Test (Démonstration)
+
 Rôle Email Mot de passe
 Administrateur votreemailadmin [votre mdp]
 Employé emailemploie [mdp emploie]
 Client emailclient [mdp client]
 
-💡 Points clés du projet
+## Points clés du projet
+
 Architecture Polyglotte : Utilisation de MySQL pour les transactions ACID et MongoDB pour l'agrégation de données analytiques.
 Sécurité : Protection contre les failles XSS (htmlspecialchars), CSRF (tokens), et hachage des mots de passe (BCRYPT).
 Résilience : Système de géolocalisation hybride (API Adresse Gouv.fr + Simulateur interne en cas de coupure réseau).

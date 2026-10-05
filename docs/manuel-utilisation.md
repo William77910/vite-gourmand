@@ -2,17 +2,17 @@
 
 Ce document accompagne l'évaluateur dans la découverte de l'application "Vite & Gourmand". Il propose un parcours optimisé pour tester les fonctionnalités critiques.
 
-## 🔑 Comptes de test (Prêts à l'emploi)
+## Comptes de test (Prêts à l'emploi)
 
-| Rôle               | Identifiant (Email)    | Mot de passe |
-| :----------------- | :--------------------- | :----------- |
-| **Administrateur** | josegourmand@mail.com  | Azerty123!   |
-| **Employé**        | julie@vitegourmand.com | Azerty123!   |
-| **Client**         | johndoe@test.com       | Azerty123!   |
+| Rôle               | Identifiant (Email) | Mot de passe |
+| :----------------- | :------------------ | :----------- |
+| **Administrateur** | mail admin          | mdp admin    |
+| **Employé**        | mail employé        | mdp employé  |
+| **Client**         | mail client         | mdp client   |
 
 ---
 
-## 🧭 Parcours de démonstration recommandé
+## Parcours de démonstration recommandé
 
 Pour valider l'ensemble des compétences du titre DWWM, nous suggérons de suivre ce cycle métier complet :
 
