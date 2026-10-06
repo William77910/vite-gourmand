@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : ven. 21 août 2026 à 12:31
+-- Généré le : mar. 06 oct. 2026 à 10:20
 -- Version du serveur : 8.0.45
 -- Version de PHP : 8.3.32
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `vite_gourmand`
 --
-CREATE DATABASE IF NOT EXISTS `vite_gourmand` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `vite_gourmand`;
 
 -- --------------------------------------------------------
 
@@ -29,13 +27,10 @@ USE `vite_gourmand`;
 -- Structure de la table `allergene`
 --
 
-DROP TABLE IF EXISTS `allergene`;
-CREATE TABLE IF NOT EXISTS `allergene` (
-  `id_allergene` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_allergene`),
-  UNIQUE KEY `nom` (`nom`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `allergene` (
+  `id_allergene` int NOT NULL,
+  `nom` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `allergene`
@@ -65,16 +60,13 @@ INSERT INTO `allergene` (`id_allergene`, `nom`) VALUES
 -- Structure de la table `avis`
 --
 
-DROP TABLE IF EXISTS `avis`;
-CREATE TABLE IF NOT EXISTS `avis` (
-  `id_avis` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `avis` (
+  `id_avis` int NOT NULL,
   `id_commande` int NOT NULL,
   `note` tinyint NOT NULL,
   `commentaire` text,
   `valide` tinyint(1) NOT NULL DEFAULT '0',
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_avis`),
-  UNIQUE KEY `id_commande` (`id_commande`)
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 --
@@ -82,9 +74,10 @@ CREATE TABLE IF NOT EXISTS `avis` (
 --
 
 INSERT INTO `avis` (`id_avis`, `id_commande`, `note`, `commentaire`, `valide`, `date_creation`) VALUES
-(1, 1, 5, 'Tout le monde s\'ait régalé. Super présentation', 1, '2026-08-21 10:38:08'),
-(2, 2, 4, 'Tout était super.\r\nMerci à toute l\'équipe!', 1, '2026-08-21 11:15:05'),
-(3, 3, 5, 'Livraison ponctuelle, menu excellent et bien présenté', 1, '2026-08-21 12:06:24');
+(1, 1, 5, 'Très content de la prestation et du menu', 1, '2026-09-03 14:05:17'),
+(2, 2, 4, 'Menu très agréable et bien présenté', 1, '2026-09-03 14:07:19'),
+(3, 6, 4, 'Enchanté par ce menu avec des produits frais', 1, '2026-09-03 14:08:23'),
+(4, 4, 4, 'Tout le monde s''est régalé !', 0, '2026-09-03 14:32:59');
 
 -- --------------------------------------------------------
 
@@ -92,9 +85,8 @@ INSERT INTO `avis` (`id_avis`, `id_commande`, `note`, `commentaire`, `valide`, `
 -- Structure de la table `commande`
 --
 
-DROP TABLE IF EXISTS `commande`;
-CREATE TABLE IF NOT EXISTS `commande` (
-  `id_commande` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `commande` (
+  `id_commande` int NOT NULL,
   `id_utilisateur` int NOT NULL,
   `id_menu` int NOT NULL,
   `nb_personnes` int NOT NULL,
@@ -109,10 +101,7 @@ CREATE TABLE IF NOT EXISTS `commande` (
   `materiel_prete` tinyint(1) NOT NULL DEFAULT '0',
   `commentaires` text,
   `mode_paiement` enum('carte','paypal','virement') DEFAULT NULL,
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_commande`),
-  KEY `fk_commande_utilisateur` (`id_utilisateur`),
-  KEY `fk_commande_menu` (`id_menu`)
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ;
 
 --
@@ -120,9 +109,18 @@ CREATE TABLE IF NOT EXISTS `commande` (
 --
 
 INSERT INTO `commande` (`id_commande`, `id_utilisateur`, `id_menu`, `nb_personnes`, `date_prestation`, `heure_prestation`, `adresse_livraison`, `ville_livraison`, `code_postal_livraison`, `frais_livraison`, `reduction_appliquee`, `prix_total`, `materiel_prete`, `commentaires`, `mode_paiement`, `date_creation`) VALUES
-(1, 11, 1, 4, '2026-08-24', '12:30:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 105.00, 0, 'Sonner à l''interphone du portail', 'carte', '2026-08-21 09:41:17'),
-(2, 12, 14, 4, '2026-08-24', '13:30:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 81.22, 0, 'Dernière maison au fond de la coure', 'paypal', '2026-08-21 10:47:23'),
-(3, 13, 3, 6, '2026-08-24', '21:00:00', '10, rue du château', 'La Couronne', '16400', 64.55, 0, 244.55, 0, NULL, 'virement', '2026-08-21 12:02:18');
+(1, 11, 14, 9, '2026-06-06', '12:00:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 1, 126.50, 0, NULL, 'carte', '2026-06-01 11:20:42'),
+(2, 13, 14, 10, '2026-06-20', '12:30:00', '10, rue du château', 'La Couronne', '16400', 64.55, 1, 199.55, 0, NULL, 'paypal', '2026-06-09 11:26:00'),
+(3, 12, 3, 6, '2026-07-11', '21:30:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 201.22, 0, NULL, 'virement', '2026-07-06 11:31:59'),
+(4, 11, 1, 4, '2026-07-18', '12:30:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 105.00, 0, NULL, 'virement', '2026-07-07 11:35:34'),
+(5, 11, 2, 5, '2026-07-25', '12:30:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 105.00, 0, NULL, 'carte', '2026-07-21 11:38:47'),
+(6, 13, 2, 7, '2026-08-07', '13:00:00', '10, rue du château', 'La Couronne', '16400', 64.55, 0, 204.55, 0, NULL, 'paypal', '2026-08-01 11:42:35'),
+(7, 12, 14, 10, '2026-09-01', '21:30:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 1, 156.22, 0, NULL, 'carte', '2026-08-28 11:46:48'),
+(8, 12, 1, 4, '2026-09-03', '13:00:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 121.22, 0, NULL, 'carte', '2026-08-31 11:47:58'),
+(9, 13, 3, 6, '2026-09-12', '21:30:00', '10, rue du château', 'La Couronne', '16400', 64.55, 0, 244.55, 0, NULL, 'paypal', '2026-09-01 11:50:36'),
+(10, 11, 14, 4, '2026-09-15', '13:54:00', '5, rue du centre', 'Bordeaux', '33000', 5.00, 0, 65.00, 0, NULL, 'carte', '2026-09-01 11:54:53'),
+(11, 12, 14, 4, '2026-09-15', '13:00:00', '3, rue de la ville', 'Libourne', '33500', 21.22, 0, 81.22, 0, NULL, 'carte', '2026-09-01 11:56:31'),
+(12, 13, 1, 4, '2026-09-17', '13:01:00', '10, rue du château', 'La Couronne', '16400', 64.55, 0, 164.55, 0, NULL, 'carte', '2026-09-01 12:55:59');
 
 -- --------------------------------------------------------
 
@@ -130,43 +128,66 @@ INSERT INTO `commande` (`id_commande`, `id_utilisateur`, `id_menu`, `nb_personne
 -- Structure de la table `historique_statut`
 --
 
-DROP TABLE IF EXISTS `historique_statut`;
-CREATE TABLE IF NOT EXISTS `historique_statut` (
-  `id_historique` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `historique_statut` (
+  `id_historique` int NOT NULL,
   `id_commande` int NOT NULL,
   `id_employe` int DEFAULT NULL,
   `statut` enum('en_attente','accepte','en_preparation','en_cours_de_livraison','livre','en_attente_retour_materiel','terminee','annulee') NOT NULL,
   `motif` text,
   `mode_contact` enum('appel','mail') DEFAULT NULL,
-  `date_modification` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_historique`),
-  KEY `fk_historique_employe` (`id_employe`),
-  KEY `idx_commande_statut_join` (`id_commande`,`date_modification`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `date_modification` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `historique_statut`
 --
 
 INSERT INTO `historique_statut` (`id_historique`, `id_commande`, `id_employe`, `statut`, `motif`, `mode_contact`, `date_modification`) VALUES
-(1, 1, NULL, 'en_attente', NULL, NULL, '2026-08-21 09:41:17'),
-(2, 1, 5, 'accepte', NULL, NULL, '2026-08-21 09:48:17'),
-(3, 1, 5, 'en_preparation', NULL, NULL, '2026-08-21 09:48:27'),
-(4, 1, 5, 'en_cours_de_livraison', NULL, NULL, '2026-08-21 09:48:32'),
-(5, 1, 5, 'livre', NULL, NULL, '2026-08-21 09:48:40'),
-(6, 1, 5, 'terminee', NULL, NULL, '2026-08-21 09:48:49'),
-(7, 2, NULL, 'en_attente', NULL, NULL, '2026-08-21 10:47:23'),
-(8, 2, 5, 'accepte', NULL, NULL, '2026-08-21 11:10:58'),
-(9, 2, 5, 'en_preparation', NULL, NULL, '2026-08-21 11:12:39'),
-(10, 2, 5, 'en_cours_de_livraison', NULL, NULL, '2026-08-21 11:12:42'),
-(11, 2, 5, 'livre', NULL, NULL, '2026-08-21 11:12:50'),
-(12, 2, 5, 'terminee', NULL, NULL, '2026-08-21 11:12:56'),
-(13, 3, NULL, 'en_attente', NULL, NULL, '2026-08-21 12:02:18'),
-(14, 3, 5, 'accepte', NULL, NULL, '2026-08-21 12:04:09'),
-(15, 3, 5, 'en_preparation', NULL, NULL, '2026-08-21 12:04:12'),
-(16, 3, 5, 'en_cours_de_livraison', NULL, NULL, '2026-08-21 12:04:16'),
-(17, 3, 5, 'livre', NULL, NULL, '2026-08-21 12:04:20'),
-(18, 3, 5, 'terminee', NULL, NULL, '2026-08-21 12:04:25');
+(1, 1, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:20:42'),
+(2, 2, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:26:00'),
+(3, 3, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:31:59'),
+(4, 4, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:35:34'),
+(5, 5, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:38:47'),
+(6, 6, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:42:35'),
+(7, 7, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:46:48'),
+(8, 8, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:47:58'),
+(9, 9, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:50:36'),
+(10, 10, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:54:53'),
+(11, 11, NULL, 'en_attente', NULL, NULL, '2026-09-01 11:56:31'),
+(12, 12, NULL, 'en_attente', NULL, NULL, '2026-09-01 12:55:59'),
+(13, 1, 5, 'accepte', NULL, NULL, '2026-09-01 13:34:48'),
+(14, 2, 5, 'accepte', NULL, NULL, '2026-09-01 13:35:06'),
+(15, 3, 5, 'accepte', NULL, NULL, '2026-09-01 13:36:53'),
+(16, 4, 5, 'accepte', NULL, NULL, '2026-09-01 14:06:43'),
+(17, 1, 5, 'en_preparation', NULL, NULL, '2026-09-01 14:10:30'),
+(18, 6, 5, 'accepte', NULL, NULL, '2026-09-01 14:14:19'),
+(19, 3, 5, 'annulee', 'Client injoignable', 'appel', '2026-09-01 14:16:30'),
+(20, 7, 5, 'accepte', NULL, NULL, '2026-09-01 14:18:07'),
+(21, 2, 5, 'en_preparation', NULL, NULL, '2026-09-01 14:18:20'),
+(22, 8, 5, 'accepte', NULL, NULL, '2026-09-01 14:20:12'),
+(23, 9, 5, 'accepte', NULL, NULL, '2026-09-01 14:21:20'),
+(24, 7, 5, 'en_preparation', NULL, NULL, '2026-09-01 17:31:43'),
+(25, 1, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:38:00'),
+(26, 1, 5, 'livre', NULL, NULL, '2026-09-01 17:38:12'),
+(27, 1, 5, 'terminee', NULL, NULL, '2026-09-01 17:38:23'),
+(28, 2, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:38:55'),
+(29, 2, 5, 'livre', NULL, NULL, '2026-09-01 17:39:00'),
+(30, 2, 5, 'terminee', NULL, NULL, '2026-09-01 17:39:08'),
+(31, 4, 5, 'en_preparation', NULL, NULL, '2026-09-01 17:39:37'),
+(32, 4, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:39:47'),
+(33, 4, 5, 'livre', NULL, NULL, '2026-09-01 17:39:53'),
+(34, 4, 5, 'terminee', NULL, NULL, '2026-09-01 17:40:01'),
+(35, 5, 5, 'accepte', NULL, NULL, '2026-09-01 17:40:15'),
+(36, 5, 5, 'en_preparation', NULL, NULL, '2026-09-01 17:40:19'),
+(37, 5, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:40:29'),
+(38, 5, 5, 'livre', NULL, NULL, '2026-09-01 17:40:38'),
+(39, 5, 5, 'terminee', NULL, NULL, '2026-09-01 17:40:47'),
+(40, 6, 5, 'en_preparation', NULL, NULL, '2026-09-01 17:41:06'),
+(41, 6, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:41:19'),
+(42, 6, 5, 'livre', NULL, NULL, '2026-09-01 17:41:28'),
+(43, 6, 5, 'terminee', NULL, NULL, '2026-09-01 17:41:35'),
+(44, 7, 5, 'en_cours_de_livraison', NULL, NULL, '2026-09-01 17:43:44'),
+(45, 8, 5, 'en_preparation', NULL, NULL, '2026-09-01 17:46:13');
 
 -- --------------------------------------------------------
 
@@ -174,18 +195,15 @@ INSERT INTO `historique_statut` (`id_historique`, `id_commande`, `id_employe`, `
 -- Structure de la table `horaire`
 --
 
-DROP TABLE IF EXISTS `horaire`;
-CREATE TABLE IF NOT EXISTS `horaire` (
-  `id_horaire` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `horaire` (
+  `id_horaire` int NOT NULL,
   `jour_semaine` enum('lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche') NOT NULL,
   `service` enum('midi','soir') NOT NULL,
   `heure_ouverture` time DEFAULT NULL,
   `heure_fermeture` time DEFAULT NULL,
   `ouvert` tinyint(1) NOT NULL DEFAULT '1',
-  `commentaire_fermeture` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id_horaire`),
-  UNIQUE KEY `uq_jour_service` (`jour_semaine`,`service`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `commentaire_fermeture` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `horaire`
@@ -213,14 +231,11 @@ INSERT INTO `horaire` (`id_horaire`, `jour_semaine`, `service`, `heure_ouverture
 -- Structure de la table `image`
 --
 
-DROP TABLE IF EXISTS `image`;
-CREATE TABLE IF NOT EXISTS `image` (
-  `id_image` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `image` (
+  `id_image` int NOT NULL,
   `url_image` varchar(255) NOT NULL,
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_image`),
-  UNIQUE KEY `uq_url_image` (`url_image`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `image`
@@ -252,16 +267,12 @@ INSERT INTO `image` (`id_image`, `url_image`, `date_creation`) VALUES
 -- Structure de la table `image_menu`
 --
 
-DROP TABLE IF EXISTS `image_menu`;
-CREATE TABLE IF NOT EXISTS `image_menu` (
-  `id_image_menu` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `image_menu` (
+  `id_image_menu` int NOT NULL,
   `id_menu` int NOT NULL,
   `id_image` int NOT NULL,
-  `ordre_affichage` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_image_menu`),
-  KEY `id_menu` (`id_menu`),
-  KEY `id_image` (`id_image`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `ordre_affichage` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `image_menu`
@@ -279,9 +290,8 @@ INSERT INTO `image_menu` (`id_image_menu`, `id_menu`, `id_image`, `ordre_afficha
 -- Structure de la table `menu`
 --
 
-DROP TABLE IF EXISTS `menu`;
-CREATE TABLE IF NOT EXISTS `menu` (
-  `id_menu` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `menu` (
+  `id_menu` int NOT NULL,
   `titre` varchar(150) NOT NULL,
   `description` text,
   `theme` enum('noel','paques','classique','evenement') NOT NULL,
@@ -291,22 +301,18 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `conditions_menu` text,
   `stock_disponible` int NOT NULL DEFAULT '0',
   `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `est_actif` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_menu`),
-  KEY `idx_menu_theme` (`theme`),
-  KEY `idx_menu_regime` (`regime`),
-  KEY `idx_menu_prix` (`prix_personne`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `est_actif` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `menu`
 --
 
 INSERT INTO `menu` (`id_menu`, `titre`, `description`, `theme`, `regime`, `nb_personnes_min`, `prix_personne`, `conditions_menu`, `stock_disponible`, `date_creation`, `est_actif`) VALUES
-(1, 'Menu Méditerranéen', 'Saveurs ensoleillées de la Méditerranée', 'classique', 'classique', 4, 25.00, 'Commande 48h à  l\'avance minimum. Conservation au réfrigérateur recommandée.', 9, '2026-07-26 11:00:48', 1),
+(1, 'Menu Méditerranéen', 'Saveurs ensoleillées de la Méditerranée', 'classique', 'classique', 4, 25.00, 'Commande 48h à  l\'avance minimum. Conservation au réfrigérateur recommandée.', 7, '2026-07-26 11:00:48', 1),
 (2, 'Menu Végétarien', 'Un menu 100% végétal et gourmand', 'classique', 'vegetarien', 4, 20.00, 'Commande 48h à l\'avance minimum.', 8, '2026-07-26 11:00:48', 1),
-(3, 'Menu Gourmet', 'Une expérience gastronomique raffinée', 'evenement', 'classique', 6, 30.00, 'Commande 7 jours à l\'avance minimum. Prêt de matériel possible.', 4, '2026-07-26 11:00:48', 1),
-(14, 'Menu \"Barbecue\"', 'Une grillade en famille ou entre amis', 'classique', 'classique', 4, 15.00, 'Commande 3 jours à l\'avance minimum. Prêt de matériel possible.', 9, '2026-08-09 16:21:03', 1);
+(3, 'Menu Gourmet', 'Une expérience gastronomique raffinée', 'evenement', 'classique', 6, 30.00, 'Commande 7 jours à l\'avance minimum. Prêt de matériel possible.', 9, '2026-07-26 11:00:48', 1),
+(14, 'Menu Barbecue', 'Une grillade en famille ou entre amis', 'classique', 'classique', 4, 15.00, 'Commande 3 jours à l\'avance minimum. Prêt de matériel possible.', 5, '2026-08-09 16:21:03', 1);
 
 -- --------------------------------------------------------
 
@@ -314,12 +320,9 @@ INSERT INTO `menu` (`id_menu`, `titre`, `description`, `theme`, `regime`, `nb_pe
 -- Structure de la table `menu_plat`
 --
 
-DROP TABLE IF EXISTS `menu_plat`;
-CREATE TABLE IF NOT EXISTS `menu_plat` (
+CREATE TABLE `menu_plat` (
   `id_menu` int NOT NULL,
-  `id_plat` int NOT NULL,
-  PRIMARY KEY (`id_menu`,`id_plat`),
-  KEY `fk_menuplat_plat` (`id_plat`)
+  `id_plat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -346,16 +349,22 @@ INSERT INTO `menu_plat` (`id_menu`, `id_plat`) VALUES
 -- Structure de la table `message_contact`
 --
 
-DROP TABLE IF EXISTS `message_contact`;
-CREATE TABLE IF NOT EXISTS `message_contact` (
-  `id_contact` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `message_contact` (
+  `id_contact` int NOT NULL,
   `titre` varchar(150) NOT NULL,
   `description` text NOT NULL,
   `email` varchar(150) NOT NULL,
   `traite` tinyint(1) NOT NULL DEFAULT '0',
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_contact`)
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `message_contact`
+--
+
+INSERT INTO `message_contact` (`id_contact`, `titre`, `description`, `email`, `traite`, `date_creation`) VALUES
+(1, 'Devis pour une communion', 'Bonjour, je souhaiterais un devis pour un menu de communion.\r\nCet évènement se déroulerait un dimanche.\r\nBien cordialement\r\nJohn DOE', 'johndoe@test.com', 1, '2026-09-03 14:42:03'),
+(2, 'Demande de devis', 'Bonjour, je souhaiterais savoir si vous faite aussi les réception d''entreprise.\r\nVous en remerciant par avance,\r\nCordialement,\r\nJean DUPONT', 'jeandupont@test.com', 0, '2026-09-03 15:31:29');
 
 -- --------------------------------------------------------
 
@@ -363,16 +372,13 @@ CREATE TABLE IF NOT EXISTS `message_contact` (
 -- Structure de la table `plat`
 --
 
-DROP TABLE IF EXISTS `plat`;
-CREATE TABLE IF NOT EXISTS `plat` (
-  `id_plat` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `plat` (
+  `id_plat` int NOT NULL,
   `nom` varchar(150) NOT NULL,
   `description` text,
   `type_plat` enum('entree','plat','dessert') NOT NULL,
-  `id_image` int DEFAULT NULL,
-  PRIMARY KEY (`id_plat`),
-  KEY `fk_plat_image` (`id_image`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id_image` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `plat`
@@ -393,16 +399,12 @@ INSERT INTO `plat` (`id_plat`, `nom`, `description`, `type_plat`, `id_image`) VA
 
 -- --------------------------------------------------------
 
---
 -- Structure de la table `plat_allergene`
 --
 
-DROP TABLE IF EXISTS `plat_allergene`;
-CREATE TABLE IF NOT EXISTS `plat_allergene` (
+CREATE TABLE `plat_allergene` (
   `id_plat` int NOT NULL,
-  `id_allergene` int NOT NULL,
-  PRIMARY KEY (`id_plat`,`id_allergene`),
-  KEY `fk_platallergene_allergene` (`id_allergene`)
+  `id_allergene` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -432,9 +434,8 @@ INSERT INTO `plat_allergene` (`id_plat`, `id_allergene`) VALUES
 -- Structure de la table `utilisateur`
 --
 
-DROP TABLE IF EXISTS `utilisateur`;
-CREATE TABLE IF NOT EXISTS `utilisateur` (
-  `id_utilisateur` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `utilisateur` (
+  `id_utilisateur` int NOT NULL,
   `nom` varchar(100) NOT NULL,
   `prenom` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
@@ -447,21 +448,188 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `actif` tinyint(1) NOT NULL DEFAULT '1',
   `token_reset_mdp` varchar(255) DEFAULT NULL,
   `token_reset_expire` datetime DEFAULT NULL,
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_utilisateur`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
 INSERT INTO `utilisateur` (`id_utilisateur`, `nom`, `prenom`, `email`, `mot_de_passe`, `telephone`, `adresse_postale`, `code_postal`, `ville`, `role`, `actif`, `token_reset_mdp`, `token_reset_expire`, `date_creation`) VALUES
-(5, 'Gourmand', 'José', 'josegourmand@mail.com', '$2y$10$zDSZUIWkfSjpnARVjOLAveNczruGz.DbdctZwsdjx3Prhe7927rhC', '0605040302', '1 rue de la ville', '33000', 'Bordeaux', 'administrateur', 1, NULL, NULL, '2026-08-05 09:44:23'),
+(5, 'Gourmand', 'José', 'josegourmand@mail.com', '$2y$10$gazAvdU3J4GDzlEX36P7ROEpHWxIXP.HBjI9Q8kkjXedB/bFA4N02', '0605040302', '1 rue de la ville', '33000', 'Bordeaux', 'administrateur', 1, NULL, NULL, '2026-08-05 09:44:23'),
 (10, 'Gourmand', 'Julie', 'julie@vitegourmand.com', '$2y$10$GTO4fVktk22bWtEKdOxoi.63XmhqP/H4p65UeKwToZRMHJQFmqDJ2', '0605040302', '1, rue de la ville', '33000', 'Bordeaux', 'employe', 1, NULL, NULL, '2026-08-19 13:17:27'),
 (11, 'Doe', 'John', 'johndoe@test.com', '$2y$10$mecRkCUsJ8suARiTVuX2ZezVZdnBlEwFcTI5xZWS8x/ymLCDZQRMi', '0602030405', '5, rue du centre', '33000', 'Bordeaux', 'utilisateur', 1, NULL, NULL, '2026-08-19 13:24:38'),
 (12, 'Martin', 'Lisa', 'lisamartin@test.com', '$2y$10$T0NEPI1gRi.9qDN0yk1FuekucbkzEBtjVy/QLVtPhqVM/pFK.9w.6', '0605040302', '3, rue de la ville', '33500', 'Libourne', 'utilisateur', 1, NULL, NULL, '2026-08-21 10:44:50'),
 (13, 'Durant', 'Roger', 'rogerdurant@test.com', '$2y$10$0QRJaKaBW.TcfmIHxsiUp.XBghw3OGleFU0RsDLw7xqLsQseJibJi', '0604030201', '10, rue du château', '16400', 'La Couronne', 'utilisateur', 1, NULL, NULL, '2026-08-21 12:00:16');
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `allergene`
+--
+ALTER TABLE `allergene`
+  ADD PRIMARY KEY (`id_allergene`),
+  ADD UNIQUE KEY `nom` (`nom`);
+
+--
+-- Index pour la table `avis`
+--
+ALTER TABLE `avis`
+  ADD PRIMARY KEY (`id_avis`),
+  ADD UNIQUE KEY `id_commande` (`id_commande`);
+
+--
+-- Index pour la table `commande`
+--
+ALTER TABLE `commande`
+  ADD PRIMARY KEY (`id_commande`),
+  ADD KEY `fk_commande_utilisateur` (`id_utilisateur`),
+  ADD KEY `fk_commande_menu` (`id_menu`);
+
+--
+-- Index pour la table `historique_statut`
+--
+ALTER TABLE `historique_statut`
+  ADD PRIMARY KEY (`id_historique`),
+  ADD KEY `fk_historique_employe` (`id_employe`),
+  ADD KEY `idx_commande_statut_join` (`id_commande`,`date_modification`);
+
+--
+-- Index pour la table `horaire`
+--
+ALTER TABLE `horaire`
+  ADD PRIMARY KEY (`id_horaire`),
+  ADD UNIQUE KEY `uq_jour_service` (`jour_semaine`,`service`);
+
+--
+-- Index pour la table `image`
+--
+ALTER TABLE `image`
+  ADD PRIMARY KEY (`id_image`),
+  ADD UNIQUE KEY `uq_url_image` (`url_image`);
+
+--
+-- Index pour la table `image_menu`
+--
+ALTER TABLE `image_menu`
+  ADD PRIMARY KEY (`id_image_menu`),
+  ADD KEY `id_menu` (`id_menu`),
+  ADD KEY `id_image` (`id_image`);
+
+--
+-- Index pour la table `menu`
+--
+ALTER TABLE `menu`
+  ADD PRIMARY KEY (`id_menu`),
+  ADD KEY `idx_menu_theme` (`theme`),
+  ADD KEY `idx_menu_regime` (`regime`),
+  ADD KEY `idx_menu_prix` (`prix_personne`);
+
+--
+-- Index pour la table `menu_plat`
+--
+ALTER TABLE `menu_plat`
+  ADD PRIMARY KEY (`id_menu`,`id_plat`),
+  ADD KEY `fk_menuplat_plat` (`id_plat`);
+
+--
+-- Index pour la table `message_contact`
+--
+ALTER TABLE `message_contact`
+  ADD PRIMARY KEY (`id_contact`);
+
+--
+-- Index pour la table `plat`
+--
+ALTER TABLE `plat`
+  ADD PRIMARY KEY (`id_plat`),
+  ADD KEY `fk_plat_image` (`id_image`);
+
+--
+-- Index pour la table `plat_allergene`
+--
+ALTER TABLE `plat_allergene`
+  ADD PRIMARY KEY (`id_plat`,`id_allergene`),
+  ADD KEY `fk_platallergene_allergene` (`id_allergene`);
+
+--
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id_utilisateur`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `allergene`
+--
+ALTER TABLE `allergene`
+  MODIFY `id_allergene` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT pour la table `avis`
+--
+ALTER TABLE `avis`
+  MODIFY `id_avis` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `commande`
+--
+ALTER TABLE `commande`
+  MODIFY `id_commande` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `historique_statut`
+--
+ALTER TABLE `historique_statut`
+  MODIFY `id_historique` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
+--
+-- AUTO_INCREMENT pour la table `horaire`
+--
+ALTER TABLE `horaire`
+  MODIFY `id_horaire` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT pour la table `image`
+--
+ALTER TABLE `image`
+  MODIFY `id_image` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
+--
+-- AUTO_INCREMENT pour la table `image_menu`
+--
+ALTER TABLE `image_menu`
+  MODIFY `id_image_menu` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `menu`
+--
+ALTER TABLE `menu`
+  MODIFY `id_menu` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT pour la table `message_contact`
+--
+ALTER TABLE `message_contact`
+  MODIFY `id_contact` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `plat`
+--
+ALTER TABLE `plat`
+  MODIFY `id_plat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id_utilisateur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Contraintes pour les tables déchargées
