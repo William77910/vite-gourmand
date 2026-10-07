@@ -18,9 +18,13 @@ class MongoConnection
     {
         // Si l'instance n'existe pas encore, on la crée
         if (self::$client === null) {
-            $host = getenv('MONGO_HOST');
-            $port = getenv('MONGO_PORT');
-            self::$client = new Client("mongodb://{$host}:{$port}");
+            $uri = getenv('MONGO_URI'); // Priorité à une URI complète (Atlas)
+            if (!$uri) {
+                $host = getenv('MONGO_HOST');
+                $port = getenv('MONGO_PORT');
+                $uri = "mongodb://{$host}:{$port}";
+            }
+            self::$client = new Client($uri);
         }
 
         return self::$client;
