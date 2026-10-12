@@ -39,9 +39,9 @@ et l'analyse de données.
 
 | Rôle               | Email                  | Mot de passe |
 | :----------------- | :--------------------- | :----------- |
-| **Administrateur** | admin@vitegourmand.com | Admin123!    |
-| **Employé**        | julie@vitegourmand.com | Employe123!  |
-| **Client**         | johndoe@test.com       | Client123!   |
+| **Administrateur** | josegourmand@mail.com  | Azerty123!   |
+| **Employé**        | julie@vitegourmand.com | Azerty123!   |
+| **Client**         | johndoe@test.com       | Azerty123!   |
 
 ## Points clés du projet
 

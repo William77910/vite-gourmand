@@ -7,7 +7,7 @@ Il propose un parcours optimisé pour tester les fonctionnalités critiques.
 
 | Rôle               | Email                  | Mot de passe |
 | :----------------- | :--------------------- | :----------- |
-| **Administrateur** | admin@vitegourmand.com | Azerty123!   |
+| **Administrateur** | josegourmand@mail.com  | Azerty123!   |
 | **Employé**        | julie@vitegourmand.com | Azerty123!   |
 | **Client**         | johndoe@test.com       | Azerty123!   |
 
