@@ -167,7 +167,7 @@ class Menu
   /**
    * Ajoute une photo à la galerie du menu.
    */
-  public static function définirPhotoAmbiance(int $idMenu, string $urlImage): void
+  public static function definirPhotoAmbiance(int $idMenu, string $urlImage): void
   {
     $pdo = Database::getConnection();
     $idImage = Image::creerOuRecuperer($urlImage);
