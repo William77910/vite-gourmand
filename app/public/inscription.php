@@ -18,9 +18,11 @@ $valeurs = [
 
 // Traitement du formulaire d'inscription
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Vérification du token CSRF
   if (!verifier_token_csrf($_POST['csrf_token'] ?? null)) {
     $erreurs[] = "Votre session a expiré, veuillez réessayer.";
   } else {
+    // Récupération et nettoyage des valeurs du formulaire
     foreach ($valeurs as $champ => $valeur) {
       $valeurs[$champ] = trim($_POST[$champ] ?? '');
     }
@@ -32,20 +34,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($valeurs['nom'] === '' || $valeurs['prenom'] === '') {
       $erreurs[] = "Le nom et le prénom sont obligatoires.";
     }
+    // Validation back-end de l'email et vérification de l'unicité
     if (!filter_var($valeurs['email'], FILTER_VALIDATE_EMAIL)) {
       $erreurs[] = "L'adresse email n'est pas valide.";
     } elseif (Utilisateur::findByEmail($valeurs['email'])) {
       $erreurs[] = "Un compte existe déjà avec cette adresse email.";
     }
+    // Validation back-end du mot de passe et de sa confirmation (regex pour les critères de sécurité)
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/', $mot_de_passe)) {
       $erreurs[] = "Le mot de passe ne respecte pas les critères de sécurité.";
     } elseif ($mot_de_passe !== $confirmation) {
       $erreurs[] = "Les deux mots de passe ne correspondent pas.";
     }
+    // Vérification de l'acceptation des CGV
     if (!$accepte_cgv) {
       $erreurs[] = "Vous devez accepter les mentions légales et les CGV.";
     }
 
+    // Si aucune erreur, création de l'utilisateur en base de données et redirection
     if (empty($erreurs)) {
       $id = Utilisateur::create([
         'nom' => $valeurs['nom'],
@@ -77,13 +83,13 @@ $page_title = 'Inscription';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="vg-hero" style="background-image: url('/images/hero-menu.jpg');">
+<section class="vg-hero" style="background-image: url('/images/hero-menu.jpg');">
   <div class="vg-hero-overlay">
     <h1>Inscription</h1>
   </div>
-</div>
+</section>
 
-<div class="container my-5">
+<section class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <h2 class="text-center mb-1">Créer un compte</h2>
@@ -199,7 +205,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </form>
     </div>
   </div>
-</div>
+</section>
 
 <script src="/js/inscription.js"></script>
 

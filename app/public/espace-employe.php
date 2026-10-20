@@ -13,7 +13,7 @@ $page_title = 'Espace de gestion';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-5">Tableau de bord de gestion</h1>
 
   <div class="row g-4 justify-content-center">
@@ -134,6 +134,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-house"></i> Retour au site public
     </a>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

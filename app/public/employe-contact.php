@@ -29,7 +29,7 @@ $page_title = 'Demandes de contact';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="mb-4">Messages des clients</h1>
 
   <?php foreach ($messages_notif['succes'] as $m): ?><div class="alert alert-success"><?= $m ?></div><?php endforeach; ?>
@@ -114,6 +114,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-arrow-left"></i> Retour à l'espace employé
     </a>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

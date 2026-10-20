@@ -104,7 +104,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-4"><?= $modeEdition ? 'Modifier le menu' : 'Créer un menu' ?></h1>
 
   <?php if (!empty($erreurs)): ?>
@@ -249,6 +249,6 @@ $imagesExistantes = $modeEdition ? Menu::getImagesAvecId($idMenu) : [];
     <!-- Champ caché pour la suppression d'image via le même bouton submit -->
     <input type="hidden" name="id_image" id="id_image_del" value="">
   </form>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

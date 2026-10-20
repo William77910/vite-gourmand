@@ -7,18 +7,18 @@ require_once __DIR__ . '/../src/Models/Menu.php';
 $menus = Menu::getAll();
 ?>
 
-<!-- Banniere hero -->
-<div class="vg-hero" style="background-image: url('/images/hero-menu.jpg');">
+<!-- Banniere hero (section d'introduction) -->
+<section class="vg-hero" style="background-image: url('/images/hero-menu.jpg');">
   <div class="vg-hero-overlay">
     <h1>Nos menus</h1>
     <button type="button" class="btn btn-vg-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFiltre">
       Filtre
     </button>
   </div>
-</div>
+</section>
 
-<!-- Conteneur des menus -->
-<div class="container my-5">
+<!-- Conteneur des menus (section catalogue)-->
+<section class="container my-5">
   <h2 class="text-center mb-4 vg-menu-title">Nos menus gastronomiques</h2>
   <!-- Conteneur des cartes de menus -->
   <div class="row g-4" id="conteneur-menus">
@@ -47,7 +47,7 @@ $menus = Menu::getAll();
   <div class="text-center mt-5">
     <a href="/menus.php" class="btn btn-vg-primary">Ouvrez un menu et passez votre commande</a>
   </div>
-</div>
+</section>
 
 <!-- Modale de filtre -->
 <div class="modal fade" id="modalFiltre" tabindex="-1" aria-labelledby="modalFiltreLabel" aria-hidden="true">

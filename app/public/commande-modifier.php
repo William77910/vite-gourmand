@@ -71,7 +71,7 @@ $page_title = "Modifier ma commande";
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-4 font-italianno" style="font-size: 3.5rem; color: var(--vg-vert-fonce);">Modifier ma commande</h1>
 
   <div class="row justify-content-center">
@@ -131,6 +131,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       </form>
     </div>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

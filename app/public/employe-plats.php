@@ -30,7 +30,7 @@ $page_title = 'Gestion des plats';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Gestion de la carte (Plats)</h1>
     <a href="/employe-plat-form.php" class="btn btn-vg-primary">+ Ajouter un nouveau plat</a>
@@ -121,6 +121,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-arrow-left"></i> Retour à l'espace employé
     </a>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

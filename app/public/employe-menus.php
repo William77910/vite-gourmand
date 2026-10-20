@@ -27,7 +27,7 @@ $page_title = 'Gestion des menus';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <h1 class="mb-0">Gestion des menus</h1>
     <a href="/employe-menu-form.php" class="btn btn-vg-primary">+ Créer un menu</a>
@@ -93,6 +93,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-arrow-left"></i> Retour à l'espace employé
     </a>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

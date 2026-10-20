@@ -131,7 +131,7 @@ $page_title = 'Ma commande';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-1 font-italianno" style="font-size: 4rem;">Votre commande</h1>
   <p class="text-center vg-text-secondary mb-5">Dernière étape avant la dégustation</p>
 
@@ -273,7 +273,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 
     </div>
   </form>
-</div>
+</section>
 
 <script src="/js/commande.js"></script>
 

@@ -49,7 +49,7 @@ $page_title = 'Connexion';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-5">
       <h1 class="text-center mb-4 font-italianno" style="font-size: 4rem;">Connexion</h1>
@@ -99,7 +99,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </form>
     </div>
   </div>
-</div>
+</section>
 
 <?php
 require_once __DIR__ . '/../views/partials/footer.php';

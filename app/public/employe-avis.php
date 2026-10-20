@@ -21,7 +21,7 @@ $page_title = 'Modération des avis';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-5">Modération des avis clients</h1>
 
   <h2 class="h4 mb-4">En attente de validation (<?= count($enAttente) ?>)</h2>
@@ -76,5 +76,5 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-arrow-left"></i> Retour à l'espace employé
     </a>
   </div>
-</div>
+</section>
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

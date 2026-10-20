@@ -87,7 +87,7 @@ h3,
   font-weight: 700;
 }
 
-/* Optionnel : Une petite barre sous le texte pour le hover (Très moderne et accessible) */
+/* Optionnel : Une petite barre sous le texte pour le hover */
 .vg-nav .nav-link:hover::after,
 .vg-nav .nav-link.active::after {
   content: "";
@@ -99,6 +99,7 @@ h3,
   left: 0;
 }
 
+/* Adaptation responsive pour les éléments de l'en-tête (Media Query) */
 @media (max-width: 1200px) {
   .vg-logo span {
     font-size: 2.2rem;

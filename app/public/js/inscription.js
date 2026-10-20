@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   mdp.addEventListener("input", function () {
     const val = mdp.value;
+    // Vérification des critères de sécurité du mot de passe
     const regles = {
       longueur: val.length >= 10,
       majuscule: /[A-Z]/.test(val),
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
       chiffre: /[0-9]/.test(val),
       special: /[^A-Za-z0-9]/.test(val),
     };
+    // Mise à jour de l'affichage des critères
     Object.keys(regles).forEach((k) => {
       const el = list.querySelector(`[data-critere="${k}"]`);
       if (el) {

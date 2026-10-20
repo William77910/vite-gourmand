@@ -46,7 +46,7 @@ $page_title = 'Gestion des allergènes';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-6">
       <h1 class="text-center mb-4">Gestion des Allergènes</h1>
@@ -101,6 +101,6 @@ require_once __DIR__ . '/../views/partials/header.php';
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <?php require_once __DIR__ . '/../views/partials/footer.php'; ?>

@@ -43,7 +43,7 @@ require_once __DIR__ . '/../views/partials/header.php';
 
 <div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-lg-6">
+    <section class="col-lg-6">
       <h1 class="text-center mb-4 vg-contact-title">Contactez Vite & Gourmand</h1>
       <p class="text-center vg-text-secondary mb-5">Une question ? Un événement particulier ? Julie et José vous répondent.</p>
 
@@ -91,7 +91,7 @@ require_once __DIR__ . '/../views/partials/header.php';
         </form>
 
       <?php endif; ?>
-    </div>
+    </section>
   </div>
 </div>
 

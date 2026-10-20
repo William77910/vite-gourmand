@@ -22,7 +22,7 @@ $page_title = 'Commande confirmée';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5 text-center">
+<section class="container my-5 text-center">
   <i class="bi bi-check-circle-fill" style="font-size:48px; color: var(--vg-vert-fonce);"></i>
   <h1 class="mt-3">Merci, votre commande est enregistrée !</h1>
   <p class="vg-text-secondary">Un e-mail de confirmation vous sera envoyé prochainement.</p>
@@ -40,7 +40,7 @@ require_once __DIR__ . '/../views/partials/header.php';
   </div>
 
   <a href="/index.php" class="btn btn-vg-primary mt-4">Retour à l'accueil</a>
-</div>
+</section>
 
 <?php
 require_once __DIR__ . '/../views/partials/footer.php';

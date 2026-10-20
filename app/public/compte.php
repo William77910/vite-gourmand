@@ -136,7 +136,7 @@ $page_title = 'Mon compte';
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-4 vg-moncompte-title">Mon compte</h1>
 
   <?php foreach ($messages['succes'] as $m): ?><div class="alert alert-success alert-dismissible fade show"><?= htmlspecialchars($m) ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endforeach; ?>
@@ -315,7 +315,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- Modal Supprimer Compte -->
 <div class="modal fade" id="modalSupprimerCompte" tabindex="-1" aria-hidden="true">

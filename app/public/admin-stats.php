@@ -22,7 +22,7 @@ $page_title = "Tableau de bord - Statistiques";
 require_once __DIR__ . '/../views/partials/header.php';
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <h1 class="text-center mb-4">Analyse des ventes</h1>
 
   <!-- Formulaire de filtres -->
@@ -77,7 +77,7 @@ require_once __DIR__ . '/../views/partials/header.php';
       <i class="bi bi-arrow-left"></i> Retour à l'espace employé
     </a>
   </div>
-</div>
+</section>
 
 <!-- Inclusion de Chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

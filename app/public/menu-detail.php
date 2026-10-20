@@ -29,7 +29,7 @@ $labels_theme = ['classique' => 'Classique', 'paques' => 'Pâques', 'noel' => 'N
 $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dessert'];
 ?>
 
-<div class="container my-5">
+<section class="container my-5">
   <a href="/menus.php" class="vg-text-secondary vg-link-accessible d-inline-block mb-3">&larr; Retour aux menus</a>
 
   <div class="row">
@@ -117,7 +117,7 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
   <!-- SECTION AVIS (Centrée et pleine largeur) -->
   <hr class="vg-hr-light">
 
-  <div class="row justify-content-center">
+  <section class="row justify-content-center">
     <div class="col-12 text-center">
       <h2 class="vg-title-cursive vg-title-lg mb-5">L'avis de nos gourmets</h2>
     </div>
@@ -154,8 +154,8 @@ $labels_type_plat = ['entree' => 'Entrée', 'plat' => 'Plat', 'dessert' => 'Dess
         </div>
       </div>
     <?php endif; ?>
-  </div>
-</div>
+  </section>
+</section>
 
 <!-- Modale Lightbox -->
 <div class="modal fade" id="modalImageAgrandie" tabindex="-1" aria-hidden="true">
