@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams({ adresse, code_postal: cp, ville });
     valeurFrais.textContent = "Calcul...";
 
-    fetch("/api/estimer-livraison.php?" + params.toString())
+    fetch("/index.php?route=api-livraison&" + params.toString())
       .then((res) => {
         if (!res.ok) throw new Error("Erreur serveur HTTP " + res.status);
         return res.json();

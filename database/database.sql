@@ -4,13 +4,9 @@ USE vite_gourmand;
 
 -- --------------------------------------------------------
 
-CREATE TABLE `allergene` (
-  `id_allergene` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(100) NOT NULL,
-  PRIMARY KEY (`id_allergene`),
-  UNIQUE KEY `nom` (`nom`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+-- --------------------------------------------------------
+-- Structure de la table `utilisateur`
+-- --------------------------------------------------------
 CREATE TABLE `utilisateur` (
   `id_utilisateur` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(100) NOT NULL,
@@ -30,6 +26,45 @@ CREATE TABLE `utilisateur` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Structure de la table `allergene`
+-- --------------------------------------------------------
+CREATE TABLE `allergene` (
+  `id_allergene` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_allergene`),
+  UNIQUE KEY `nom` (`nom`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- --------------------------------------------------------
+-- Structure de la table `image`
+-- --------------------------------------------------------
+CREATE TABLE `image` (
+  `id_image` int NOT NULL AUTO_INCREMENT,
+  `url_image` varchar(255) NOT NULL,
+  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_image`),
+  UNIQUE KEY `uq_url_image` (`url_image`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Structure de la table `plat`
+-- --------------------------------------------------------
+CREATE TABLE `plat` (
+  `id_plat` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(150) NOT NULL,
+  `description` text,
+  `type_plat` enum('entree','plat','dessert') NOT NULL,
+  `id_image` int DEFAULT NULL,
+  PRIMARY KEY (`id_plat`),
+  KEY `fk_plat_image` (`id_image`),
+  CONSTRAINT `fk_plat_image` FOREIGN KEY (`id_image`) REFERENCES `image` (`id_image`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+-- Structure de la table `menu`
+-- --------------------------------------------------------
 CREATE TABLE `menu` (
   `id_menu` int NOT NULL AUTO_INCREMENT,
   `titre` varchar(150) NOT NULL,
@@ -42,27 +77,55 @@ CREATE TABLE `menu` (
   `stock_disponible` int NOT NULL DEFAULT '0',
   `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `est_actif` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_menu`)
+  PRIMARY KEY (`id_menu`),
+  KEY `idx_menu_theme` (`theme`),
+  KEY `idx_menu_regime` (`regime`),
+  KEY `idx_menu_prix` (`prix_personne`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `image` (
-  `id_image` int NOT NULL AUTO_INCREMENT,
-  `url_image` varchar(255) NOT NULL,
-  `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_image`),
-  UNIQUE KEY `uq_url_image` (`url_image`)
+-- --------------------------------------------------------
+-- Structure de la table `image_menu`
+-- --------------------------------------------------------
+CREATE TABLE `image_menu` (
+  `id_image_menu` int NOT NULL AUTO_INCREMENT,
+  `id_menu` int NOT NULL,
+  `id_image` int NOT NULL,
+  `ordre_affichage` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_image_menu`),
+  KEY `id_menu` (`id_menu`),
+  KEY `id_image` (`id_image`),
+  CONSTRAINT `image_menu_ibfk_1` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE,
+  CONSTRAINT `image_menu_ibfk_2` FOREIGN KEY (`id_image`) REFERENCES `image` (`id_image`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `plat` (
-  `id_plat` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(150) NOT NULL,
-  `description` text,
-  `type_plat` enum('entree','plat','dessert') NOT NULL,
-  `id_image` int DEFAULT NULL,
-  PRIMARY KEY (`id_plat`),
-  CONSTRAINT `fk_plat_image` FOREIGN KEY (`id_image`) REFERENCES `image` (`id_image`) ON DELETE SET NULL
+-- --------------------------------------------------------
+-- Structure de la table `menu_plat`
+-- --------------------------------------------------------
+CREATE TABLE `menu_plat` (
+  `id_menu` int NOT NULL,
+  `id_plat` int NOT NULL,
+  PRIMARY KEY (`id_menu`,`id_plat`),
+  KEY `fk_menuplat_plat` (`id_plat`),
+  CONSTRAINT `fk_menuplat_menu` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE,
+  CONSTRAINT `fk_menuplat_plat` FOREIGN KEY (`id_plat`) REFERENCES `plat` (`id_plat`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Structure de la table `plat_allergene`
+-- --------------------------------------------------------
+CREATE TABLE `plat_allergene` (
+  `id_plat` int NOT NULL,
+  `id_allergene` int NOT NULL,
+  PRIMARY KEY (`id_plat`,`id_allergene`),
+  KEY `fk_platallergene_allergene` (`id_allergene`),
+  CONSTRAINT `fk_platallergene_allergene` FOREIGN KEY (`id_allergene`) REFERENCES `allergene` (`id_allergene`) ON DELETE CASCADE,
+  CONSTRAINT `fk_platallergene_plat` FOREIGN KEY (`id_plat`) REFERENCES `plat` (`id_plat`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- --------------------------------------------------------
+-- Structure de la table `commande`
+-- --------------------------------------------------------
 CREATE TABLE `commande` (
   `id_commande` int NOT NULL AUTO_INCREMENT,
   `id_utilisateur` int NOT NULL,
@@ -81,10 +144,15 @@ CREATE TABLE `commande` (
   `mode_paiement` enum('carte','paypal','virement') DEFAULT NULL,
   `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_commande`),
+  KEY `fk_commande_utilisateur` (`id_utilisateur`),
+  KEY `fk_commande_menu` (`id_menu`),
   CONSTRAINT `fk_commande_menu` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`),
   CONSTRAINT `fk_commande_utilisateur` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+-- Structure de la table `avis`
+-- --------------------------------------------------------
 CREATE TABLE `avis` (
   `id_avis` int NOT NULL AUTO_INCREMENT,
   `id_commande` int NOT NULL,
@@ -97,6 +165,9 @@ CREATE TABLE `avis` (
   CONSTRAINT `fk_avis_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id_commande`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+-- Structure de la table `historique_statut`
+-- --------------------------------------------------------
 CREATE TABLE `historique_statut` (
   `id_historique` int NOT NULL AUTO_INCREMENT,
   `id_commande` int NOT NULL,
@@ -106,10 +177,15 @@ CREATE TABLE `historique_statut` (
   `mode_contact` enum('appel','mail') DEFAULT NULL,
   `date_modification` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_historique`),
+  KEY `fk_historique_employe` (`id_employe`),
+  KEY `idx_commande_statut_join` (`id_commande`,`date_modification`),
   CONSTRAINT `fk_historique_commande` FOREIGN KEY (`id_commande`) REFERENCES `commande` (`id_commande`) ON DELETE CASCADE,
   CONSTRAINT `fk_historique_employe` FOREIGN KEY (`id_employe`) REFERENCES `utilisateur` (`id_utilisateur`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+-- Structure de la table `horaire`
+-- --------------------------------------------------------
 CREATE TABLE `horaire` (
   `id_horaire` int NOT NULL AUTO_INCREMENT,
   `jour_semaine` enum('lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche') NOT NULL,
@@ -120,26 +196,13 @@ CREATE TABLE `horaire` (
   `commentaire_fermeture` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_horaire`),
   UNIQUE KEY `uq_jour_service` (`jour_semaine`,`service`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `image_menu` (
-  `id_image_menu` int NOT NULL AUTO_INCREMENT,
-  `id_menu` int NOT NULL,
-  `id_image` int NOT NULL,
-  `ordre_affichage` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_image_menu`),
-  CONSTRAINT `image_menu_ibfk_1` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE,
-  CONSTRAINT `image_menu_ibfk_2` FOREIGN KEY (`id_image`) REFERENCES `image` (`id_image`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `menu_plat` (
-  `id_menu` int NOT NULL,
-  `id_plat` int NOT NULL,
-  PRIMARY KEY (`id_menu`,`id_plat`),
-  CONSTRAINT `fk_menuplat_menu` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE,
-  CONSTRAINT `fk_menuplat_plat` FOREIGN KEY (`id_plat`) REFERENCES `plat` (`id_plat`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+-- Structure de la table `message_contact`
+-- --------------------------------------------------------
 CREATE TABLE `message_contact` (
   `id_contact` int NOT NULL AUTO_INCREMENT,
   `titre` varchar(150) NOT NULL,
@@ -148,12 +211,6 @@ CREATE TABLE `message_contact` (
   `traite` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_contact`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `plat_allergene` (
-  `id_plat` int NOT NULL,
-  `id_allergene` int NOT NULL,
-  PRIMARY KEY (`id_plat`,`id_allergene`),
-  CONSTRAINT `fk_platallergene_allergene` FOREIGN KEY (`id_allergene`) REFERENCES `allergene` (`id_allergene`) ON DELETE CASCADE,
-  CONSTRAINT `fk_platallergene_plat` FOREIGN KEY (`id_plat`) REFERENCES `plat` (`id_plat`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
