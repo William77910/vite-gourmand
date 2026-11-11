@@ -1,10 +1,8 @@
 services:
-
-  # ------------------------------------------------------------
-  # Serveur web : Apache + PHP + extensions PDO/MongoDB
-  # ------------------------------------------------------------
   web:
-    build: ./app
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: vg_web
     restart: unless-stopped
     ports:
@@ -23,15 +21,12 @@ services:
       MONGO_PORT: 27017
       MONGO_DB: vite_gourmand_stats
 
-  # ------------------------------------------------------------
-  # Base relationnelle
-  # ------------------------------------------------------------
   mysql:
     image: mysql:8.0
     container_name: vg_mysql
     restart: unless-stopped
     ports:
-      - "3307:3306"          # hôte:conteneur -> évite le conflit avec un MySQL local (XAMPP) sur 3306
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: vite_gourmand
@@ -39,12 +34,9 @@ services:
       MYSQL_PASSWORD: vg_password
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database/01_creation_tables.sql:/docker-entrypoint-initdb.d/01_creation_tables.sql
-      - ./database/02_insertion_donnees.sql:/docker-entrypoint-initdb.d/02_insertion_donnees.sql
+      - ./database/database.sql:/docker-entrypoint-initdb.d/01_database.sql
+      - ./database/jeu_de_donnees.sql:/docker-entrypoint-initdb.d/02_jeu_de_donnees.sql
 
-  # ------------------------------------------------------------
-  # Interface d'administration MySQL (équivalent phpMyAdmin d'XAMPP)
-  # ------------------------------------------------------------
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: vg_phpmyadmin
@@ -56,15 +48,12 @@ services:
     depends_on:
       - mysql
 
-  # ------------------------------------------------------------
-  # Base NoSQL (statistiques)
-  # ------------------------------------------------------------
   mongo:
     image: mongo:7
     container_name: vg_mongo
     restart: unless-stopped
     ports:
-      - "8090:27017"          # cohérent avec votre habitude vue en cours
+      - "8090:27017"
     volumes:
       - mongo_data:/data/db
 

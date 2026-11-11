@@ -1,0 +1,9 @@
+.git
+.gitignore
+docker-compose.yml
+mysql_data
+mongo_data
+app/vendor
+app/tests
+README.md
+docs
