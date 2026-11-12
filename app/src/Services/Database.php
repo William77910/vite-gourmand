@@ -6,11 +6,13 @@ namespace App\Services;
 use PDO;
 use Exception;
 
-class Database {
+class Database
+{
     private static $instance = null;
     private $pdo;
 
-    private function __construct() {
+    private function __construct()
+    {
         $host = getenv('DB_HOST') ?: 'mysql';
         $db   = getenv('DB_NAME') ?: 'vite_gourmand';
         $user = getenv('DB_USER') ?: 'vg_user';
@@ -25,7 +27,8 @@ class Database {
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
